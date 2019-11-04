@@ -1,0 +1,30 @@
+metadata:
+  template: true
+
+steps:
+  - name: install
+    commands:
+      - ./gradlew downloadDependencies
+    environment: {{ .environment }}
+    image: {{ .image }}
+    {{ .pull_policy }}
+    ruleset:
+      event: [ push, pull_request ]
+
+  - name: test
+    commands:
+      - ./gradlew check
+    environment: {{ .environment }}
+    image: {{ .image }}
+    {{ .pull_policy }}
+    ruleset:
+      event: [ push, pull_request ]
+
+  - name: build
+    commands:
+      - ./gradlew build distTar
+    environment: {{ .environment }}
+    image: {{ .image }}
+    {{ .pull_policy }}
+    ruleset:
+      event: [ push, pull_request ]

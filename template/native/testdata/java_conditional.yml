@@ -1,0 +1,35 @@
+metadata:
+  template: true
+
+{{$br := .branch}}
+
+steps:
+
+  {{ if (eq $br "master") }}
+
+  - name: install
+    commands:
+      - ./gradlew downloadDependencies
+    environment: {{ .environment }}
+    image: {{ .image }}
+    {{ .pull_policy }}
+
+  {{ end }}
+
+  - name: test
+    commands:
+      - ./gradlew check
+    environment: {{ .environment }}
+    image: {{ .image }}
+    {{ .pull_policy }}
+    ruleset:
+      event: [ push, pull_request ]
+
+  - name: build
+    commands:
+      - ./gradlew build distTar
+    environment: {{ .environment }}
+    image: {{ .image }}
+    {{ .pull_policy }}
+    ruleset:
+      event: [ push, pull_request ]
