@@ -1,4 +1,4 @@
-# lexi
+# compiler
 
 Vela is a Pipeline Automation (CI/CD) framework built on [Linux container](https://linuxcontainers.org/) technology written in [Golang](https://golang.org/).
 
