@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-vela/lexi/registry"
+	"github.com/go-vela/compiler/registry"
 )
 
 func TestGithub_Parse(t *testing.T) {

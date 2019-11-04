@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-vela/lexi/registry"
+	"github.com/go-vela/compiler/registry"
 
 	"github.com/go-vela/types/library"
 

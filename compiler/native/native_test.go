@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-vela/lexi/registry/github"
+	"github.com/go-vela/compiler/registry/github"
 
 	"github.com/go-vela/types/library"
 

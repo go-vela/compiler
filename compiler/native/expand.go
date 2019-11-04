@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-vela/lexi/template/native"
+	"github.com/go-vela/compiler/template/native"
 
 	"github.com/go-vela/types/yaml"
 	"github.com/sirupsen/logrus"

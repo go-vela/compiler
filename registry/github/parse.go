@@ -7,7 +7,7 @@ package github
 import (
 	"strings"
 
-	"github.com/go-vela/lexi/registry"
+	"github.com/go-vela/compiler/registry"
 
 	"github.com/goware/urlx"
 )
