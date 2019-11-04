@@ -5,10 +5,10 @@
 package native
 
 import (
-	"github.com/go-vela/lexi/compiler"
+	"github.com/go-vela/compiler/compiler"
 
-	"github.com/go-vela/lexi/registry"
-	"github.com/go-vela/lexi/registry/github"
+	"github.com/go-vela/compiler/registry"
+	"github.com/go-vela/compiler/registry/github"
 
 	"github.com/go-vela/types/library"
 
