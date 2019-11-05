@@ -62,7 +62,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_clone_clone",
 						Environment: environment(nil, nil, nil),
-						Image:       "target/vela-plugins/git:1",
+						Image:       "target/vela-git:v0.1.0",
 						Name:        "clone",
 						Number:      1,
 						Pull:        true,
@@ -220,7 +220,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_clone",
 				Environment: environment(nil, nil, nil),
-				Image:       "target/vela-plugins/git:1",
+				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
 				Number:      1,
 				Pull:        true,
@@ -372,7 +372,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_clone_clone",
 						Environment: environment(nil, nil, nil),
-						Image:       "target/vela-plugins/git:1",
+						Image:       "target/vela-git:v0.1.0",
 						Name:        "clone",
 						Number:      1,
 						Pull:        true,
@@ -535,7 +535,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_clone",
 				Environment: environment(nil, nil, nil),
-				Image:       "target/vela-plugins/git:1",
+				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
 				Number:      1,
 				Pull:        true,
@@ -667,7 +667,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_clone",
 				Environment: environment(nil, nil, nil),
-				Image:       "target/vela-plugins/git:1",
+				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
 				Number:      1,
 				Pull:        true,
