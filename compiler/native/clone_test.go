@@ -42,7 +42,7 @@ func TestNative_CloneStage(t *testing.T) {
 				Name: "clone",
 				Steps: yaml.StepSlice{
 					&yaml.Step{
-						Image: "target/vela-plugins/git:1",
+						Image: "target/vela-git:v0.1.0",
 						Name:  "clone",
 						Pull:  true,
 					},
@@ -98,7 +98,7 @@ func TestNative_CloneStep(t *testing.T) {
 		Version: "v1",
 		Steps: yaml.StepSlice{
 			&yaml.Step{
-				Image: "target/vela-plugins/git:1",
+				Image: "target/vela-git:v0.1.0",
 				Name:  "clone",
 				Pull:  true,
 			},
