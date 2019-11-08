@@ -21,8 +21,8 @@ github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3 h1:t8FVkw33L+wilf2
 github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3/go.mod h1:VJ0WA2NBN22VlZ2dKZQPAPnyWw5XTlK1KymzLKsr59s=
 github.com/gin-gonic/gin v1.4.0 h1:3tMoCCfM7ppqsR0ptz/wi1impNpT7/9wQtMZ8lr1mCQ=
 github.com/gin-gonic/gin v1.4.0/go.mod h1:OW2EZn3DO8Ln9oIKOvM++LBO+5UPHJJDH72/q/3rZdM=
-github.com/go-vela/types v0.1.0 h1:N/xN928jo0nIPIL7F7DugL98E4BGXVv0y5O8ywrpAsg=
-github.com/go-vela/types v0.1.0/go.mod h1:JR5jxRuE5A+RZyyQqMd4lJoUApVFo/Iq9iABbQzPCj0=
+github.com/go-vela/types v0.1.1 h1:mCZzTZsw2BFachgRns0I3FcmyFn2njfSJhx/celju4k=
+github.com/go-vela/types v0.1.1/go.mod h1:JR5jxRuE5A+RZyyQqMd4lJoUApVFo/Iq9iABbQzPCj0=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.3.1 h1:YF8+flBXS5eO826T4nzqPrxfhQThhXl0YzfuUPu4SBg=
 github.com/golang/protobuf v1.3.1/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=

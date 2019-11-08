@@ -8,7 +8,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-gonic/gin v1.4.0
-	github.com/go-vela/types v0.1.0
+	github.com/go-vela/types v0.1.1
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/goware/urlx v0.3.1
