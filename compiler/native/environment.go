@@ -91,7 +91,7 @@ func environment(b *library.Build, r *library.Repo, u *library.User) map[string]
 		"BUILD_TITLE":     b.GetTitle(),
 		"BUILD_WORKSPACE": workspace,
 
-		// caravel specific environment variables
+		// vela specific environment variables
 		// TODO: make some/most of these not hardcoded
 		"VELA":                unmarshal(true),
 		"VELA_ADDR":           "TODO",
