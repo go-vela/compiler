@@ -53,16 +53,16 @@ func TestNative_ScriptStages(t *testing.T) {
 	baseEnv["SHELL"] = "/bin/sh"
 
 	installEnv := baseEnv
-	installEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 	testEnv := baseEnv
-	testEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
 	want := yaml.StageSlice{
 		&yaml.Stage{
 			Name: "install",
 			Steps: yaml.StepSlice{
 				&yaml.Step{
-					Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+					Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 					Entrypoint:  []string{"/bin/sh", "-c"},
 					Environment: installEnv,
 					Image:       "openjdk:latest",
@@ -76,7 +76,7 @@ func TestNative_ScriptStages(t *testing.T) {
 			Needs: []string{"install"},
 			Steps: yaml.StepSlice{
 				&yaml.Step{
-					Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+					Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 					Entrypoint:  []string{"/bin/sh", "-c"},
 					Environment: testEnv,
 					Image:       "openjdk:latest",
@@ -131,13 +131,13 @@ func TestNative_ScriptSteps(t *testing.T) {
 	baseEnv["SHELL"] = "/bin/sh"
 
 	installEnv := baseEnv
-	installEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 	testEnv := baseEnv
-	testEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
 	want := yaml.StepSlice{
 		&yaml.Step{
-			Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+			Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 			Entrypoint:  []string{"/bin/sh", "-c"},
 			Environment: installEnv,
 			Image:       "openjdk:latest",
@@ -145,7 +145,7 @@ func TestNative_ScriptSteps(t *testing.T) {
 			Pull:        true,
 		},
 		&yaml.Step{
-			Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+			Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 			Entrypoint:  []string{"/bin/sh", "-c"},
 			Environment: testEnv,
 			Image:       "openjdk:latest",

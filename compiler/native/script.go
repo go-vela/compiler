@@ -45,10 +45,10 @@ func (c *Client) ScriptSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 		step.Entrypoint = []string{"/bin/sh", "-c"}
 
 		// set the commands for the step
-		step.Commands = []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"}
+		step.Commands = []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"}
 
 		// set the environment variables for the step
-		step.Environment["CARAVEL_BUILD_SCRIPT"] = script
+		step.Environment["VELA_BUILD_SCRIPT"] = script
 		step.Environment["HOME"] = "/root"
 		step.Environment["SHELL"] = "/bin/sh"
 	}
@@ -90,15 +90,15 @@ func generateScriptPosix(commands []string) string {
 // a minimum set of environment variables are set correctly.
 const setupScript = `
 cat <<EOF > $HOME/.netrc
-machine $CARAVEL_NETRC_MACHINE
-login $CARAVEL_NETRC_USERNAME
-password $CARAVEL_NETRC_PASSWORD
+machine $VELA_NETRC_MACHINE
+login $VELA_NETRC_USERNAME
+password $VELA_NETRC_PASSWORD
 EOF
 chmod 0600 $HOME/.netrc
-unset CARAVEL_NETRC_MACHINE
-unset CARAVEL_NETRC_USERNAME
-unset CARAVEL_NETRC_PASSWORD
-unset CARAVEL_BUILD_SCRIPT
+unset VELA_NETRC_MACHINE
+unset VELA_NETRC_USERNAME
+unset VELA_NETRC_PASSWORD
+unset VELA_BUILD_SCRIPT
 %s
 `
 
