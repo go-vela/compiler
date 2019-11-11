@@ -21,7 +21,7 @@ func TestNative_New(t *testing.T) {
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
 	public, _ := github.New("", "")
-	want := &Client{
+	want := &client{
 		Github: public,
 	}
 
@@ -48,7 +48,7 @@ func TestNative_New_PrivateGithub(t *testing.T) {
 	c := cli.NewContext(nil, set, nil)
 	public, _ := github.New("", "")
 	private, _ := github.New(url, token)
-	want := &Client{
+	want := &client{
 		Github:        public,
 		PrivateGithub: private,
 	}

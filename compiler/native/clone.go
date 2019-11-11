@@ -18,7 +18,7 @@ const (
 )
 
 // CloneStage injects the stage clone process into a yaml configuration.
-func (c *Client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
+func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 	stages := yaml.StageSlice{}
 
 	// create new clone stage
@@ -50,7 +50,7 @@ func (c *Client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 }
 
 // CloneStep injects the step clone process into a yaml configuration.
-func (c *Client) CloneStep(p *yaml.Build) (*yaml.Build, error) {
+func (c *client) CloneStep(p *yaml.Build) (*yaml.Build, error) {
 	steps := yaml.StepSlice{}
 
 	// create new clone step

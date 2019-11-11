@@ -16,7 +16,7 @@ import (
 )
 
 // Parse converts an object to a yaml configuration.
-func (c *Client) Parse(v interface{}) (*types.Build, error) {
+func (c *client) Parse(v interface{}) (*types.Build, error) {
 	switch v := v.(type) {
 	case []byte:
 		return ParseBytes(v)

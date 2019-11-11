@@ -11,7 +11,7 @@ import (
 )
 
 // Validate verifies the yaml configuration is accurate.
-func (c *Client) Validate(p *yaml.Build) error {
+func (c *client) Validate(p *yaml.Build) error {
 	if len(p.Version) == 0 {
 		return fmt.Errorf("no version provided")
 	}

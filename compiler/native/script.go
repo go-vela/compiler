@@ -14,7 +14,7 @@ import (
 )
 
 // ScriptStages injects the script for each step in every stage in a yaml configuration.
-func (c *Client) ScriptStages(s yaml.StageSlice) (yaml.StageSlice, error) {
+func (c *client) ScriptStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 	// iterate through all stages
 	for _, stage := range s {
 		// inject the scripts into the steps for the stage
@@ -30,7 +30,7 @@ func (c *Client) ScriptStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 }
 
 // ScriptSteps injects the script for each step in a yaml configuration.
-func (c *Client) ScriptSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
+func (c *client) ScriptSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
 		// skip if no commands block for the step
