@@ -41,7 +41,7 @@ func TestNative_ExpandStages(t *testing.T) {
 	c := cli.NewContext(nil, set, nil)
 
 	tmpls := map[string]*yaml.Template{
-		"gradle": &yaml.Template{
+		"gradle": {
 			Name:   "gradle",
 			Source: "github.example.com/foo/bar/template.yml",
 			Type:   "github",
@@ -144,7 +144,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 	c := cli.NewContext(nil, set, nil)
 
 	tmpls := map[string]*yaml.Template{
-		"gradle": &yaml.Template{
+		"gradle": {
 			Name:   "gradle",
 			Source: "github.example.com/foo/bar/template.yml",
 			Type:   "github",
@@ -219,7 +219,7 @@ func TestNative_mapFromTemplates(t *testing.T) {
 	str := "foo"
 
 	tmpl := []*yaml.Template{
-		&yaml.Template{
+		{
 			Name:   str,
 			Source: str,
 			Type:   str,
@@ -227,7 +227,7 @@ func TestNative_mapFromTemplates(t *testing.T) {
 	}
 
 	want := map[string]*yaml.Template{
-		str: &yaml.Template{
+		str: {
 			Name:   str,
 			Source: str,
 			Type:   str,
