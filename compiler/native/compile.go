@@ -11,7 +11,7 @@ import (
 )
 
 // Compile produces an executable pipeline from a yaml configuration.
-func (c *Client) Compile(v interface{}) (*pipeline.Build, error) {
+func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	// parse the object into a yaml configuration
 	p, err := c.Parse(v)
 	if err != nil {

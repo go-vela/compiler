@@ -16,7 +16,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-type Client struct {
+type client struct {
 	Github        registry.Service
 	PrivateGithub registry.Service
 
@@ -27,9 +27,9 @@ type Client struct {
 }
 
 // New returns a Pipeline implementation that integrates with the supported registries.
-func New(ctx *cli.Context) (*Client, error) {
+func New(ctx *cli.Context) (*client, error) {
 	logrus.Debug("Creating registry clients from CLI configuration")
-	c := Client{}
+	c := client{}
 
 	// setup github template service
 	github, err := setupGithub()
@@ -65,7 +65,7 @@ func setupPrivateGithub(addr, token string) (registry.Service, error) {
 }
 
 // WithBuild sets the library build type in the Engine.
-func (c *Client) WithBuild(b *library.Build) compiler.Engine {
+func (c *client) WithBuild(b *library.Build) compiler.Engine {
 	if b != nil {
 		c.build = b
 	}
@@ -74,7 +74,7 @@ func (c *Client) WithBuild(b *library.Build) compiler.Engine {
 }
 
 // WithFiles sets the changeset files in the Engine.
-func (c *Client) WithFiles(f []string) compiler.Engine {
+func (c *client) WithFiles(f []string) compiler.Engine {
 	if f != nil {
 		c.files = f
 	}
@@ -83,7 +83,7 @@ func (c *Client) WithFiles(f []string) compiler.Engine {
 }
 
 // WithRepo sets the library repo type in the Engine.
-func (c *Client) WithRepo(r *library.Repo) compiler.Engine {
+func (c *client) WithRepo(r *library.Repo) compiler.Engine {
 	if r != nil {
 		c.repo = r
 	}
@@ -92,7 +92,7 @@ func (c *Client) WithRepo(r *library.Repo) compiler.Engine {
 }
 
 // WithUser sets the library user type in the Engine.
-func (c *Client) WithUser(u *library.User) compiler.Engine {
+func (c *client) WithUser(u *library.User) compiler.Engine {
 	if u != nil {
 		c.user = u
 	}

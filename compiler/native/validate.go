@@ -10,21 +10,48 @@ import (
 	"github.com/go-vela/types/yaml"
 )
 
-// Validate verifies the yaml configuration is accurate.
-func (c *Client) Validate(p *yaml.Build) error {
+// Validate verifies the the yaml configuration is valid.
+func (c *client) Validate(p *yaml.Build) error {
+	// check a version is provided
 	if len(p.Version) == 0 {
 		return fmt.Errorf("no version provided")
 	}
 
+	// check that stages or steps are provided
 	if len(p.Stages) == 0 && len(p.Steps) == 0 {
 		return fmt.Errorf("no stages or steps provided")
 	}
 
+	// check that stages and steps aren't provided
 	if len(p.Stages) > 0 && len(p.Steps) > 0 {
 		return fmt.Errorf("stages and steps provided")
 	}
 
-	for _, service := range p.Services {
+	// validate the services block provided
+	err := validateServices(p.Services)
+	if err != nil {
+		return err
+	}
+
+	// validate the stages block provided
+	err = validateStages(p.Stages)
+	if err != nil {
+		return err
+	}
+
+	// validate the steps block provided
+	err = validateSteps(p.Steps)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// validateServices is a helper function that verifies the
+// services block in the yaml configuration is valid.
+func validateServices(s yaml.ServiceSlice) error {
+	for _, service := range s {
 		if len(service.Name) == 0 {
 			return fmt.Errorf("no name provided for service")
 		}
@@ -34,7 +61,13 @@ func (c *Client) Validate(p *yaml.Build) error {
 		}
 	}
 
-	for _, stage := range p.Stages {
+	return nil
+}
+
+// validateStages is a helper function that verifies the
+// stages block in the yaml configuration is valid.
+func validateStages(s yaml.StageSlice) error {
+	for _, stage := range s {
 		if len(stage.Name) == 0 {
 			return fmt.Errorf("no name provided for stage")
 		}
@@ -55,7 +88,13 @@ func (c *Client) Validate(p *yaml.Build) error {
 		}
 	}
 
-	for _, step := range p.Steps {
+	return nil
+}
+
+// validateSteps is a helper function that verifies the
+// steps block in the yaml configuration is valid.
+func validateSteps(s yaml.StepSlice) error {
+	for _, step := range s {
 		if len(step.Name) == 0 {
 			return fmt.Errorf("no name provided for step")
 		}

@@ -15,7 +15,7 @@ import (
 
 // EnvironmentStages injects environment variables
 // for each step in every stage in a yaml configuration.
-func (c *Client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
+func (c *client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 	// iterate through all stages
 	for _, stage := range s {
 		// inject the environment variables into the steps for the stage
@@ -32,7 +32,7 @@ func (c *Client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 
 // EnvironmentSteps injects environment variables
 // for each step in a yaml configuration.
-func (c *Client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
+func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
 		// gather set of default environment variables
