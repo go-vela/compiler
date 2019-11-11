@@ -28,21 +28,21 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
-	installEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
 	testEnv := environment(nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
-	testEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
 	buildEnv := environment(nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
-	buildEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
+	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
 	dockerEnv := environment(nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
@@ -75,7 +75,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_install_install",
-						Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: installEnv,
 						Image:       "openjdk:latest",
@@ -91,7 +91,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_test_test",
-						Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: testEnv,
 						Image:       "openjdk:latest",
@@ -107,7 +107,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_build_build",
-						Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: buildEnv,
 						Image:       "openjdk:latest",
@@ -189,21 +189,21 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
-	installEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
 	testEnv := environment(nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
-	testEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
 	buildEnv := environment(nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
-	buildEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
+	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
 	dockerEnv := environment(nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
@@ -227,7 +227,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_install",
-				Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: installEnv,
 				Image:       "openjdk:latest",
@@ -237,7 +237,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_test",
-				Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: testEnv,
 				Image:       "openjdk:latest",
@@ -247,7 +247,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_build",
-				Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: buildEnv,
 				Image:       "openjdk:latest",
@@ -338,21 +338,21 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
-	installEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
 	testEnv := environment(nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
-	testEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
 	buildEnv := environment(nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
-	buildEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
+	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
 	dockerEnv := environment(nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
@@ -385,7 +385,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_install",
-						Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: installEnv,
 						Image:       "openjdk:latest",
@@ -395,7 +395,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					},
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_test",
-						Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: testEnv,
 						Image:       "openjdk:latest",
@@ -405,7 +405,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					},
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_build",
-						Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: buildEnv,
 						Image:       "openjdk:latest",
@@ -504,21 +504,21 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
-	installEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
 	testEnv := environment(nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
-	testEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
 	buildEnv := environment(nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
-	buildEnv["CARAVEL_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
+	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
 	dockerEnv := environment(nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
@@ -542,7 +542,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_install",
-				Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: installEnv,
 				Image:       "openjdk:latest",
@@ -552,7 +552,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_test",
-				Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: testEnv,
 				Image:       "openjdk:latest",
@@ -562,7 +562,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_build",
-				Commands:    []string{"echo $CARAVEL_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: buildEnv,
 				Image:       "openjdk:latest",
