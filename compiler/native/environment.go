@@ -6,11 +6,14 @@ package native
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
+
+	"github.com/sirupsen/logrus"
 )
 
 // EnvironmentStages injects environment variables
@@ -71,6 +74,14 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 func environment(b *library.Build, r *library.Repo, u *library.User) map[string]string {
 	workspace := fmt.Sprintf("/home/%s_%s_%d", r.GetOrg(), r.GetName(), b.GetNumber())
 
+	// TODO: (hack) consider making a metadata struct
+	// that gets populated in server and then passed
+	// from the server to the compiler.
+	uri, err := url.Parse(r.GetLink())
+	if err != nil {
+		logrus.Errorf("unable to parse link for repo %s", r.GetFullName())
+	}
+
 	env := map[string]string{
 		// build specific environment variables
 		"BUILD_BRANCH": b.GetBranch(),
@@ -97,14 +108,14 @@ func environment(b *library.Build, r *library.Repo, u *library.User) map[string]
 		"VELA_ADDR":           "TODO",
 		"VELA_CHANNEL":        "vela",
 		"VELA_DATABASE":       "postgres",
-		"VELA_DISTRIBUTION":   "linux",
+		"VELA_DISTRIBUTION":   "TODO",
 		"VELA_HOST":           "TODO",
-		"VELA_NETRC_MACHINE":  "github.com",
+		"VELA_NETRC_MACHINE":  uri.Host,
 		"VELA_NETRC_PASSWORD": u.GetToken(),
 		"VELA_NETRC_USERNAME": "x-oauth-basic",
 		"VELA_QUEUE":          "redis",
-		"VELA_RUNTIME":        "docker",
-		"VELA_SOURCE":         "https://github.com",
+		"VELA_RUNTIME":        "TODO",
+		"VELA_SOURCE":         fmt.Sprintf("%s://%s", uri.Scheme, uri.Host),
 		"VELA_VERSION":        "TODO",
 		"VELA_WORKSPACE":      workspace,
 		"CI":                  "vela",
