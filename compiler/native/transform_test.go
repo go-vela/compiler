@@ -25,13 +25,13 @@ func TestNative_TransformStages(t *testing.T) {
 		Services: yaml.ServiceSlice{
 			&yaml.Service{
 				Ports: []string{"5432:5432"},
-				Name:  "postgres",
+				Name:  "postgres backend",
 				Image: "postgres:latest",
 			},
 		},
 		Stages: yaml.StageSlice{
 			&yaml.Stage{
-				Name: "install",
+				Name: "install deps",
 				Steps: yaml.StepSlice{
 					&yaml.Step{
 						Commands: []string{"./gradlew downloadDependencies"},
@@ -67,19 +67,19 @@ func TestNative_TransformStages(t *testing.T) {
 		Version: "v1",
 		Services: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:     "service___0_postgres",
+				ID:     "service___0_postgres-backend",
 				Ports:  []string{"5432:5432"},
-				Name:   "postgres",
+				Name:   "postgres backend",
 				Image:  "postgres:latest",
 				Number: 1,
 			},
 		},
 		Stages: pipeline.StageSlice{
 			&pipeline.Stage{
-				Name: "install",
+				Name: "install deps",
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
-						ID:       "__0_install_install",
+						ID:       "__0_install-deps_install",
 						Commands: []string{"./gradlew downloadDependencies"},
 						Image:    "openjdk:latest",
 						Name:     "install",
@@ -117,7 +117,7 @@ func TestNative_TransformSteps(t *testing.T) {
 		Services: yaml.ServiceSlice{
 			&yaml.Service{
 				Ports: []string{"5432:5432"},
-				Name:  "postgres",
+				Name:  "postgres backend",
 				Image: "postgres:latest",
 			},
 		},
@@ -125,7 +125,7 @@ func TestNative_TransformSteps(t *testing.T) {
 			&yaml.Step{
 				Commands: []string{"./gradlew downloadDependencies"},
 				Image:    "openjdk:latest",
-				Name:     "install",
+				Name:     "install deps",
 				Pull:     true,
 			},
 			&yaml.Step{
@@ -148,19 +148,19 @@ func TestNative_TransformSteps(t *testing.T) {
 		Version: "v1",
 		Services: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:     "service___0_postgres",
+				ID:     "service___0_postgres-backend",
 				Ports:  []string{"5432:5432"},
-				Name:   "postgres",
+				Name:   "postgres backend",
 				Image:  "postgres:latest",
 				Number: 1,
 			},
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:       "step___0_install",
+				ID:       "step___0_install-deps",
 				Commands: []string{"./gradlew downloadDependencies"},
 				Image:    "openjdk:latest",
-				Name:     "install",
+				Name:     "install deps",
 				Number:   1,
 				Pull:     true,
 			},

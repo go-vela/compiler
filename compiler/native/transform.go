@@ -45,16 +45,30 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 	// set the unique ID for the executable pipeline
 	pipeline.ID = fmt.Sprintf(pipelineID, org, name, number)
 
-	// set the unique ID for every step in every stage of the executable pipeline
-	for i, stage := range p.Stages {
-		for j, step := range stage.Steps {
-			pipeline.Stages[i].Steps[j].ID = fmt.Sprintf(stageID, org, name, number, stage.Name, step.Name)
+	// set the unique ID for each step in each stage of the executable pipeline
+	for _, stage := range pipeline.Stages {
+		for _, step := range stage.Steps {
+			// create pattern for steps
+			pattern := fmt.Sprintf(stageID, org, name, number, stage.Name, step.Name)
+
+			// set id to the pattern
+			step.ID = pattern
+
+			// sanitize the step to ensure ID field is valid
+			step.Sanitize()
 		}
 	}
 
-	// set the unique ID for each service in the pipeline
+	// set the unique ID for each service in the executable pipeline
 	for _, service := range pipeline.Services {
-		service.ID = fmt.Sprintf(serviceID, org, name, number, service.Name)
+		// create pattern for services
+		pattern := fmt.Sprintf(serviceID, org, name, number, service.Name)
+
+		// set id to the pattern
+		service.ID = pattern
+
+		// sanitize the service to ensure ID field is valid
+		service.Sanitize()
 	}
 
 	return pipeline.Purge(r), nil
@@ -79,14 +93,28 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 	// set the unique ID for the executable pipeline
 	pipeline.ID = fmt.Sprintf(pipelineID, org, name, number)
 
-	// set the unique ID for every step of the executable pipeline
-	for i, step := range p.Steps {
-		pipeline.Steps[i].ID = fmt.Sprintf(stepID, org, name, number, step.Name)
+	// set the unique ID for each step in the executable pipeline
+	for _, step := range pipeline.Steps {
+		// create pattern for steps
+		pattern := fmt.Sprintf(stepID, org, name, number, step.Name)
+
+		// set id to the pattern
+		step.ID = pattern
+
+		// sanitize the step to ensure ID field is valid
+		step.Sanitize()
 	}
 
-	// set the unique ID for each service in the pipeline
+	// set the unique ID for each service in the executable pipeline
 	for _, service := range pipeline.Services {
-		service.ID = fmt.Sprintf(serviceID, org, name, number, service.Name)
+		// create pattern for services
+		pattern := fmt.Sprintf(serviceID, org, name, number, service.Name)
+
+		// set id to the pattern
+		service.ID = pattern
+
+		// sanitize the service to ensure ID field is valid
+		service.Sanitize()
 	}
 
 	return pipeline.Purge(r), nil
