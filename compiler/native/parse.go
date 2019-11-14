@@ -12,7 +12,7 @@ import (
 
 	types "github.com/go-vela/types/yaml"
 
-	yaml "gopkg.in/yaml.v2"
+	"github.com/buildkite/yaml"
 )
 
 // Parse converts an object to a yaml configuration.
