@@ -30,9 +30,8 @@ func TestNative_TransformStages(t *testing.T) {
 			},
 		},
 		Worker: yaml.Worker{
-			Name:    "worker_1",
-			Flavor:  "16cpu8gb",
-			Runtime: "dockers",
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
 		},
 		Stages: yaml.StageSlice{
 			&yaml.Stage{
@@ -80,9 +79,8 @@ func TestNative_TransformStages(t *testing.T) {
 			},
 		},
 		Worker: pipeline.Worker{
-			Name:    "worker_1",
-			Flavor:  "16cpu8gb",
-			Runtime: "dockers",
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
 		},
 		Stages: pipeline.StageSlice{
 			&pipeline.Stage{
@@ -132,9 +130,8 @@ func TestNative_TransformSteps(t *testing.T) {
 			},
 		},
 		Worker: yaml.Worker{
-			Name:    "worker_1",
-			Flavor:  "16cpu8gb",
-			Runtime: "dockers",
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{
@@ -171,9 +168,8 @@ func TestNative_TransformSteps(t *testing.T) {
 			},
 		},
 		Worker: pipeline.Worker{
-			Name:    "worker_1",
-			Flavor:  "16cpu8gb",
-			Runtime: "dockers",
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
