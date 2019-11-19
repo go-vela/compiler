@@ -40,6 +40,7 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 		Stages:   *p.Stages.ToPipeline(),
 		Secrets:  *p.Secrets.ToPipeline(),
 		Services: *p.Services.ToPipeline(),
+		Worker:   *p.Worker.ToPipeline(),
 	}
 
 	// set the unique ID for the executable pipeline
@@ -88,6 +89,7 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 		Steps:    *p.Steps.ToPipeline(),
 		Secrets:  *p.Secrets.ToPipeline(),
 		Services: *p.Services.ToPipeline(),
+		Worker:   *p.Worker.ToPipeline(),
 	}
 
 	// set the unique ID for the executable pipeline

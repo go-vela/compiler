@@ -29,6 +29,10 @@ func TestNative_TransformStages(t *testing.T) {
 				Image: "postgres:latest",
 			},
 		},
+		Worker: yaml.Worker{
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
+		},
 		Stages: yaml.StageSlice{
 			&yaml.Stage{
 				Name: "install deps",
@@ -73,6 +77,10 @@ func TestNative_TransformStages(t *testing.T) {
 				Image:  "postgres:latest",
 				Number: 1,
 			},
+		},
+		Worker: pipeline.Worker{
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
 		},
 		Stages: pipeline.StageSlice{
 			&pipeline.Stage{
@@ -121,6 +129,10 @@ func TestNative_TransformSteps(t *testing.T) {
 				Image: "postgres:latest",
 			},
 		},
+		Worker: yaml.Worker{
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
+		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{
 				Commands: []string{"./gradlew downloadDependencies"},
@@ -154,6 +166,10 @@ func TestNative_TransformSteps(t *testing.T) {
 				Image:  "postgres:latest",
 				Number: 1,
 			},
+		},
+		Worker: pipeline.Worker{
+			Flavor:   "16cpu8gb",
+			Platform: "gcp",
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
