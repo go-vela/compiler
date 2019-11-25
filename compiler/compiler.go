@@ -31,10 +31,10 @@ type Engine interface {
 	// Clone Compiler Interface Functions
 
 	// CloneStage defines a function that injects the
-	// stage clone process into a yaml configuration.
+	// clone stage process into a yaml configuration.
 	CloneStage(*yaml.Build) (*yaml.Build, error)
 	// CloneStep defines a function that injects the
-	// step clone process into a yaml configuration.
+	// clone step process into a yaml configuration.
 	CloneStep(*yaml.Build) (*yaml.Build, error)
 
 	// Environment Compiler Interface Functions

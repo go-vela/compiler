@@ -17,7 +17,7 @@ const (
 	cloneStepName = "clone"
 )
 
-// CloneStage injects the stage clone process into a yaml configuration.
+// CloneStage injects the clone stage process into a yaml configuration.
 func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 	stages := yaml.StageSlice{}
 
@@ -49,7 +49,7 @@ func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 	return p, nil
 }
 
-// CloneStep injects the step clone process into a yaml configuration.
+// CloneStep injects the clone step process into a yaml configuration.
 func (c *client) CloneStep(p *yaml.Build) (*yaml.Build, error) {
 	steps := yaml.StepSlice{}
 
