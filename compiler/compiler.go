@@ -55,6 +55,15 @@ type Engine interface {
 	// for each templated step in a yaml configuration.
 	ExpandSteps(yaml.StepSlice, map[string]*yaml.Template) (yaml.StepSlice, error)
 
+	// Init Compiler Interface Functions
+
+	// InitStage defines a function that injects the
+	// init stage process into a yaml configuration.
+	InitStage(*yaml.Build) (*yaml.Build, error)
+	// CloneStep defines a function that injects the
+	// init step process into a yaml configuration.
+	InitStep(*yaml.Build) (*yaml.Build, error)
+
 	// Script Compiler Interface Functions
 
 	// ScriptStages defines a function that injects the script
