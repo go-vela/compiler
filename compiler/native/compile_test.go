@@ -57,6 +57,19 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 		},
 		Stages: pipeline.StageSlice{
 			&pipeline.Stage{
+				Name: "init",
+				Steps: pipeline.ContainerSlice{
+					&pipeline.Container{
+						ID:          "__0_init_init",
+						Environment: environment(nil, nil, nil),
+						Image:       "#init",
+						Name:        "init",
+						Number:      1,
+						Pull:        true,
+					},
+				},
+			},
+			&pipeline.Stage{
 				Name: "clone",
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
@@ -64,7 +77,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Environment: environment(nil, nil, nil),
 						Image:       "target/vela-git:v0.1.0",
 						Name:        "clone",
-						Number:      1,
+						Number:      2,
 						Pull:        true,
 					},
 				},
@@ -80,7 +93,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Environment: installEnv,
 						Image:       "openjdk:latest",
 						Name:        "install",
-						Number:      2,
+						Number:      3,
 						Pull:        true,
 					},
 				},
@@ -96,7 +109,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Environment: testEnv,
 						Image:       "openjdk:latest",
 						Name:        "test",
-						Number:      3,
+						Number:      4,
 						Pull:        true,
 					},
 				},
@@ -112,7 +125,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Environment: buildEnv,
 						Image:       "openjdk:latest",
 						Name:        "build",
-						Number:      4,
+						Number:      5,
 						Pull:        true,
 					},
 				},
@@ -126,7 +139,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Image:       "plugins/docker:18.09",
 						Environment: dockerEnv,
 						Name:        "publish",
-						Number:      5,
+						Number:      6,
 						Pull:        true,
 						Secrets: pipeline.StepSecretSlice{
 							&pipeline.StepSecret{
@@ -218,11 +231,19 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
+				ID:          "step___0_init",
+				Environment: environment(nil, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        true,
+			},
+			&pipeline.Container{
 				ID:          "step___0_clone",
 				Environment: environment(nil, nil, nil),
 				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
-				Number:      1,
+				Number:      2,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -232,7 +253,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Environment: installEnv,
 				Image:       "openjdk:latest",
 				Name:        "install",
-				Number:      2,
+				Number:      3,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -242,7 +263,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Environment: testEnv,
 				Image:       "openjdk:latest",
 				Name:        "test",
-				Number:      3,
+				Number:      4,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -252,7 +273,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Environment: buildEnv,
 				Image:       "openjdk:latest",
 				Name:        "build",
-				Number:      4,
+				Number:      5,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -260,7 +281,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Image:       "plugins/docker:18.09",
 				Environment: dockerEnv,
 				Name:        "publish",
-				Number:      5,
+				Number:      6,
 				Pull:        true,
 				Secrets: pipeline.StepSecretSlice{
 					&pipeline.StepSecret{
@@ -367,6 +388,19 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 		},
 		Stages: pipeline.StageSlice{
 			&pipeline.Stage{
+				Name: "init",
+				Steps: pipeline.ContainerSlice{
+					&pipeline.Container{
+						ID:          "__0_init_init",
+						Environment: environment(nil, nil, nil),
+						Image:       "#init",
+						Name:        "init",
+						Number:      1,
+						Pull:        true,
+					},
+				},
+			},
+			&pipeline.Stage{
 				Name: "clone",
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
@@ -374,7 +408,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Environment: environment(nil, nil, nil),
 						Image:       "target/vela-git:v0.1.0",
 						Name:        "clone",
-						Number:      1,
+						Number:      2,
 						Pull:        true,
 					},
 				},
@@ -390,7 +424,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Environment: installEnv,
 						Image:       "openjdk:latest",
 						Name:        "sample_install",
-						Number:      2,
+						Number:      3,
 						Pull:        true,
 					},
 					&pipeline.Container{
@@ -400,7 +434,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Environment: testEnv,
 						Image:       "openjdk:latest",
 						Name:        "sample_test",
-						Number:      3,
+						Number:      4,
 						Pull:        true,
 					},
 					&pipeline.Container{
@@ -410,7 +444,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Environment: buildEnv,
 						Image:       "openjdk:latest",
 						Name:        "sample_build",
-						Number:      4,
+						Number:      5,
 						Pull:        true,
 					},
 				},
@@ -424,7 +458,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Image:       "plugins/docker:18.09",
 						Environment: dockerEnv,
 						Name:        "publish",
-						Number:      5,
+						Number:      6,
 						Pull:        true,
 						Secrets: pipeline.StepSecretSlice{
 							&pipeline.StepSecret{
@@ -533,11 +567,19 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
+				ID:          "step___0_init",
+				Environment: environment(nil, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        true,
+			},
+			&pipeline.Container{
 				ID:          "step___0_clone",
 				Environment: environment(nil, nil, nil),
 				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
-				Number:      1,
+				Number:      2,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -547,7 +589,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Environment: installEnv,
 				Image:       "openjdk:latest",
 				Name:        "sample_install",
-				Number:      2,
+				Number:      3,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -557,7 +599,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Environment: testEnv,
 				Image:       "openjdk:latest",
 				Name:        "sample_test",
-				Number:      3,
+				Number:      4,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -567,7 +609,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Environment: buildEnv,
 				Image:       "openjdk:latest",
 				Name:        "sample_build",
-				Number:      4,
+				Number:      5,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -575,7 +617,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Image:       "plugins/docker:18.09",
 				Environment: dockerEnv,
 				Name:        "docker",
-				Number:      5,
+				Number:      6,
 				Pull:        true,
 				Secrets: pipeline.StepSecretSlice{
 					&pipeline.StepSecret{
@@ -665,11 +707,19 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
+				ID:          "step___0_init",
+				Environment: environment(nil, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        true,
+			},
+			&pipeline.Container{
 				ID:          "step___0_clone",
 				Environment: environment(nil, nil, nil),
 				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
-				Number:      1,
+				Number:      2,
 				Pull:        true,
 			},
 			&pipeline.Container{
@@ -677,7 +727,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 				Image:       "plugins/docker:18.09",
 				Environment: dockerEnv,
 				Name:        "docker",
-				Number:      2,
+				Number:      3,
 				Pull:        true,
 				Secrets: pipeline.StepSecretSlice{
 					&pipeline.StepSecret{

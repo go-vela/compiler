@@ -17,7 +17,7 @@ const (
 	cloneStepName = "clone"
 )
 
-// CloneStage injects the stage clone process into a yaml configuration.
+// CloneStage injects the clone stage process into a yaml configuration.
 func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 	stages := yaml.StageSlice{}
 
@@ -39,9 +39,7 @@ func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 	stages = append(stages, clone)
 
 	// add existing stages after clone stage
-	for _, stage := range p.Stages {
-		stages = append(stages, stage)
-	}
+	stages = append(stages, p.Stages...)
 
 	// overwrite existing stages
 	p.Stages = stages
@@ -49,7 +47,7 @@ func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 	return p, nil
 }
 
-// CloneStep injects the step clone process into a yaml configuration.
+// CloneStep injects the clone step process into a yaml configuration.
 func (c *client) CloneStep(p *yaml.Build) (*yaml.Build, error) {
 	steps := yaml.StepSlice{}
 
@@ -66,9 +64,7 @@ func (c *client) CloneStep(p *yaml.Build) (*yaml.Build, error) {
 	steps = append(steps, clone)
 
 	// add existing steps after clone step
-	for _, step := range p.Steps {
-		steps = append(steps, step)
-	}
+	steps = append(steps, p.Steps...)
 
 	// overwrite existing steps
 	p.Steps = steps

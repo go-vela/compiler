@@ -44,6 +44,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 			return nil, err
 		}
 
+		// inject the init stage
+		p, err = c.InitStage(p)
+		if err != nil {
+			return nil, err
+		}
+
 		// inject the templates into the stages
 		p.Stages, err = c.ExpandStages(p.Stages, tmpls)
 		if err != nil {
@@ -68,6 +74,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 
 	// inject the clone step
 	p, err = c.CloneStep(p)
+	if err != nil {
+		return nil, err
+	}
+
+	// inject the init step
+	p, err = c.InitStep(p)
 	if err != nil {
 		return nil, err
 	}
