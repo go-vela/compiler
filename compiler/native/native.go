@@ -10,6 +10,7 @@ import (
 	"github.com/go-vela/compiler/registry"
 	"github.com/go-vela/compiler/registry/github"
 
+	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
 
 	"github.com/sirupsen/logrus"
@@ -22,7 +23,7 @@ type client struct {
 
 	build    *library.Build
 	files    []string
-	metadata *compiler.Metadata
+	metadata *types.Metadata
 	repo     *library.Repo
 	user     *library.User
 }
@@ -84,7 +85,7 @@ func (c *client) WithFiles(f []string) compiler.Engine {
 }
 
 // WithMetadata sets the compiler metadata type in the Engine.
-func (c *client) WithMetadata(m *compiler.Metadata) compiler.Engine {
+func (c *client) WithMetadata(m *types.Metadata) compiler.Engine {
 	if m != nil {
 		c.metadata = m
 	}

@@ -5,6 +5,7 @@
 package compiler
 
 import (
+	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
 	"github.com/go-vela/types/yaml"
@@ -92,7 +93,7 @@ type Engine interface {
 	WithFiles([]string) Engine
 	// WithMetadata defines a function that sets
 	// the compiler Metadata type in the Engine.
-	WithMetadata(*Metadata) Engine
+	WithMetadata(*types.Metadata) Engine
 	// WithRepo defines a function that sets
 	// the library repo type in the Engine.
 	WithRepo(*library.Repo) Engine
