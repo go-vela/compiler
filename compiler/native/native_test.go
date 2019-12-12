@@ -9,9 +9,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-vela/compiler/compiler"
 	"github.com/go-vela/compiler/registry/github"
 
+	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
 
 	"github.com/urfave/cli"
@@ -114,21 +114,21 @@ func TestNative_WithMetadata(t *testing.T) {
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
 
-	m := &compiler.Metadata{
-		Database: &compiler.Database{
+	m := &types.Metadata{
+		Database: &types.Database{
 			Driver: "foo",
 			Host:   "foo",
 		},
-		Queue: &compiler.Queue{
+		Queue: &types.Queue{
 			Channel: "foo",
 			Driver:  "foo",
 			Host:    "foo",
 		},
-		Source: &compiler.Source{
+		Source: &types.Source{
 			Driver: "foo",
 			Host:   "foo",
 		},
-		Vela: &compiler.Vela{
+		Vela: &types.Vela{
 			Address:    "foo",
 			WebAddress: "foo",
 		},

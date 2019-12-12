@@ -8,8 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-vela/compiler/compiler"
-
+	"github.com/go-vela/types"
 	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
@@ -70,7 +69,7 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 }
 
 // helper function that creates the standard set of environment variables for a pipeline.
-func environment(b *library.Build, m *compiler.Metadata, r *library.Repo, u *library.User) map[string]string {
+func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
 	workspace := fmt.Sprintf("/home/%s_%s_%d", r.GetOrg(), r.GetName(), b.GetNumber())
 
 	env := map[string]string{

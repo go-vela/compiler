@@ -10,8 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-vela/compiler/compiler"
-
+	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
 
@@ -138,21 +137,21 @@ func TestNative_environment(t *testing.T) {
 		Ref:      &str,
 		BaseRef:  &str,
 	}
-	m := &compiler.Metadata{
-		Database: &compiler.Database{
+	m := &types.Metadata{
+		Database: &types.Database{
 			Driver: str,
 			Host:   str,
 		},
-		Queue: &compiler.Queue{
+		Queue: &types.Queue{
 			Channel: str,
 			Driver:  str,
 			Host:    str,
 		},
-		Source: &compiler.Source{
+		Source: &types.Source{
 			Driver: str,
 			Host:   str,
 		},
-		Vela: &compiler.Vela{
+		Vela: &types.Vela{
 			Address:    str,
 			WebAddress: str,
 		},
