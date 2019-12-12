@@ -90,6 +90,9 @@ type Engine interface {
 	// WithFiles defines a function that sets
 	// the changeset files in the Engine.
 	WithFiles([]string) Engine
+	// WithMetadata defines a function that sets
+	// the compiler Metadata type in the Engine.
+	WithMetadata(*Metadata) Engine
 	// WithRepo defines a function that sets
 	// the library repo type in the Engine.
 	WithRepo(*library.Repo) Engine

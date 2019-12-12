@@ -20,10 +20,11 @@ type client struct {
 	Github        registry.Service
 	PrivateGithub registry.Service
 
-	build *library.Build
-	files []string
-	repo  *library.Repo
-	user  *library.User
+	build    *library.Build
+	files    []string
+	metadata *compiler.Metadata
+	repo     *library.Repo
+	user     *library.User
 }
 
 // New returns a Pipeline implementation that integrates with the supported registries.
@@ -77,6 +78,15 @@ func (c *client) WithBuild(b *library.Build) compiler.Engine {
 func (c *client) WithFiles(f []string) compiler.Engine {
 	if f != nil {
 		c.files = f
+	}
+
+	return c
+}
+
+// WithMetadata sets the compiler metadata type in the Engine.
+func (c *client) WithMetadata(m *compiler.Metadata) compiler.Engine {
+	if m != nil {
+		c.metadata = m
 	}
 
 	return c
