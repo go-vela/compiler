@@ -19,7 +19,7 @@ func TestNative_ScriptStages(t *testing.T) {
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
 
-	baseEnv := environment(nil, nil, nil)
+	baseEnv := environment(nil, nil, nil, nil)
 
 	s := yaml.StageSlice{
 		&yaml.Stage{
@@ -108,7 +108,7 @@ func TestNative_ScriptSteps(t *testing.T) {
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
 
-	baseEnv := environment(nil, nil, nil)
+	baseEnv := environment(nil, nil, nil, nil)
 
 	p := yaml.StepSlice{
 		&yaml.Step{

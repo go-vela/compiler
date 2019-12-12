@@ -23,28 +23,28 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
 
-	installEnv := environment(nil, nil, nil)
+	installEnv := environment(nil, nil, nil, nil)
 	installEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
 	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
-	testEnv := environment(nil, nil, nil)
+	testEnv := environment(nil, nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
 	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
-	buildEnv := environment(nil, nil, nil)
+	buildEnv := environment(nil, nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
 	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
-	dockerEnv := environment(nil, nil, nil)
+	dockerEnv := environment(nil, nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
 	dockerEnv["PARAMETER_REPO"] = "github/octocat"
 	dockerEnv["PARAMETER_TAGS"] = "latest,dev"
@@ -61,7 +61,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_init_init",
-						Environment: environment(nil, nil, nil),
+						Environment: environment(nil, nil, nil, nil),
 						Image:       "#init",
 						Name:        "init",
 						Number:      1,
@@ -74,7 +74,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_clone_clone",
-						Environment: environment(nil, nil, nil),
+						Environment: environment(nil, nil, nil, nil),
 						Image:       "target/vela-git:v0.1.0",
 						Name:        "clone",
 						Number:      2,
@@ -197,28 +197,28 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
 
-	installEnv := environment(nil, nil, nil)
+	installEnv := environment(nil, nil, nil, nil)
 	installEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
 	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
-	testEnv := environment(nil, nil, nil)
+	testEnv := environment(nil, nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
 	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
-	buildEnv := environment(nil, nil, nil)
+	buildEnv := environment(nil, nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
 	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
-	dockerEnv := environment(nil, nil, nil)
+	dockerEnv := environment(nil, nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
 	dockerEnv["PARAMETER_REPO"] = "github/octocat"
 	dockerEnv["PARAMETER_TAGS"] = "latest,dev"
@@ -232,7 +232,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:          "step___0_init",
-				Environment: environment(nil, nil, nil),
+				Environment: environment(nil, nil, nil, nil),
 				Image:       "#init",
 				Name:        "init",
 				Number:      1,
@@ -240,7 +240,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
-				Environment: environment(nil, nil, nil),
+				Environment: environment(nil, nil, nil, nil),
 				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
 				Number:      2,
@@ -354,28 +354,28 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 	set.String("github-token", "", "doc")
 	c := cli.NewContext(nil, set, nil)
 
-	installEnv := environment(nil, nil, nil)
+	installEnv := environment(nil, nil, nil, nil)
 	installEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
 	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
-	testEnv := environment(nil, nil, nil)
+	testEnv := environment(nil, nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
 	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
-	buildEnv := environment(nil, nil, nil)
+	buildEnv := environment(nil, nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
 	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
-	dockerEnv := environment(nil, nil, nil)
+	dockerEnv := environment(nil, nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
 	dockerEnv["PARAMETER_REPO"] = "github/octocat"
 	dockerEnv["PARAMETER_TAGS"] = "latest,dev"
@@ -392,7 +392,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_init_init",
-						Environment: environment(nil, nil, nil),
+						Environment: environment(nil, nil, nil, nil),
 						Image:       "#init",
 						Name:        "init",
 						Number:      1,
@@ -405,7 +405,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_clone_clone",
-						Environment: environment(nil, nil, nil),
+						Environment: environment(nil, nil, nil, nil),
 						Image:       "target/vela-git:v0.1.0",
 						Name:        "clone",
 						Number:      2,
@@ -533,28 +533,28 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 	set.String("github-token", "", "doc")
 	c := cli.NewContext(nil, set, nil)
 
-	installEnv := environment(nil, nil, nil)
+	installEnv := environment(nil, nil, nil, nil)
 	installEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
 	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
 
-	testEnv := environment(nil, nil, nil)
+	testEnv := environment(nil, nil, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	testEnv["GRADLE_USER_HOME"] = ".gradle"
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
 	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
-	buildEnv := environment(nil, nil, nil)
+	buildEnv := environment(nil, nil, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	buildEnv["GRADLE_USER_HOME"] = ".gradle"
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
 	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
 
-	dockerEnv := environment(nil, nil, nil)
+	dockerEnv := environment(nil, nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
 	dockerEnv["PARAMETER_REPO"] = "github/octocat"
 	dockerEnv["PARAMETER_TAGS"] = "latest,dev"
@@ -568,7 +568,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:          "step___0_init",
-				Environment: environment(nil, nil, nil),
+				Environment: environment(nil, nil, nil, nil),
 				Image:       "#init",
 				Name:        "init",
 				Number:      1,
@@ -576,7 +576,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
-				Environment: environment(nil, nil, nil),
+				Environment: environment(nil, nil, nil, nil),
 				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
 				Number:      2,
@@ -690,11 +690,11 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 	set.String("github-token", "", "doc")
 	c := cli.NewContext(nil, set, nil)
 
-	gradleEnv := environment(nil, nil, nil)
+	gradleEnv := environment(nil, nil, nil, nil)
 	gradleEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	gradleEnv["GRADLE_USER_HOME"] = ".gradle"
 
-	dockerEnv := environment(nil, nil, nil)
+	dockerEnv := environment(nil, nil, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
 	dockerEnv["PARAMETER_REPO"] = "github/octocat"
 	dockerEnv["PARAMETER_TAGS"] = "latest,dev"
@@ -708,7 +708,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:          "step___0_init",
-				Environment: environment(nil, nil, nil),
+				Environment: environment(nil, nil, nil, nil),
 				Image:       "#init",
 				Name:        "init",
 				Number:      1,
@@ -716,7 +716,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
-				Environment: environment(nil, nil, nil),
+				Environment: environment(nil, nil, nil, nil),
 				Image:       "target/vela-git:v0.1.0",
 				Name:        "clone",
 				Number:      2,
