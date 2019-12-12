@@ -6,14 +6,13 @@ package native
 
 import (
 	"fmt"
-	"net/url"
 	"strings"
+
+	"github.com/go-vela/compiler/compiler"
 
 	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
-
-	"github.com/sirupsen/logrus"
 )
 
 // EnvironmentStages injects environment variables
@@ -39,7 +38,7 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
 		// gather set of default environment variables
-		env := environment(c.build, c.repo, c.user)
+		env := environment(c.build, c.metadata, c.repo, c.user)
 
 		// inject the declared environment
 		// variables to the build step
@@ -71,22 +70,13 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 }
 
 // helper function that creates the standard set of environment variables for a pipeline.
-func environment(b *library.Build, r *library.Repo, u *library.User) map[string]string {
+func environment(b *library.Build, m *compiler.Metadata, r *library.Repo, u *library.User) map[string]string {
 	workspace := fmt.Sprintf("/home/%s_%s_%d", r.GetOrg(), r.GetName(), b.GetNumber())
-
-	// TODO: (hack) consider making a metadata struct
-	// that gets populated in server and then passed
-	// from the server to the compiler.
-	uri, err := url.Parse(r.GetLink())
-	if err != nil {
-		logrus.Errorf("unable to parse link for repo %s", r.GetFullName())
-	}
 
 	env := map[string]string{
 		// build specific environment variables
-		"BUILD_BRANCH": b.GetBranch(),
-		// TODO: make this not hardcoded
-		"BUILD_CHANNEL":   "vela",
+		"BUILD_BRANCH":    b.GetBranch(),
+		"BUILD_CHANNEL":   "TODO",
 		"BUILD_COMMIT":    b.GetCommit(),
 		"BUILD_CREATED":   unmarshal(b.GetCreated()),
 		"BUILD_ENQUEUED":  unmarshal(b.GetEnqueued()),
@@ -103,19 +93,18 @@ func environment(b *library.Build, r *library.Repo, u *library.User) map[string]
 		"BUILD_WORKSPACE": workspace,
 
 		// vela specific environment variables
-		// TODO: make some/most of these not hardcoded
 		"VELA":                unmarshal(true),
 		"VELA_ADDR":           "TODO",
-		"VELA_CHANNEL":        "vela",
-		"VELA_DATABASE":       "postgres",
+		"VELA_CHANNEL":        "TODO",
+		"VELA_DATABASE":       "TODO",
 		"VELA_DISTRIBUTION":   "TODO",
 		"VELA_HOST":           "TODO",
-		"VELA_NETRC_MACHINE":  uri.Host,
+		"VELA_NETRC_MACHINE":  "TODO",
 		"VELA_NETRC_PASSWORD": u.GetToken(),
 		"VELA_NETRC_USERNAME": "x-oauth-basic",
-		"VELA_QUEUE":          "redis",
+		"VELA_QUEUE":          "TODO",
 		"VELA_RUNTIME":        "TODO",
-		"VELA_SOURCE":         fmt.Sprintf("%s://%s", uri.Scheme, uri.Host),
+		"VELA_SOURCE":         "TODO",
 		"VELA_VERSION":        "TODO",
 		"VELA_WORKSPACE":      workspace,
 		"CI":                  "vela",
@@ -135,6 +124,18 @@ func environment(b *library.Build, r *library.Repo, u *library.User) map[string]
 	// set tag environment variable if proper build event
 	if b.GetEvent() == constants.EventTag {
 		env["BUILD_TAG"] = strings.Split(b.GetRef(), "/")[2]
+	}
+
+	// populate environment variables from metadata
+	if m != nil {
+		env["BUILD_CHANNEL"] = m.Queue.Channel
+		env["VELA_ADDR"] = m.Vela.WebAddress
+		env["VELA_CHANNEL"] = m.Queue.Channel
+		env["VELA_DATABASE"] = m.Database.Driver
+		env["VELA_HOST"] = m.Vela.Address
+		env["VELA_NETRC_MACHINE"] = m.Source.Host
+		env["VELA_QUEUE"] = m.Queue.Driver
+		env["VELA_SOURCE"] = m.Source.Driver
 	}
 
 	return env

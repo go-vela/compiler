@@ -10,6 +10,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-vela/compiler/compiler"
+
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
 
@@ -41,7 +43,7 @@ func TestNative_EnvironmentStages(t *testing.T) {
 			Name: str,
 			Steps: yaml.StepSlice{
 				&yaml.Step{
-					Environment: environment(nil, nil, nil),
+					Environment: environment(nil, nil, nil, nil),
 					Image:       "alpine",
 					Name:        str,
 					Pull:        true,
@@ -82,7 +84,7 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 
 	want := yaml.StepSlice{
 		&yaml.Step{
-			Environment: environment(nil, nil, nil),
+			Environment: environment(nil, nil, nil, nil),
 			Image:       "alpine",
 			Name:        str,
 			Pull:        true,
@@ -111,6 +113,7 @@ func TestNative_environment(t *testing.T) {
 	num := 1
 	num64 := int64(num)
 	str := "foo"
+
 	b := &library.Build{
 		ID:       &num64,
 		RepoID:   &num64,
@@ -134,6 +137,25 @@ func TestNative_environment(t *testing.T) {
 		Branch:   &str,
 		Ref:      &str,
 		BaseRef:  &str,
+	}
+	m := &compiler.Metadata{
+		Database: &compiler.Database{
+			Driver: str,
+			Host:   str,
+		},
+		Queue: &compiler.Queue{
+			Channel: str,
+			Driver:  str,
+			Host:    str,
+		},
+		Source: &compiler.Source{
+			Driver: str,
+			Host:   str,
+		},
+		Vela: &compiler.Vela{
+			Address:    str,
+			WebAddress: str,
+		},
 	}
 	r := &library.Repo{
 		ID:          &num64,
@@ -166,7 +188,7 @@ func TestNative_environment(t *testing.T) {
 
 	want := map[string]string{
 		"BUILD_BRANCH":         b.GetBranch(),
-		"BUILD_CHANNEL":        "vela",
+		"BUILD_CHANNEL":        m.Queue.Channel,
 		"BUILD_COMMIT":         b.GetCommit(),
 		"BUILD_CREATED":        unmarshal(b.GetCreated()),
 		"BUILD_ENQUEUED":       unmarshal(b.GetEnqueued()),
@@ -182,17 +204,17 @@ func TestNative_environment(t *testing.T) {
 		"BUILD_TITLE":          b.GetTitle(),
 		"BUILD_WORKSPACE":      workspace,
 		"VELA":                 unmarshal(true),
-		"VELA_ADDR":            "TODO",
-		"VELA_CHANNEL":         "vela",
-		"VELA_DATABASE":        "postgres",
+		"VELA_ADDR":            m.Vela.WebAddress,
+		"VELA_CHANNEL":         m.Queue.Channel,
+		"VELA_DATABASE":        m.Database.Driver,
 		"VELA_DISTRIBUTION":    "TODO",
-		"VELA_HOST":            "TODO",
-		"VELA_NETRC_MACHINE":   "",
+		"VELA_HOST":            m.Vela.Address,
+		"VELA_NETRC_MACHINE":   m.Source.Host,
 		"VELA_NETRC_PASSWORD":  u.GetToken(),
 		"VELA_NETRC_USERNAME":  "x-oauth-basic",
-		"VELA_QUEUE":           "redis",
+		"VELA_QUEUE":           m.Queue.Driver,
 		"VELA_RUNTIME":         "TODO",
-		"VELA_SOURCE":          "://",
+		"VELA_SOURCE":          m.Source.Driver,
 		"VELA_VERSION":         "TODO",
 		"VELA_WORKSPACE":       workspace,
 		"CI":                   "vela",
@@ -208,7 +230,7 @@ func TestNative_environment(t *testing.T) {
 	}
 
 	// run test
-	got := environment(b, r, u)
+	got := environment(b, m, r, u)
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("environment is %v, want %v", got, want)

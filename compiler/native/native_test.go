@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-vela/compiler/compiler"
 	"github.com/go-vela/compiler/registry/github"
 
 	"github.com/go-vela/types/library"
@@ -105,6 +106,45 @@ func TestNative_WithFiles(t *testing.T) {
 
 	if !reflect.DeepEqual(got.WithFiles(f), want) {
 		t.Errorf("WithFiles is %v, want %v", got, want)
+	}
+}
+
+func TestNative_WithMetadata(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+
+	m := &compiler.Metadata{
+		Database: &compiler.Database{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Queue: &compiler.Queue{
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
+		},
+		Source: &compiler.Source{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Vela: &compiler.Vela{
+			Address:    "foo",
+			WebAddress: "foo",
+		},
+	}
+
+	want, _ := New(c)
+	want.metadata = m
+
+	// run test
+	got, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	if !reflect.DeepEqual(got.WithMetadata(m), want) {
+		t.Errorf("WithMetadata is %v, want %v", got, want)
 	}
 }
 
