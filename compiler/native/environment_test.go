@@ -186,6 +186,8 @@ func TestNative_environment(t *testing.T) {
 	workspace := fmt.Sprintf("/home/%s_%s_%d", r.GetOrg(), r.GetName(), b.GetNumber())
 
 	want := map[string]string{
+		"BUILD_AUTHOR":         b.GetAuthor(),
+		"BUILD_AUTHOR_EMAIL":   b.GetEmail(),
 		"BUILD_BRANCH":         b.GetBranch(),
 		"BUILD_CHANNEL":        m.Queue.Channel,
 		"BUILD_COMMIT":         b.GetCommit(),
@@ -194,6 +196,7 @@ func TestNative_environment(t *testing.T) {
 		"BUILD_EVENT":          b.GetEvent(),
 		"BUILD_FINISHED":       unmarshal(b.GetFinished()),
 		"BUILD_HOST":           "TODO",
+		"BUILD_LINK":           b.GetLink(),
 		"BUILD_MESSAGE":        b.GetMessage(),
 		"BUILD_NUMBER":         unmarshal(b.GetNumber()),
 		"BUILD_PARENT":         unmarshal(b.GetParent()),
