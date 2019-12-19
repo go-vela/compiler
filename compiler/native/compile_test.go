@@ -335,6 +335,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 	// setup context
 	gin.SetMode(gin.TestMode)
+
 	resp := httptest.NewRecorder()
 	_, engine := gin.CreateTestContext(resp)
 
@@ -344,6 +345,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 		c.Status(http.StatusOK)
 		c.File("testdata/template.json")
 	})
+
 	s := httptest.NewServer(engine)
 	defer s.Close()
 
@@ -514,6 +516,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 	// setup context
 	gin.SetMode(gin.TestMode)
+
 	resp := httptest.NewRecorder()
 	_, engine := gin.CreateTestContext(resp)
 
@@ -523,6 +526,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		c.Status(http.StatusOK)
 		c.File("testdata/template.json")
 	})
+
 	s := httptest.NewServer(engine)
 	defer s.Close()
 
@@ -671,6 +675,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 func TestNative_Compile_InvalidType(t *testing.T) {
 	// setup context
 	gin.SetMode(gin.TestMode)
+
 	resp := httptest.NewRecorder()
 	_, engine := gin.CreateTestContext(resp)
 
@@ -680,6 +685,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 		c.Status(http.StatusOK)
 		c.File("testdata/template.json")
 	})
+
 	s := httptest.NewServer(engine)
 	defer s.Close()
 

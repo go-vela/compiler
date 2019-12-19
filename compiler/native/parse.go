@@ -64,6 +64,7 @@ func ParsePath(p string) (*types.Build, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error opening yaml file %s: %v", p, err)
 	}
+
 	defer f.Close()
 
 	return ParseReader(f)

@@ -31,6 +31,7 @@ type client struct {
 // New returns a Pipeline implementation that integrates with the supported registries.
 func New(ctx *cli.Context) (*client, error) {
 	logrus.Debug("Creating registry clients from CLI configuration")
+
 	c := client{}
 
 	// setup github template service
@@ -38,6 +39,7 @@ func New(ctx *cli.Context) (*client, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	c.Github = github
 
 	if ctx.Bool("github-driver") {
@@ -46,6 +48,7 @@ func New(ctx *cli.Context) (*client, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		c.PrivateGithub = privGithub
 	}
 
