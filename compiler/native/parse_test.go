@@ -60,6 +60,7 @@ func TestNative_Parse_Metadata_File(t *testing.T) {
 	if err != nil {
 		t.Errorf("Opening file returned err: %v", err)
 	}
+
 	defer f.Close()
 
 	got, err := client.Parse(f)
@@ -660,6 +661,7 @@ func TestNative_ParseFile_Metadata(t *testing.T) {
 	if err != nil {
 		t.Errorf("Opening file returned err: %v", err)
 	}
+
 	defer f.Close()
 
 	got, err := ParseFile(f)
@@ -679,6 +681,7 @@ func TestNative_ParseFile_Invalid(t *testing.T) {
 	if err != nil {
 		t.Errorf("Opening file returned err: %v", err)
 	}
+
 	f.Close()
 
 	got, err := ParseFile(f)

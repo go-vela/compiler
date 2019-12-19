@@ -5,6 +5,7 @@
 package github
 
 import (
+	"context"
 	"net/url"
 
 	"github.com/google/go-github/v24/github"
@@ -61,7 +62,7 @@ func (c *client) newClientToken(token string) *github.Client {
 	)
 
 	// create the OAuth client
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	tc := oauth2.NewClient(context.Background(), ts)
 	// if c.SkipVerify {
 	// 	tc.Transport.(*oauth2.Transport).Base = &http.Transport{
 	// 		Proxy: http.ProxyFromEnvironment,

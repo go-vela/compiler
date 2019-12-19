@@ -21,6 +21,7 @@ import (
 func TestNative_ExpandStages(t *testing.T) {
 	// setup context
 	gin.SetMode(gin.TestMode)
+
 	resp := httptest.NewRecorder()
 	_, engine := gin.CreateTestContext(resp)
 
@@ -30,6 +31,7 @@ func TestNative_ExpandStages(t *testing.T) {
 		c.Status(http.StatusOK)
 		c.File("testdata/template.json")
 	})
+
 	s := httptest.NewServer(engine)
 	defer s.Close()
 
@@ -124,6 +126,7 @@ func TestNative_ExpandStages(t *testing.T) {
 func TestNative_ExpandSteps(t *testing.T) {
 	// setup context
 	gin.SetMode(gin.TestMode)
+
 	resp := httptest.NewRecorder()
 	_, engine := gin.CreateTestContext(resp)
 
@@ -133,6 +136,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 		c.Status(http.StatusOK)
 		c.File("testdata/template.json")
 	})
+
 	s := httptest.NewServer(engine)
 	defer s.Close()
 
