@@ -57,7 +57,7 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 		// parse source from template
 		src, err := c.Github.Parse(tmpl.Source)
 		if err != nil {
-			return yaml.StepSlice{}, fmt.Errorf("Invalid template source provided for %s: %v", step.Template.Name, err)
+			return yaml.StepSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
 		}
 
 		// pull from public github when the host isn't provided or is set to github.com
