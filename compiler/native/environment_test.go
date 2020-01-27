@@ -183,7 +183,7 @@ func TestNative_environment(t *testing.T) {
 		Admin:  &booL,
 	}
 
-	workspace := fmt.Sprintf("/home/%s_%s_%d", r.GetOrg(), r.GetName(), b.GetNumber())
+	workspace := fmt.Sprintf("/home/%s_%s", r.GetOrg(), r.GetName())
 
 	want := map[string]string{
 		"BUILD_AUTHOR":         b.GetAuthor(),

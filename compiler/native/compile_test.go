@@ -61,6 +61,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_init_init",
+						Directory:   "/home//",
 						Environment: environment(nil, nil, nil, nil),
 						Image:       "#init",
 						Name:        "init",
@@ -74,6 +75,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_clone_clone",
+						Directory:   "/home//",
 						Environment: environment(nil, nil, nil, nil),
 						Image:       "target/vela-git:v0.2.0",
 						Name:        "clone",
@@ -89,6 +91,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_install_install",
 						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Directory:   "/home//",
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: installEnv,
 						Image:       "openjdk:latest",
@@ -105,6 +108,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_test_test",
 						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Directory:   "/home//",
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: testEnv,
 						Image:       "openjdk:latest",
@@ -121,6 +125,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_build_build",
 						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Directory:   "/home//",
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: buildEnv,
 						Image:       "openjdk:latest",
@@ -136,6 +141,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_publish_publish",
+						Directory:   "/home//",
 						Image:       "plugins/docker:18.09",
 						Environment: dockerEnv,
 						Name:        "publish",
@@ -232,6 +238,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:          "step___0_init",
+				Directory:   "/home//",
 				Environment: environment(nil, nil, nil, nil),
 				Image:       "#init",
 				Name:        "init",
@@ -240,6 +247,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
+				Directory:   "/home//",
 				Environment: environment(nil, nil, nil, nil),
 				Image:       "target/vela-git:v0.2.0",
 				Name:        "clone",
@@ -249,6 +257,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_install",
 				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Directory:   "/home//",
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: installEnv,
 				Image:       "openjdk:latest",
@@ -259,6 +268,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_test",
 				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Directory:   "/home//",
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: testEnv,
 				Image:       "openjdk:latest",
@@ -269,6 +279,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_build",
 				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Directory:   "/home//",
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: buildEnv,
 				Image:       "openjdk:latest",
@@ -278,6 +289,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_publish",
+				Directory:   "/home//",
 				Image:       "plugins/docker:18.09",
 				Environment: dockerEnv,
 				Name:        "publish",
@@ -394,6 +406,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_init_init",
+						Directory:   "/home//",
 						Environment: environment(nil, nil, nil, nil),
 						Image:       "#init",
 						Name:        "init",
@@ -407,6 +420,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_clone_clone",
+						Directory:   "/home//",
 						Environment: environment(nil, nil, nil, nil),
 						Image:       "target/vela-git:v0.2.0",
 						Name:        "clone",
@@ -422,6 +436,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_install",
 						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Directory:   "/home//",
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: installEnv,
 						Image:       "openjdk:latest",
@@ -432,6 +447,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_test",
 						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Directory:   "/home//",
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: testEnv,
 						Image:       "openjdk:latest",
@@ -442,6 +458,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_build",
 						Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+						Directory:   "/home//",
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: buildEnv,
 						Image:       "openjdk:latest",
@@ -457,6 +474,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:          "__0_publish_publish",
+						Directory:   "/home//",
 						Image:       "plugins/docker:18.09",
 						Environment: dockerEnv,
 						Name:        "publish",
@@ -572,6 +590,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:          "step___0_init",
+				Directory:   "/home//",
 				Environment: environment(nil, nil, nil, nil),
 				Image:       "#init",
 				Name:        "init",
@@ -580,6 +599,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
+				Directory:   "/home//",
 				Environment: environment(nil, nil, nil, nil),
 				Image:       "target/vela-git:v0.2.0",
 				Name:        "clone",
@@ -588,6 +608,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_install",
+				Directory:   "/home//",
 				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: installEnv,
@@ -598,6 +619,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_test",
+				Directory:   "/home//",
 				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: testEnv,
@@ -608,6 +630,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_build",
+				Directory:   "/home//",
 				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: buildEnv,
@@ -618,6 +641,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_docker",
+				Directory:   "/home//",
 				Image:       "plugins/docker:18.09",
 				Environment: dockerEnv,
 				Name:        "docker",
@@ -714,6 +738,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:          "step___0_init",
+				Directory:   "/home//",
 				Environment: environment(nil, nil, nil, nil),
 				Image:       "#init",
 				Name:        "init",
@@ -722,6 +747,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
+				Directory:   "/home//",
 				Environment: environment(nil, nil, nil, nil),
 				Image:       "target/vela-git:v0.2.0",
 				Name:        "clone",
@@ -730,6 +756,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 			},
 			&pipeline.Container{
 				ID:          "step___0_docker",
+				Directory:   "/home//",
 				Image:       "plugins/docker:18.09",
 				Environment: dockerEnv,
 				Name:        "docker",
