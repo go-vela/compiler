@@ -70,7 +70,7 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
-	workspace := fmt.Sprintf("/home/%s_%s_%d", r.GetOrg(), r.GetName(), b.GetNumber())
+	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
 
 	env := map[string]string{
 		// build specific environment variables

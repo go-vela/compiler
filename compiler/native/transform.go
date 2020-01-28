@@ -55,6 +55,9 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 			// set id to the pattern
 			step.ID = pattern
 
+			// set the workspace directory
+			step.Directory = fmt.Sprintf("/home/%s/%s", org, name)
+
 			// sanitize the step to ensure ID field is valid
 			step.Sanitize()
 		}
@@ -102,6 +105,9 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 
 		// set id to the pattern
 		step.ID = pattern
+
+		// set the workspace directory
+		step.Directory = fmt.Sprintf("/home/%s/%s", org, name)
 
 		// sanitize the step to ensure ID field is valid
 		step.Sanitize()
