@@ -57,9 +57,6 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 
 			// set the workspace directory
 			step.Directory = fmt.Sprintf("/home/%s/%s", org, name)
-
-			// sanitize the step to ensure ID field is valid
-			step.Sanitize()
 		}
 	}
 
@@ -70,9 +67,6 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 
 		// set id to the pattern
 		service.ID = pattern
-
-		// sanitize the service to ensure ID field is valid
-		service.Sanitize()
 	}
 
 	return pipeline.Purge(r), nil
@@ -108,9 +102,6 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 
 		// set the workspace directory
 		step.Directory = fmt.Sprintf("/home/%s/%s", org, name)
-
-		// sanitize the step to ensure ID field is valid
-		step.Sanitize()
 	}
 
 	// set the unique ID for each service in the executable pipeline
@@ -120,9 +111,6 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 
 		// set id to the pattern
 		service.ID = pattern
-
-		// sanitize the service to ensure ID field is valid
-		service.Sanitize()
 	}
 
 	return pipeline.Purge(r), nil

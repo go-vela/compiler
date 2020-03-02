@@ -71,7 +71,7 @@ func TestNative_TransformStages(t *testing.T) {
 		Version: "v1",
 		Services: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:     "service___0_postgres-backend",
+				ID:     "service___0_postgres backend",
 				Ports:  []string{"5432:5432"},
 				Name:   "postgres backend",
 				Image:  "postgres:latest",
@@ -87,7 +87,7 @@ func TestNative_TransformStages(t *testing.T) {
 				Name: "install deps",
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
-						ID:        "__0_install-deps_install",
+						ID:        "__0_install deps_install",
 						Directory: "/home//",
 						Commands:  []string{"./gradlew downloadDependencies"},
 						Image:     "openjdk:latest",
@@ -161,7 +161,7 @@ func TestNative_TransformSteps(t *testing.T) {
 		Version: "v1",
 		Services: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:     "service___0_postgres-backend",
+				ID:     "service___0_postgres backend",
 				Ports:  []string{"5432:5432"},
 				Name:   "postgres backend",
 				Image:  "postgres:latest",
@@ -174,7 +174,7 @@ func TestNative_TransformSteps(t *testing.T) {
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:        "step___0_install-deps",
+				ID:        "step___0_install deps",
 				Directory: "/home//",
 				Commands:  []string{"./gradlew downloadDependencies"},
 				Image:     "openjdk:latest",
