@@ -62,6 +62,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 			return nil, err
 		}
 
+		// inject the substituted environment variables into the stages
+		p.Stages, err = c.SubstituteStages(p.Stages)
+		if err != nil {
+			return nil, err
+		}
+
 		// inject the scripts into the stages
 		p.Stages, err = c.ScriptStages(p.Stages)
 		if err != nil {
@@ -92,6 +98,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 
 	// inject the environment variables into the steps
 	p.Steps, err = c.EnvironmentSteps(p.Steps)
+	if err != nil {
+		return nil, err
+	}
+
+	// inject the substituted environment variables into the steps
+	p.Steps, err = c.SubstituteSteps(p.Steps)
 	if err != nil {
 		return nil, err
 	}
