@@ -8,6 +8,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/buildkite/yaml v0.0.0-20181016232759-0caa5f0796e3
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
+	github.com/drone/envsubst v1.0.2
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
@@ -19,7 +20,7 @@ require (
 	github.com/imdario/mergo v0.3.8 // indirect
 	github.com/json-iterator/go v1.1.8 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
+	github.com/kr/pretty v0.1.0
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect

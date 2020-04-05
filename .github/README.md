@@ -1,5 +1,6 @@
 # compiler
 
+[![license](https://img.shields.io/crates/l/gl.svg)](../LICENSE)
 [![GoDoc](https://godoc.org/github.com/go-vela/compiler?status.svg)](https://godoc.org/github.com/go-vela/compiler)
 [![Go Report Card](https://goreportcard.com/badge/go-vela/compiler)](https://goreportcard.com/report/go-vela/compiler)
 [![codecov](https://codecov.io/gh/go-vela/compiler/branch/master/graph/badge.svg)](https://codecov.io/gh/go-vela/compiler)
@@ -34,4 +35,4 @@ Please see our [support](SUPPORT.md) documentation for further instructions.
 Copyright (c) 2020 Target Brands, Inc.
 ```
 
-[![license](https://img.shields.io/crates/l/gl.svg)](LICENSE)
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
