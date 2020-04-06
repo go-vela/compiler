@@ -22,7 +22,7 @@ type client struct {
 	PrivateGithub registry.Service
 
 	build    *library.Build
-	comment  []string
+	comment  string
 	files    []string
 	metadata *types.Metadata
 	repo     *library.Repo
@@ -80,8 +80,8 @@ func (c *client) WithBuild(b *library.Build) compiler.Engine {
 }
 
 // WithComment sets the comment in the Engine.
-func (c *client) WithComment(cmt []string) compiler.Engine {
-	if cmt != nil {
+func (c *client) WithComment(cmt string) compiler.Engine {
+	if cmt != "" {
 		c.comment = cmt
 	}
 
