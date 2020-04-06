@@ -74,6 +74,17 @@ type Engine interface {
 	// for each step in a yaml configuration.
 	ScriptSteps(yaml.StepSlice) (yaml.StepSlice, error)
 
+	// Substitute Compiler Interface Functions
+
+	// SubstituteStages defines a function that replaces every
+	// declared environment variable with it's corresponding
+	// value for each step in every stage in a yaml configuration.
+	SubstituteStages(yaml.StageSlice) (yaml.StageSlice, error)
+	// SubstituteSteps defines a function that replaces every
+	// declared environment variable with it's corresponding
+	// value for each step in a yaml configuration.
+	SubstituteSteps(yaml.StepSlice) (yaml.StepSlice, error)
+
 	// Transform Compiler Interface Functions
 
 	// TransformStages defines a function that converts a yaml
