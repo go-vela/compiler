@@ -111,6 +111,18 @@ func TestNative_TransformStages(t *testing.T) {
 		t.Errorf("TransformStages returned err: %v", err)
 	}
 
+	// WARNING: hack to compare stages
+	//
+	// Channel values can only be compared for equality.
+	// Two channel values are considered equal if they
+	// originated from the same make call meaning they
+	// refer to the same channel value in memory.
+	for i, stage := range *&got.Stages {
+		tmp := *&want.Stages
+
+		tmp[i].Done = stage.Done
+	}
+
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("TransformStages is %v, want %v", got, want)
 	}

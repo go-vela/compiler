@@ -109,6 +109,26 @@ func TestNative_WithFiles(t *testing.T) {
 	}
 }
 
+func TestNative_WithComment(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+
+	comment := "ok to test"
+	want, _ := New(c)
+	want.comment = comment
+
+	// run test
+	got, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	if !reflect.DeepEqual(got.WithComment(comment), want) {
+		t.Errorf("WithComment is %v, want %v", got, want)
+	}
+}
+
 func TestNative_WithMetadata(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
