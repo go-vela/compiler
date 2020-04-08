@@ -193,6 +193,18 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 		t.Errorf("Compile returned err: %v", err)
 	}
 
+	// WARNING: hack to compare stages
+	//
+	// Channel values can only be compared for equality.
+	// Two channel values are considered equal if they
+	// originated from the same make call meaning they
+	// refer to the same channel value in memory.
+	for i, stage := range got.Stages {
+		tmp := want.Stages
+
+		tmp[i].Done = stage.Done
+	}
+
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Compile is %v, want %v", got, want)
 	}
@@ -524,6 +536,18 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 	got, err := compiler.Compile(yaml)
 	if err != nil {
 		t.Errorf("Compile returned err: %v", err)
+	}
+
+	// WARNING: hack to compare stages
+	//
+	// Channel values can only be compared for equality.
+	// Two channel values are considered equal if they
+	// originated from the same make call meaning they
+	// refer to the same channel value in memory.
+	for i, stage := range got.Stages {
+		tmp := want.Stages
+
+		tmp[i].Done = stage.Done
 	}
 
 	if !reflect.DeepEqual(got, want) {

@@ -29,12 +29,13 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 
 	// create the ruledata to purge steps
 	r := &pipeline.RuleData{
-		Branch: c.build.GetBranch(),
-		Event:  c.build.GetEvent(),
-		Path:   c.files,
-		Repo:   c.repo.GetFullName(),
-		Status: c.build.GetStatus(),
-		Tag:    c.build.GetRef(),
+		Branch:  c.build.GetBranch(),
+		Comment: c.comment,
+		Event:   c.build.GetEvent(),
+		Path:    c.files,
+		Repo:    c.repo.GetFullName(),
+		Status:  c.build.GetStatus(),
+		Tag:     c.build.GetRef(),
 	}
 
 	if len(p.Stages) > 0 {

@@ -22,6 +22,7 @@ type client struct {
 	PrivateGithub registry.Service
 
 	build    *library.Build
+	comment  string
 	files    []string
 	metadata *types.Metadata
 	repo     *library.Repo
@@ -73,6 +74,15 @@ func setupPrivateGithub(addr, token string) (registry.Service, error) {
 func (c *client) WithBuild(b *library.Build) compiler.Engine {
 	if b != nil {
 		c.build = b
+	}
+
+	return c
+}
+
+// WithComment sets the comment in the Engine.
+func (c *client) WithComment(cmt string) compiler.Engine {
+	if cmt != "" {
+		c.comment = cmt
 	}
 
 	return c
