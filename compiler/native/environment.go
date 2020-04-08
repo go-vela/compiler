@@ -125,7 +125,7 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 
 	// set tag environment variable if proper build event
 	if b.GetEvent() == constants.EventTag {
-		env["BUILD_TAG"] = strings.Split(b.GetRef(), "/")[2]
+		env["BUILD_TAG"] = strings.SplitN(b.GetRef(), "refs/tags/", 2)[1]
 	}
 
 	// populate environment variables from metadata
