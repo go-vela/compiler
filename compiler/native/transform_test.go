@@ -117,8 +117,8 @@ func TestNative_TransformStages(t *testing.T) {
 	// Two channel values are considered equal if they
 	// originated from the same make call meaning they
 	// refer to the same channel value in memory.
-	for i, stage := range *&got.Stages {
-		tmp := *&want.Stages
+	for i, stage := range got.Stages {
+		tmp := want.Stages
 
 		tmp[i].Done = stage.Done
 	}
