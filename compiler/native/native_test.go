@@ -14,7 +14,7 @@ import (
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func TestNative_New(t *testing.T) {

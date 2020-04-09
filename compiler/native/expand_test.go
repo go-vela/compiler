@@ -15,7 +15,7 @@ import (
 	"github.com/go-vela/types/yaml"
 
 	"github.com/gin-gonic/gin"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func TestNative_ExpandStages(t *testing.T) {

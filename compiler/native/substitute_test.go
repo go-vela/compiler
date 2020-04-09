@@ -11,7 +11,7 @@ import (
 
 	"github.com/go-vela/types/yaml"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	"github.com/kr/pretty"
 )

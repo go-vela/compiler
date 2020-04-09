@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/go-vela/types/yaml"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func TestNative_InitStage(t *testing.T) {
