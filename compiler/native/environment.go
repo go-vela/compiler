@@ -128,6 +128,11 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 		env["BUILD_TAG"] = strings.SplitN(b.GetRef(), "refs/tags/", 2)[1]
 	}
 
+	// set pull request number variable if proper build event
+	if b.GetEvent() == constants.EventPull {
+		env["BUILD_PR_NUMBER"] = strings.SplitN(b.GetRef(), "/", 4)[2]
+	}
+
 	// populate environment variables from metadata
 	if m != nil {
 		env["BUILD_CHANNEL"] = m.Queue.Channel
