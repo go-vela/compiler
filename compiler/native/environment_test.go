@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/go-vela/types"
@@ -157,23 +158,24 @@ func TestNative_environment(t *testing.T) {
 		},
 	}
 	r := &library.Repo{
-		ID:          &num64,
-		UserID:      &num64,
-		Org:         &str,
-		Name:        &str,
-		FullName:    &str,
-		Link:        &str,
-		Clone:       &str,
-		Branch:      &str,
-		Timeout:     &num64,
-		Visibility:  &str,
-		Private:     &booL,
-		Trusted:     &booL,
-		Active:      &booL,
-		AllowPull:   &booL,
-		AllowPush:   &booL,
-		AllowDeploy: &booL,
-		AllowTag:    &booL,
+		ID:           &num64,
+		UserID:       &num64,
+		Org:          &str,
+		Name:         &str,
+		FullName:     &str,
+		Link:         &str,
+		Clone:        &str,
+		Branch:       &str,
+		Timeout:      &num64,
+		Visibility:   &str,
+		Private:      &booL,
+		Trusted:      &booL,
+		Active:       &booL,
+		AllowPull:    &booL,
+		AllowPush:    &booL,
+		AllowDeploy:  &booL,
+		AllowTag:     &booL,
+		AllowComment: &booL,
 	}
 	u := &library.User{
 		ID:     &num64,
@@ -234,6 +236,278 @@ func TestNative_environment(t *testing.T) {
 	// run test
 	got := environment(b, m, r, u)
 
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("environment is %v, want %v", got, want)
+	}
+}
+
+func TestNative_environment_tag(t *testing.T) {
+	// setup types
+	booL := false
+	num := 1
+	num64 := int64(num)
+	str := "foo"
+	ref := "refs/tags/1"
+	event := "tag"
+
+	b := &library.Build{
+		ID:       &num64,
+		RepoID:   &num64,
+		Number:   &num,
+		Parent:   &num,
+		Event:    &event,
+		Status:   &str,
+		Error:    &str,
+		Enqueued: &num64,
+		Created:  &num64,
+		Started:  &num64,
+		Finished: &num64,
+		Deploy:   &str,
+		Clone:    &str,
+		Source:   &str,
+		Title:    &str,
+		Message:  &str,
+		Commit:   &str,
+		Sender:   &str,
+		Author:   &str,
+		Branch:   &str,
+		Ref:      &ref,
+		BaseRef:  &str,
+	}
+	m := &types.Metadata{
+		Database: &types.Database{
+			Driver: str,
+			Host:   str,
+		},
+		Queue: &types.Queue{
+			Channel: str,
+			Driver:  str,
+			Host:    str,
+		},
+		Source: &types.Source{
+			Driver: str,
+			Host:   str,
+		},
+		Vela: &types.Vela{
+			Address:    str,
+			WebAddress: str,
+		},
+	}
+	r := &library.Repo{
+		ID:           &num64,
+		UserID:       &num64,
+		Org:          &str,
+		Name:         &str,
+		FullName:     &str,
+		Link:         &str,
+		Clone:        &str,
+		Branch:       &str,
+		Timeout:      &num64,
+		Visibility:   &str,
+		Private:      &booL,
+		Trusted:      &booL,
+		Active:       &booL,
+		AllowPull:    &booL,
+		AllowPush:    &booL,
+		AllowDeploy:  &booL,
+		AllowTag:     &booL,
+		AllowComment: &booL,
+	}
+	u := &library.User{
+		ID:     &num64,
+		Name:   &str,
+		Token:  &str,
+		Active: &booL,
+		Admin:  &booL,
+	}
+
+	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
+
+	want := map[string]string{
+		"BUILD_AUTHOR":         b.GetAuthor(),
+		"BUILD_AUTHOR_EMAIL":   b.GetEmail(),
+		"BUILD_BRANCH":         b.GetBranch(),
+		"BUILD_CHANNEL":        m.Queue.Channel,
+		"BUILD_COMMIT":         b.GetCommit(),
+		"BUILD_CREATED":        unmarshal(b.GetCreated()),
+		"BUILD_ENQUEUED":       unmarshal(b.GetEnqueued()),
+		"BUILD_EVENT":          b.GetEvent(),
+		"BUILD_FINISHED":       unmarshal(b.GetFinished()),
+		"BUILD_HOST":           "TODO",
+		"BUILD_LINK":           b.GetLink(),
+		"BUILD_MESSAGE":        b.GetMessage(),
+		"BUILD_NUMBER":         unmarshal(b.GetNumber()),
+		"BUILD_PARENT":         unmarshal(b.GetParent()),
+		"BUILD_REF":            b.GetRef(),
+		"BUILD_STARTED":        unmarshal(b.GetStarted()),
+		"BUILD_SOURCE":         b.GetSource(),
+		"BUILD_TAG":            strings.SplitN(b.GetRef(), "refs/tags/", 2)[1],
+		"BUILD_TITLE":          b.GetTitle(),
+		"BUILD_WORKSPACE":      workspace,
+		"VELA":                 unmarshal(true),
+		"VELA_ADDR":            m.Vela.WebAddress,
+		"VELA_CHANNEL":         m.Queue.Channel,
+		"VELA_DATABASE":        m.Database.Driver,
+		"VELA_DISTRIBUTION":    "TODO",
+		"VELA_HOST":            m.Vela.Address,
+		"VELA_NETRC_MACHINE":   m.Source.Host,
+		"VELA_NETRC_PASSWORD":  u.GetToken(),
+		"VELA_NETRC_USERNAME":  "x-oauth-basic",
+		"VELA_QUEUE":           m.Queue.Driver,
+		"VELA_RUNTIME":         "TODO",
+		"VELA_SOURCE":          m.Source.Driver,
+		"VELA_VERSION":         "TODO",
+		"VELA_WORKSPACE":       workspace,
+		"CI":                   "vela",
+		"REPOSITORY_BRANCH":    r.GetBranch(),
+		"REPOSITORY_CLONE":     r.GetClone(),
+		"REPOSITORY_FULL_NAME": r.GetFullName(),
+		"REPOSITORY_LINK":      r.GetLink(),
+		"REPOSITORY_NAME":      r.GetName(),
+		"REPOSITORY_ORG":       r.GetOrg(),
+		"REPOSITORY_PRIVATE":   unmarshal(r.GetPrivate()),
+		"REPOSITORY_TIMEOUT":   unmarshal(r.GetTimeout()),
+		"REPOSITORY_TRUSTED":   unmarshal(r.GetTrusted()),
+	}
+
+	// run test
+	got := environment(b, m, r, u)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("environment is %v, want %v", got, want)
+	}
+}
+
+func TestNative_environment_pull(t *testing.T) {
+	// setup types
+	booL := false
+	num := 1
+	num64 := int64(num)
+	str := "foo"
+	ref := "refs/pull/1/head"
+	event := "pull_request"
+
+	b := &library.Build{
+		ID:       &num64,
+		RepoID:   &num64,
+		Number:   &num,
+		Parent:   &num,
+		Event:    &event,
+		Status:   &str,
+		Error:    &str,
+		Enqueued: &num64,
+		Created:  &num64,
+		Started:  &num64,
+		Finished: &num64,
+		Deploy:   &str,
+		Clone:    &str,
+		Source:   &str,
+		Title:    &str,
+		Message:  &str,
+		Commit:   &str,
+		Sender:   &str,
+		Author:   &str,
+		Branch:   &str,
+		Ref:      &ref,
+		BaseRef:  &str,
+	}
+	m := &types.Metadata{
+		Database: &types.Database{
+			Driver: str,
+			Host:   str,
+		},
+		Queue: &types.Queue{
+			Channel: str,
+			Driver:  str,
+			Host:    str,
+		},
+		Source: &types.Source{
+			Driver: str,
+			Host:   str,
+		},
+		Vela: &types.Vela{
+			Address:    str,
+			WebAddress: str,
+		},
+	}
+	r := &library.Repo{
+		ID:           &num64,
+		UserID:       &num64,
+		Org:          &str,
+		Name:         &str,
+		FullName:     &str,
+		Link:         &str,
+		Clone:        &str,
+		Branch:       &str,
+		Timeout:      &num64,
+		Visibility:   &str,
+		Private:      &booL,
+		Trusted:      &booL,
+		Active:       &booL,
+		AllowPull:    &booL,
+		AllowPush:    &booL,
+		AllowDeploy:  &booL,
+		AllowTag:     &booL,
+		AllowComment: &booL,
+	}
+	u := &library.User{
+		ID:     &num64,
+		Name:   &str,
+		Token:  &str,
+		Active: &booL,
+		Admin:  &booL,
+	}
+
+	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
+
+	want := map[string]string{
+		"BUILD_AUTHOR":              b.GetAuthor(),
+		"BUILD_AUTHOR_EMAIL":        b.GetEmail(),
+		"BUILD_BRANCH":              b.GetBranch(),
+		"BUILD_CHANNEL":             m.Queue.Channel,
+		"BUILD_COMMIT":              b.GetCommit(),
+		"BUILD_CREATED":             unmarshal(b.GetCreated()),
+		"BUILD_ENQUEUED":            unmarshal(b.GetEnqueued()),
+		"BUILD_EVENT":               b.GetEvent(),
+		"BUILD_FINISHED":            unmarshal(b.GetFinished()),
+		"BUILD_HOST":                "TODO",
+		"BUILD_LINK":                b.GetLink(),
+		"BUILD_MESSAGE":             b.GetMessage(),
+		"BUILD_NUMBER":              unmarshal(b.GetNumber()),
+		"BUILD_PARENT":              unmarshal(b.GetParent()),
+		"BUILD_REF":                 b.GetRef(),
+		"BUILD_STARTED":             unmarshal(b.GetStarted()),
+		"BUILD_SOURCE":              b.GetSource(),
+		"BUILD_PULL_REQUEST_NUMBER": strings.SplitN(b.GetRef(), "/", 4)[2],
+		"BUILD_TITLE":               b.GetTitle(),
+		"BUILD_WORKSPACE":           workspace,
+		"VELA":                      unmarshal(true),
+		"VELA_ADDR":                 m.Vela.WebAddress,
+		"VELA_CHANNEL":              m.Queue.Channel,
+		"VELA_DATABASE":             m.Database.Driver,
+		"VELA_DISTRIBUTION":         "TODO",
+		"VELA_HOST":                 m.Vela.Address,
+		"VELA_NETRC_MACHINE":        m.Source.Host,
+		"VELA_NETRC_PASSWORD":       u.GetToken(),
+		"VELA_NETRC_USERNAME":       "x-oauth-basic",
+		"VELA_QUEUE":                m.Queue.Driver,
+		"VELA_RUNTIME":              "TODO",
+		"VELA_SOURCE":               m.Source.Driver,
+		"VELA_VERSION":              "TODO",
+		"VELA_WORKSPACE":            workspace,
+		"CI":                        "vela",
+		"REPOSITORY_BRANCH":         r.GetBranch(),
+		"REPOSITORY_CLONE":          r.GetClone(),
+		"REPOSITORY_FULL_NAME":      r.GetFullName(),
+		"REPOSITORY_LINK":           r.GetLink(),
+		"REPOSITORY_NAME":           r.GetName(),
+		"REPOSITORY_ORG":            r.GetOrg(),
+		"REPOSITORY_PRIVATE":        unmarshal(r.GetPrivate()),
+		"REPOSITORY_TIMEOUT":        unmarshal(r.GetTimeout()),
+		"REPOSITORY_TRUSTED":        unmarshal(r.GetTrusted()),
+	}
+
+	// run test
+	got := environment(b, m, r, u)
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("environment is %v, want %v", got, want)
 	}
