@@ -6,9 +6,7 @@ package native
 
 import (
 	"flag"
-	"fmt"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/go-vela/types"
@@ -113,402 +111,59 @@ func TestNative_environment(t *testing.T) {
 	num := 1
 	num64 := int64(num)
 	str := "foo"
+	workspace := "/home/foo/foo"
+	// push
+	push := "push"
+	// tag
+	tag := "tag"
+	tagref := "refs/tags/1"
+	// pull_request
+	pull := "pull_request"
+	pullref := "refs/pull/1/head"
 
-	b := &library.Build{
-		ID:       &num64,
-		RepoID:   &num64,
-		Number:   &num,
-		Parent:   &num,
-		Event:    &str,
-		Status:   &str,
-		Error:    &str,
-		Enqueued: &num64,
-		Created:  &num64,
-		Started:  &num64,
-		Finished: &num64,
-		Deploy:   &str,
-		Clone:    &str,
-		Source:   &str,
-		Title:    &str,
-		Message:  &str,
-		Commit:   &str,
-		Sender:   &str,
-		Author:   &str,
-		Branch:   &str,
-		Ref:      &str,
-		BaseRef:  &str,
-	}
-	m := &types.Metadata{
-		Database: &types.Database{
-			Driver: str,
-			Host:   str,
+	tests := []struct {
+		w    string
+		b    *library.Build
+		m    *types.Metadata
+		r    *library.Repo
+		u    *library.User
+		want map[string]string
+	}{
+		// push
+		{
+			w:    workspace,
+			b:    &library.Build{ID: &num64, RepoID: &num64, Number: &num, Parent: &num, Event: &push, Status: &str, Error: &str, Enqueued: &num64, Created: &num64, Started: &num64, Finished: &num64, Deploy: &str, Clone: &str, Source: &str, Title: &str, Message: &str, Commit: &str, Sender: &str, Author: &str, Branch: &str, Ref: &str, BaseRef: &str},
+			m:    &types.Metadata{Database: &types.Database{Driver: str, Host: str}, Queue: &types.Queue{Channel: str, Driver: str, Host: str}, Source: &types.Source{Driver: str, Host: str}, Vela: &types.Vela{Address: str, WebAddress: str}},
+			r:    &library.Repo{ID: &num64, UserID: &num64, Org: &str, Name: &str, FullName: &str, Link: &str, Clone: &str, Branch: &str, Timeout: &num64, Visibility: &str, Private: &booL, Trusted: &booL, Active: &booL, AllowPull: &booL, AllowPush: &booL, AllowDeploy: &booL, AllowTag: &booL, AllowComment: &booL},
+			u:    &library.User{ID: &num64, Name: &str, Token: &str, Active: &booL, Admin: &booL},
+			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "push", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "foo", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/home/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/home/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false"},
 		},
-		Queue: &types.Queue{
-			Channel: str,
-			Driver:  str,
-			Host:    str,
+		// tag
+		{
+			w:    workspace,
+			b:    &library.Build{ID: &num64, RepoID: &num64, Number: &num, Parent: &num, Event: &tag, Status: &str, Error: &str, Enqueued: &num64, Created: &num64, Started: &num64, Finished: &num64, Deploy: &str, Clone: &str, Source: &str, Title: &str, Message: &str, Commit: &str, Sender: &str, Author: &str, Branch: &str, Ref: &tagref, BaseRef: &str},
+			m:    &types.Metadata{Database: &types.Database{Driver: str, Host: str}, Queue: &types.Queue{Channel: str, Driver: str, Host: str}, Source: &types.Source{Driver: str, Host: str}, Vela: &types.Vela{Address: str, WebAddress: str}},
+			r:    &library.Repo{ID: &num64, UserID: &num64, Org: &str, Name: &str, FullName: &str, Link: &str, Clone: &str, Branch: &str, Timeout: &num64, Visibility: &str, Private: &booL, Trusted: &booL, Active: &booL, AllowPull: &booL, AllowPush: &booL, AllowDeploy: &booL, AllowTag: &booL, AllowComment: &booL},
+			u:    &library.User{ID: &num64, Name: &str, Token: &str, Active: &booL, Admin: &booL},
+			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "tag", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "refs/tags/1", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TAG": "1", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/home/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/home/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false"},
 		},
-		Source: &types.Source{
-			Driver: str,
-			Host:   str,
+		// pull_request
+		{
+			w:    workspace,
+			b:    &library.Build{ID: &num64, RepoID: &num64, Number: &num, Parent: &num, Event: &pull, Status: &str, Error: &str, Enqueued: &num64, Created: &num64, Started: &num64, Finished: &num64, Deploy: &str, Clone: &str, Source: &str, Title: &str, Message: &str, Commit: &str, Sender: &str, Author: &str, Branch: &str, Ref: &pullref, BaseRef: &str},
+			m:    &types.Metadata{Database: &types.Database{Driver: str, Host: str}, Queue: &types.Queue{Channel: str, Driver: str, Host: str}, Source: &types.Source{Driver: str, Host: str}, Vela: &types.Vela{Address: str, WebAddress: str}},
+			r:    &library.Repo{ID: &num64, UserID: &num64, Org: &str, Name: &str, FullName: &str, Link: &str, Clone: &str, Branch: &str, Timeout: &num64, Visibility: &str, Private: &booL, Trusted: &booL, Active: &booL, AllowPull: &booL, AllowPush: &booL, AllowDeploy: &booL, AllowTag: &booL, AllowComment: &booL},
+			u:    &library.User{ID: &num64, Name: &str, Token: &str, Active: &booL, Admin: &booL},
+			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "pull_request", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_PULL_REQUEST_NUMBER": "1", "BUILD_REF": "refs/pull/1/head", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/home/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/home/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false"},
 		},
-		Vela: &types.Vela{
-			Address:    str,
-			WebAddress: str,
-		},
-	}
-	r := &library.Repo{
-		ID:           &num64,
-		UserID:       &num64,
-		Org:          &str,
-		Name:         &str,
-		FullName:     &str,
-		Link:         &str,
-		Clone:        &str,
-		Branch:       &str,
-		Timeout:      &num64,
-		Visibility:   &str,
-		Private:      &booL,
-		Trusted:      &booL,
-		Active:       &booL,
-		AllowPull:    &booL,
-		AllowPush:    &booL,
-		AllowDeploy:  &booL,
-		AllowTag:     &booL,
-		AllowComment: &booL,
-	}
-	u := &library.User{
-		ID:     &num64,
-		Name:   &str,
-		Token:  &str,
-		Active: &booL,
-		Admin:  &booL,
-	}
-
-	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
-
-	want := map[string]string{
-		"BUILD_AUTHOR":         b.GetAuthor(),
-		"BUILD_AUTHOR_EMAIL":   b.GetEmail(),
-		"BUILD_BRANCH":         b.GetBranch(),
-		"BUILD_CHANNEL":        m.Queue.Channel,
-		"BUILD_COMMIT":         b.GetCommit(),
-		"BUILD_CREATED":        unmarshal(b.GetCreated()),
-		"BUILD_ENQUEUED":       unmarshal(b.GetEnqueued()),
-		"BUILD_EVENT":          b.GetEvent(),
-		"BUILD_FINISHED":       unmarshal(b.GetFinished()),
-		"BUILD_HOST":           "TODO",
-		"BUILD_LINK":           b.GetLink(),
-		"BUILD_MESSAGE":        b.GetMessage(),
-		"BUILD_NUMBER":         unmarshal(b.GetNumber()),
-		"BUILD_PARENT":         unmarshal(b.GetParent()),
-		"BUILD_REF":            b.GetRef(),
-		"BUILD_STARTED":        unmarshal(b.GetStarted()),
-		"BUILD_SOURCE":         b.GetSource(),
-		"BUILD_TITLE":          b.GetTitle(),
-		"BUILD_WORKSPACE":      workspace,
-		"VELA":                 unmarshal(true),
-		"VELA_ADDR":            m.Vela.WebAddress,
-		"VELA_CHANNEL":         m.Queue.Channel,
-		"VELA_DATABASE":        m.Database.Driver,
-		"VELA_DISTRIBUTION":    "TODO",
-		"VELA_HOST":            m.Vela.Address,
-		"VELA_NETRC_MACHINE":   m.Source.Host,
-		"VELA_NETRC_PASSWORD":  u.GetToken(),
-		"VELA_NETRC_USERNAME":  "x-oauth-basic",
-		"VELA_QUEUE":           m.Queue.Driver,
-		"VELA_RUNTIME":         "TODO",
-		"VELA_SOURCE":          m.Source.Driver,
-		"VELA_VERSION":         "TODO",
-		"VELA_WORKSPACE":       workspace,
-		"CI":                   "vela",
-		"REPOSITORY_BRANCH":    r.GetBranch(),
-		"REPOSITORY_CLONE":     r.GetClone(),
-		"REPOSITORY_FULL_NAME": r.GetFullName(),
-		"REPOSITORY_LINK":      r.GetLink(),
-		"REPOSITORY_NAME":      r.GetName(),
-		"REPOSITORY_ORG":       r.GetOrg(),
-		"REPOSITORY_PRIVATE":   unmarshal(r.GetPrivate()),
-		"REPOSITORY_TIMEOUT":   unmarshal(r.GetTimeout()),
-		"REPOSITORY_TRUSTED":   unmarshal(r.GetTrusted()),
 	}
 
 	// run test
-	got := environment(b, m, r, u)
+	for _, test := range tests {
+		got := environment(test.b, test.m, test.r, test.u)
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("environment is %v, want %v", got, want)
-	}
-}
-
-func TestNative_environment_tag(t *testing.T) {
-	// setup types
-	booL := false
-	num := 1
-	num64 := int64(num)
-	str := "foo"
-	ref := "refs/tags/1"
-	event := "tag"
-
-	b := &library.Build{
-		ID:       &num64,
-		RepoID:   &num64,
-		Number:   &num,
-		Parent:   &num,
-		Event:    &event,
-		Status:   &str,
-		Error:    &str,
-		Enqueued: &num64,
-		Created:  &num64,
-		Started:  &num64,
-		Finished: &num64,
-		Deploy:   &str,
-		Clone:    &str,
-		Source:   &str,
-		Title:    &str,
-		Message:  &str,
-		Commit:   &str,
-		Sender:   &str,
-		Author:   &str,
-		Branch:   &str,
-		Ref:      &ref,
-		BaseRef:  &str,
-	}
-	m := &types.Metadata{
-		Database: &types.Database{
-			Driver: str,
-			Host:   str,
-		},
-		Queue: &types.Queue{
-			Channel: str,
-			Driver:  str,
-			Host:    str,
-		},
-		Source: &types.Source{
-			Driver: str,
-			Host:   str,
-		},
-		Vela: &types.Vela{
-			Address:    str,
-			WebAddress: str,
-		},
-	}
-	r := &library.Repo{
-		ID:           &num64,
-		UserID:       &num64,
-		Org:          &str,
-		Name:         &str,
-		FullName:     &str,
-		Link:         &str,
-		Clone:        &str,
-		Branch:       &str,
-		Timeout:      &num64,
-		Visibility:   &str,
-		Private:      &booL,
-		Trusted:      &booL,
-		Active:       &booL,
-		AllowPull:    &booL,
-		AllowPush:    &booL,
-		AllowDeploy:  &booL,
-		AllowTag:     &booL,
-		AllowComment: &booL,
-	}
-	u := &library.User{
-		ID:     &num64,
-		Name:   &str,
-		Token:  &str,
-		Active: &booL,
-		Admin:  &booL,
-	}
-
-	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
-
-	want := map[string]string{
-		"BUILD_AUTHOR":         b.GetAuthor(),
-		"BUILD_AUTHOR_EMAIL":   b.GetEmail(),
-		"BUILD_BRANCH":         b.GetBranch(),
-		"BUILD_CHANNEL":        m.Queue.Channel,
-		"BUILD_COMMIT":         b.GetCommit(),
-		"BUILD_CREATED":        unmarshal(b.GetCreated()),
-		"BUILD_ENQUEUED":       unmarshal(b.GetEnqueued()),
-		"BUILD_EVENT":          b.GetEvent(),
-		"BUILD_FINISHED":       unmarshal(b.GetFinished()),
-		"BUILD_HOST":           "TODO",
-		"BUILD_LINK":           b.GetLink(),
-		"BUILD_MESSAGE":        b.GetMessage(),
-		"BUILD_NUMBER":         unmarshal(b.GetNumber()),
-		"BUILD_PARENT":         unmarshal(b.GetParent()),
-		"BUILD_REF":            b.GetRef(),
-		"BUILD_STARTED":        unmarshal(b.GetStarted()),
-		"BUILD_SOURCE":         b.GetSource(),
-		"BUILD_TAG":            strings.SplitN(b.GetRef(), "refs/tags/", 2)[1],
-		"BUILD_TITLE":          b.GetTitle(),
-		"BUILD_WORKSPACE":      workspace,
-		"VELA":                 unmarshal(true),
-		"VELA_ADDR":            m.Vela.WebAddress,
-		"VELA_CHANNEL":         m.Queue.Channel,
-		"VELA_DATABASE":        m.Database.Driver,
-		"VELA_DISTRIBUTION":    "TODO",
-		"VELA_HOST":            m.Vela.Address,
-		"VELA_NETRC_MACHINE":   m.Source.Host,
-		"VELA_NETRC_PASSWORD":  u.GetToken(),
-		"VELA_NETRC_USERNAME":  "x-oauth-basic",
-		"VELA_QUEUE":           m.Queue.Driver,
-		"VELA_RUNTIME":         "TODO",
-		"VELA_SOURCE":          m.Source.Driver,
-		"VELA_VERSION":         "TODO",
-		"VELA_WORKSPACE":       workspace,
-		"CI":                   "vela",
-		"REPOSITORY_BRANCH":    r.GetBranch(),
-		"REPOSITORY_CLONE":     r.GetClone(),
-		"REPOSITORY_FULL_NAME": r.GetFullName(),
-		"REPOSITORY_LINK":      r.GetLink(),
-		"REPOSITORY_NAME":      r.GetName(),
-		"REPOSITORY_ORG":       r.GetOrg(),
-		"REPOSITORY_PRIVATE":   unmarshal(r.GetPrivate()),
-		"REPOSITORY_TIMEOUT":   unmarshal(r.GetTimeout()),
-		"REPOSITORY_TRUSTED":   unmarshal(r.GetTrusted()),
-	}
-
-	// run test
-	got := environment(b, m, r, u)
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("environment is %v, want %v", got, want)
-	}
-}
-
-func TestNative_environment_pull(t *testing.T) {
-	// setup types
-	booL := false
-	num := 1
-	num64 := int64(num)
-	str := "foo"
-	ref := "refs/pull/1/head"
-	event := "pull_request"
-
-	b := &library.Build{
-		ID:       &num64,
-		RepoID:   &num64,
-		Number:   &num,
-		Parent:   &num,
-		Event:    &event,
-		Status:   &str,
-		Error:    &str,
-		Enqueued: &num64,
-		Created:  &num64,
-		Started:  &num64,
-		Finished: &num64,
-		Deploy:   &str,
-		Clone:    &str,
-		Source:   &str,
-		Title:    &str,
-		Message:  &str,
-		Commit:   &str,
-		Sender:   &str,
-		Author:   &str,
-		Branch:   &str,
-		Ref:      &ref,
-		BaseRef:  &str,
-	}
-	m := &types.Metadata{
-		Database: &types.Database{
-			Driver: str,
-			Host:   str,
-		},
-		Queue: &types.Queue{
-			Channel: str,
-			Driver:  str,
-			Host:    str,
-		},
-		Source: &types.Source{
-			Driver: str,
-			Host:   str,
-		},
-		Vela: &types.Vela{
-			Address:    str,
-			WebAddress: str,
-		},
-	}
-	r := &library.Repo{
-		ID:           &num64,
-		UserID:       &num64,
-		Org:          &str,
-		Name:         &str,
-		FullName:     &str,
-		Link:         &str,
-		Clone:        &str,
-		Branch:       &str,
-		Timeout:      &num64,
-		Visibility:   &str,
-		Private:      &booL,
-		Trusted:      &booL,
-		Active:       &booL,
-		AllowPull:    &booL,
-		AllowPush:    &booL,
-		AllowDeploy:  &booL,
-		AllowTag:     &booL,
-		AllowComment: &booL,
-	}
-	u := &library.User{
-		ID:     &num64,
-		Name:   &str,
-		Token:  &str,
-		Active: &booL,
-		Admin:  &booL,
-	}
-
-	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
-
-	want := map[string]string{
-		"BUILD_AUTHOR":              b.GetAuthor(),
-		"BUILD_AUTHOR_EMAIL":        b.GetEmail(),
-		"BUILD_BRANCH":              b.GetBranch(),
-		"BUILD_CHANNEL":             m.Queue.Channel,
-		"BUILD_COMMIT":              b.GetCommit(),
-		"BUILD_CREATED":             unmarshal(b.GetCreated()),
-		"BUILD_ENQUEUED":            unmarshal(b.GetEnqueued()),
-		"BUILD_EVENT":               b.GetEvent(),
-		"BUILD_FINISHED":            unmarshal(b.GetFinished()),
-		"BUILD_HOST":                "TODO",
-		"BUILD_LINK":                b.GetLink(),
-		"BUILD_MESSAGE":             b.GetMessage(),
-		"BUILD_NUMBER":              unmarshal(b.GetNumber()),
-		"BUILD_PARENT":              unmarshal(b.GetParent()),
-		"BUILD_REF":                 b.GetRef(),
-		"BUILD_STARTED":             unmarshal(b.GetStarted()),
-		"BUILD_SOURCE":              b.GetSource(),
-		"BUILD_PULL_REQUEST_NUMBER": strings.SplitN(b.GetRef(), "/", 4)[2],
-		"BUILD_TITLE":               b.GetTitle(),
-		"BUILD_WORKSPACE":           workspace,
-		"VELA":                      unmarshal(true),
-		"VELA_ADDR":                 m.Vela.WebAddress,
-		"VELA_CHANNEL":              m.Queue.Channel,
-		"VELA_DATABASE":             m.Database.Driver,
-		"VELA_DISTRIBUTION":         "TODO",
-		"VELA_HOST":                 m.Vela.Address,
-		"VELA_NETRC_MACHINE":        m.Source.Host,
-		"VELA_NETRC_PASSWORD":       u.GetToken(),
-		"VELA_NETRC_USERNAME":       "x-oauth-basic",
-		"VELA_QUEUE":                m.Queue.Driver,
-		"VELA_RUNTIME":              "TODO",
-		"VELA_SOURCE":               m.Source.Driver,
-		"VELA_VERSION":              "TODO",
-		"VELA_WORKSPACE":            workspace,
-		"CI":                        "vela",
-		"REPOSITORY_BRANCH":         r.GetBranch(),
-		"REPOSITORY_CLONE":          r.GetClone(),
-		"REPOSITORY_FULL_NAME":      r.GetFullName(),
-		"REPOSITORY_LINK":           r.GetLink(),
-		"REPOSITORY_NAME":           r.GetName(),
-		"REPOSITORY_ORG":            r.GetOrg(),
-		"REPOSITORY_PRIVATE":        unmarshal(r.GetPrivate()),
-		"REPOSITORY_TIMEOUT":        unmarshal(r.GetTimeout()),
-		"REPOSITORY_TRUSTED":        unmarshal(r.GetTrusted()),
-	}
-
-	// run test
-	got := environment(b, m, r, u)
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("environment is %v, want %v", got, want)
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("environment is %v, want %v", got, test.want)
+		}
 	}
 }
