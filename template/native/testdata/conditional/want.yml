@@ -1,8 +1,5 @@
-metadata:
-  template: true
-
 steps:
-  - name: install
+  - name: sample_install
     commands:
       - go get ./...
     image: golang:latest
@@ -10,9 +7,15 @@ steps:
     ruleset:
       event: [ push, pull_request ]
 
-  {{ .test }}
+  - name: sample_test
+    commands:
+      - go test ./...
+    image: golang:latest
+    pull: true
+    ruleset:
+      event: [ push, pull_request ]
 
-  - name: build
+  - name: sample_build
     commands:
       - go build
     environment:

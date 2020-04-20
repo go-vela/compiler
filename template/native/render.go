@@ -20,21 +20,19 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	// parse the template with Masterminds/sprig functions
 	t, err := template.New(s.Name).Funcs(sprig.TxtFuncMap()).Parse(tmpl)
 	if err != nil {
-		return types.StepSlice{}, fmt.Errorf("Invalid parsing on template %s: %v", s.Template.Name, err)
+		return types.StepSlice{}, fmt.Errorf("unable to parsing template %s: %v", s.Template.Name, err)
 	}
 
 	// apply the variables to the parsed template
 	err = t.Execute(buffer, s.Template.Variables)
 	if err != nil {
-		return types.StepSlice{}, fmt.Errorf("Invalid executing on template %s: %v", s.Template.Name, err)
+		return types.StepSlice{}, fmt.Errorf("unable to execute template %s: %v", s.Template.Name, err)
 	}
-
-	fmt.Println("PIPELINE: ", buffer.String())
 
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buffer.Bytes(), config)
 	if err != nil {
-		return types.StepSlice{}, fmt.Errorf("Error unmarshaling yaml: %v", err)
+		return types.StepSlice{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
 	// ensure all templated steps have template prefix

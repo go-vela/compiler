@@ -13,7 +13,6 @@ require (
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-vela/types v0.4.0-rc1.0.20200420140708-24f00a4a2aca
-	github.com/google/go-cmp v0.2.0
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/goware/urlx v0.3.1
