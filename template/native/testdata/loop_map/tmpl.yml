@@ -14,7 +14,7 @@ steps:
     ruleset:
       event: [ push, pull_request ]
 
-  {{ range $key, $value := toMap .images }}
+  {{ range $key, $value := .images }}
 
   - name: test_{{ $key }}
     commands:

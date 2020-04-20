@@ -18,6 +18,8 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	config := new(types.Build)
 
 	// parse the template with Masterminds/sprig functions
+	//
+	// https://pkg.go.dev/github.com/Masterminds/sprig?tab=doc#TxtFuncMap
 	t, err := template.New(s.Name).Funcs(sprig.TxtFuncMap()).Parse(tmpl)
 	if err != nil {
 		return types.StepSlice{}, fmt.Errorf("unable to parsing template %s: %v", s.Template.Name, err)

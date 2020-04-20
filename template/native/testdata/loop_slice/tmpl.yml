@@ -2,28 +2,29 @@ metadata:
   template: true
 
 ## template variables
-
-{{$br := .branch}}
+{{ $pull := .pull_policy }}
 
 steps:
-
-  {{ if (eq $br "master") }}
 
   - name: install
     commands:
       - go get ./...
-    image: {{ .image }}
-    {{ .pull_policy }}
-
-  {{ end }}
-
-  - name: test
-    commands:
-      - go test ./...
-    image: {{ .image }}
-    {{ .pull_policy }}
+    image: golang:latest
+    {{ $pull }}
     ruleset:
       event: [ push, pull_request ]
+
+  {{ range $value := .images }}
+
+  - name: test_{{ $value }}
+    commands:
+      - go test ./...
+    image: {{ $value }}
+    {{ $pull }}
+    ruleset:
+      event: [ push, pull_request ]
+
+  {{ end }}
 
   - name: build
     commands:
@@ -31,7 +32,7 @@ steps:
     environment:
       CGO_ENABLED: '0'
       GOOS: linux
-    image: {{ .image }}
-    {{ .pull_policy }}
+    image: golang:latest
+    {{ $pull }}
     ruleset:
       event: [ push, pull_request ]
