@@ -9,8 +9,11 @@ import (
 	"reflect"
 	"testing"
 
+	goyaml "gopkg.in/yaml.v2"
+
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestNative_Render_GoBasic(t *testing.T) {
@@ -76,6 +79,37 @@ func TestNative_Render_GoBasic(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Render is %v, want %v", got, want)
+	}
+}
+
+func TestNative_Render_GoMultiline(t *testing.T) {
+	// setup types
+	sFile, _ := ioutil.ReadFile("testdata/go/multiline/step.yml")
+	b := &yaml.Build{}
+	_ = goyaml.Unmarshal(sFile, b)
+
+	wFile, _ := ioutil.ReadFile("testdata/go/multiline/want.yml")
+	w := &yaml.Build{}
+	_ = goyaml.Unmarshal(wFile, w)
+
+	want := w.Steps
+
+	// run test
+	tmpl, err := ioutil.ReadFile("testdata/go/multiline/tmpl.yml")
+	if err != nil {
+		t.Errorf("Reading file returned err: %v", err)
+	}
+
+	got, err := Render(string(tmpl), b.Steps[0])
+	if err != nil {
+		t.Errorf("Render returned err: %v", err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		if diff := cmp.Diff(want, got); diff != "" {
+			t.Errorf("MakeGatewayInfo() mismatch (-want +got):\n%s", diff)
+		}
 		t.Errorf("Render is %v, want %v", got, want)
 	}
 }

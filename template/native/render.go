@@ -29,6 +29,8 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		return types.StepSlice{}, fmt.Errorf("Invalid executing on template %s: %v", s.Template.Name, err)
 	}
 
+	fmt.Println("PIPELINE: ", buffer.String())
+
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buffer.Bytes(), config)
 	if err != nil {
