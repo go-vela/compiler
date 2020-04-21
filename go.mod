@@ -12,8 +12,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/go-vela/types v0.4.0-rc1
-	github.com/golang/protobuf v1.3.3 // indirect
+	github.com/go-vela/types v0.4.0-rc1.0.20200420140708-24f00a4a2aca
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/goware/urlx v0.3.1
@@ -37,5 +36,5 @@ require (
 	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.2 // indirect
-	gopkg.in/yaml.v2 v2.2.7
+	gopkg.in/yaml.v2 v2.2.8
 )
