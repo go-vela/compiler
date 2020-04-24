@@ -12,7 +12,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/go-vela/types v0.4.0-rc1.0.20200424125117-e847477bc4e6
+	github.com/go-vela/types v0.4.0-rc1.0.20200424154256-debbccc03405
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/goware/urlx v0.3.1
