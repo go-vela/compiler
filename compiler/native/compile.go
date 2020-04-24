@@ -35,7 +35,6 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		Event:   c.build.GetEvent(),
 		Path:    c.files,
 		Repo:    c.repo.GetFullName(),
-		Status:  c.build.GetStatus(),
 		Tag:     strings.TrimPrefix(c.build.GetRef(), "refs/tags/"),
 	}
 
