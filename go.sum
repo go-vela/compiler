@@ -35,8 +35,8 @@ github.com/go-playground/universal-translator v0.16.0 h1:X++omBR/4cE2MNg91AoC3rm
 github.com/go-playground/universal-translator v0.16.0/go.mod h1:1AnU7NaIRDWWzGEKwgtJRd2xk99HeFyHw3yid4rvQIY=
 github.com/go-playground/universal-translator v0.17.0 h1:icxd5fm+REJzpZx7ZfpaD876Lmtgy7VtROAbHHXk8no=
 github.com/go-playground/universal-translator v0.17.0/go.mod h1:UkSxE5sNxxRwHyU+Scu5vgOQjsIJAF8j9muTVoKLVtA=
-github.com/go-vela/types v0.4.0-rc2.0.20200427133055-30488b4bfdde h1:WaKen9WhQye+o4AtMvGv+BYw/BnQT0UGcyFAasW106o=
-github.com/go-vela/types v0.4.0-rc2.0.20200427133055-30488b4bfdde/go.mod h1:ig7fC+MKGsgAlKqovkFsUQlbZtLDLhl/djiedHmsL5s=
+github.com/go-vela/types v0.4.0-rc3 h1:YD7I2FJNUejRgYQCDiTPioKMpddVQa7iaWZHMFCHnqI=
+github.com/go-vela/types v0.4.0-rc3/go.mod h1:ig7fC+MKGsgAlKqovkFsUQlbZtLDLhl/djiedHmsL5s=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.3.1 h1:YF8+flBXS5eO826T4nzqPrxfhQThhXl0YzfuUPu4SBg=
 github.com/golang/protobuf v1.3.1/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
