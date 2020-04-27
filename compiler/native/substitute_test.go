@@ -111,6 +111,13 @@ func TestNative_SubstituteSteps(t *testing.T) {
 			Name:        "advanced",
 			Pull:        true,
 		},
+		{
+			Commands:    []string{"echo $NOT_FOUND", "echo ${NOT_FOUND}", "echo $${NOT_FOUND}"},
+			Environment: map[string]string{"FOO": "baz", "BAR": "baz"},
+			Image:       "alpine:latest",
+			Name:        "not_found",
+			Pull:        true,
+		},
 	}
 
 	want := yaml.StepSlice{
@@ -126,6 +133,13 @@ func TestNative_SubstituteSteps(t *testing.T) {
 			Environment: map[string]string{"COMPLEX": "{\"hello\":\n  \"world\"}"},
 			Image:       "alpine:latest",
 			Name:        "advanced",
+			Pull:        true,
+		},
+		{
+			Commands:    []string{"echo $NOT_FOUND", "echo ${NOT_FOUND}", "echo ${NOT_FOUND}"},
+			Environment: map[string]string{"FOO": "baz", "BAR": "baz"},
+			Image:       "alpine:latest",
+			Name:        "not_found",
 			Pull:        true,
 		},
 	}
