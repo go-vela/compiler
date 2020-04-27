@@ -12,8 +12,6 @@ import (
 	"github.com/go-vela/types/yaml"
 
 	"github.com/urfave/cli/v2"
-
-	"github.com/kr/pretty"
 )
 
 func TestNative_SubstituteStages(t *testing.T) {
@@ -46,6 +44,18 @@ func TestNative_SubstituteStages(t *testing.T) {
 				},
 			},
 		},
+		{
+			Name: "not_found",
+			Steps: yaml.StepSlice{
+				{
+					Commands:    []string{"echo $NOT_FOUND", "echo ${NOT_FOUND}", "echo $${NOT_FOUND}"},
+					Environment: map[string]string{"FOO": "baz", "BAR": "baz"},
+					Image:       "alpine:latest",
+					Name:        "not_found",
+					Pull:        true,
+				},
+			},
+		},
 	}
 
 	want := yaml.StageSlice{
@@ -69,6 +79,18 @@ func TestNative_SubstituteStages(t *testing.T) {
 					Environment: map[string]string{"COMPLEX": "{\"hello\":\n  \"world\"}"},
 					Image:       "alpine:latest",
 					Name:        "advanced",
+					Pull:        true,
+				},
+			},
+		},
+		{
+			Name: "not_found",
+			Steps: yaml.StepSlice{
+				{
+					Commands:    []string{"echo $NOT_FOUND", "echo ${NOT_FOUND}", "echo ${NOT_FOUND}"},
+					Environment: map[string]string{"FOO": "baz", "BAR": "baz"},
+					Image:       "alpine:latest",
+					Name:        "not_found",
 					Pull:        true,
 				},
 			},
@@ -111,6 +133,13 @@ func TestNative_SubstituteSteps(t *testing.T) {
 			Name:        "advanced",
 			Pull:        true,
 		},
+		{
+			Commands:    []string{"echo $NOT_FOUND", "echo ${NOT_FOUND}", "echo $${NOT_FOUND}"},
+			Environment: map[string]string{"FOO": "baz", "BAR": "baz"},
+			Image:       "alpine:latest",
+			Name:        "not_found",
+			Pull:        true,
+		},
 	}
 
 	want := yaml.StepSlice{
@@ -128,6 +157,13 @@ func TestNative_SubstituteSteps(t *testing.T) {
 			Name:        "advanced",
 			Pull:        true,
 		},
+		{
+			Commands:    []string{"echo $NOT_FOUND", "echo ${NOT_FOUND}", "echo ${NOT_FOUND}"},
+			Environment: map[string]string{"FOO": "baz", "BAR": "baz"},
+			Image:       "alpine:latest",
+			Name:        "not_found",
+			Pull:        true,
+		},
 	}
 
 	// run test
@@ -142,7 +178,6 @@ func TestNative_SubstituteSteps(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		pretty.Ldiff(t, got, want)
 		t.Errorf("SubstituteSteps is %v, want %v", got, want)
 	}
 }

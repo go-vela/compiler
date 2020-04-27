@@ -47,8 +47,17 @@ func (c *client) SubstituteSteps(s types.StepSlice) (types.StepSlice, error) {
 
 		// create substitute function
 		subFunc := func(name string) string {
-			env := step.Environment[name]
+			// check for the environment variable
+			env, ok := step.Environment[name]
+			if !ok {
+				// return the original declaration if
+				// the environment variable isn't found
+				return fmt.Sprintf("${%s}", name)
+			}
+
+			// check for a new line
 			if strings.Contains(env, "\n") {
+				// escape the environment variable
 				env = fmt.Sprintf("%q", env)
 			}
 
