@@ -133,6 +133,11 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 		env["BUILD_PULL_REQUEST_NUMBER"] = strings.SplitN(b.GetRef(), "/", 4)[2]
 	}
 
+	// set deployment target if proper build event
+	if b.GetEvent() == constants.EventDeploy {
+		env["BUILD_TARGET"] = b.GetDeploy()
+	}
+
 	// populate environment variables from metadata
 	if m != nil {
 		env["BUILD_CHANNEL"] = m.Queue.Channel
