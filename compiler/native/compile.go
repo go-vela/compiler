@@ -36,6 +36,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		Path:    c.files,
 		Repo:    c.repo.GetFullName(),
 		Tag:     strings.TrimPrefix(c.build.GetRef(), "refs/tags/"),
+		Target:  c.build.GetDeploy(),
 	}
 
 	if len(p.Stages) > 0 {
