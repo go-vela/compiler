@@ -68,6 +68,27 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 	return s, nil
 }
 
+// EnvironmentServices injects environment variables
+// for each service in a yaml configuration.
+func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, error) {
+	// iterate through all services
+	for _, service := range s {
+		// gather set of default environment variables
+		env := environment(c.build, c.metadata, c.repo, c.user)
+
+		// inject the declared environment
+		// variables to the build service
+		for k, v := range service.Environment {
+			env[k] = v
+		}
+
+		// overwrite existing build service environment
+		service.Environment = env
+	}
+
+	return s, nil
+}
+
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
 	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
