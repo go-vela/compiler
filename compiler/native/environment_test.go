@@ -115,6 +115,7 @@ func TestNative_EnvironmentServices(t *testing.T) {
 		&yaml.Service{
 			Image: "postgres",
 			Name:  str,
+			Pull:  true,
 		},
 	}
 
@@ -123,6 +124,7 @@ func TestNative_EnvironmentServices(t *testing.T) {
 			Environment: environment(nil, nil, nil, nil),
 			Image:       "postgres",
 			Name:        str,
+			Pull:        true,
 		},
 	}
 
