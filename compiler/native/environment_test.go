@@ -105,6 +105,45 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 	}
 }
 
+func TestNative_EnvironmentServices(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+
+	str := "foo"
+	s := yaml.ServiceSlice{
+		&yaml.Service{
+			Image: "postgres",
+			Name:  str,
+			Pull:  true,
+		},
+	}
+
+	want := yaml.ServiceSlice{
+		&yaml.Service{
+			Environment: environment(nil, nil, nil, nil),
+			Image:       "postgres",
+			Name:        str,
+			Pull:        true,
+		},
+	}
+
+	// run test
+	compiler, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	got, err := compiler.EnvironmentServices(s)
+	if err != nil {
+		t.Errorf("EnvironmentServices returned err: %v", err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("EnvironmentServices is %v, want %v", got, want)
+	}
+}
+
 func TestNative_environment(t *testing.T) {
 	// setup types
 	booL := false

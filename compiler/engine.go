@@ -46,6 +46,9 @@ type Engine interface {
 	// EnvironmentSteps defines a function that injects the environment
 	// variables for each step into a yaml configuration.
 	EnvironmentSteps(yaml.StepSlice) (yaml.StepSlice, error)
+	// EnvironmentServices defines a function that injects the environment
+	// variables for each service into a yaml configuration.
+	EnvironmentServices(yaml.ServiceSlice) (yaml.ServiceSlice, error)
 
 	// Expand Compiler Interface Functions
 
