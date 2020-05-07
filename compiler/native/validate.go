@@ -81,9 +81,10 @@ func validateStages(s yaml.StageSlice) error {
 				return fmt.Errorf("no image or template provided for step %s for stage %s", step.Name, stage.Name)
 			}
 
-			if len(step.Commands) == 0 && len(step.Parameters) == 0 &&
+			if len(step.Commands) == 0 && len(step.Environment) == 0 &&
+				len(step.Parameters) == 0 && len(step.Secrets) == 0 &&
 				len(step.Template.Name) == 0 && !step.Detach {
-				return fmt.Errorf("no commands or parameters or template provided for step %s for stage %s", step.Name, stage.Name)
+				return fmt.Errorf("no commands, environment, parameters, secrets or template provided for step %s for stage %s", step.Name, stage.Name)
 			}
 		}
 	}
@@ -103,9 +104,10 @@ func validateSteps(s yaml.StepSlice) error {
 			return fmt.Errorf("no image or template provided for step %s", step.Name)
 		}
 
-		if len(step.Commands) == 0 && len(step.Parameters) == 0 &&
+		if len(step.Commands) == 0 && len(step.Environment) == 0 &&
+			len(step.Parameters) == 0 && len(step.Secrets) == 0 &&
 			len(step.Template.Name) == 0 && !step.Detach {
-			return fmt.Errorf("no commands or parameters or template provided for step %s", step.Name)
+			return fmt.Errorf("no commands, environment, parameters, secrets or template provided for step %s", step.Name)
 		}
 	}
 
