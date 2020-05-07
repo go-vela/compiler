@@ -14,7 +14,6 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-vela/types v0.4.1
 	github.com/golang/protobuf v1.3.3 // indirect
-	github.com/google/go-cmp v0.2.0
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/goware/urlx v0.3.1
