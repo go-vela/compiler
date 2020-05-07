@@ -76,6 +76,7 @@ func TestNative_TransformStages(t *testing.T) {
 				Name:   "postgres backend",
 				Image:  "postgres:latest",
 				Number: 1,
+				Detach: true,
 			},
 		},
 		Worker: pipeline.Worker{
@@ -178,6 +179,7 @@ func TestNative_TransformSteps(t *testing.T) {
 				Name:   "postgres backend",
 				Image:  "postgres:latest",
 				Number: 1,
+				Detach: true,
 			},
 		},
 		Worker: pipeline.Worker{
