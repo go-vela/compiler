@@ -6,7 +6,6 @@ package native
 
 import (
 	"flag"
-	"fmt"
 	"github.com/go-vela/types/raw"
 	"reflect"
 	"testing"
@@ -147,14 +146,6 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 	got, err := compiler.EnvironmentSteps(s)
 	if err != nil {
 		t.Errorf("EnvironmentSteps returned err: %v", err)
-	}
-
-	for _, step := range got {
-		fmt.Println(step.Environment)
-	}
-
-	for _, step := range want {
-		fmt.Println(step.Environment)
 	}
 
 	if !reflect.DeepEqual(got, want) {
