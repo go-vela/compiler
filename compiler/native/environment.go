@@ -36,12 +36,19 @@ func (c *client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
+		env := make(map[string]string)
 		// gather set of default environment variables
-		env := environment(c.build, c.metadata, c.repo, c.user)
+		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
 
 		// inject the declared environment
 		// variables to the build step
 		for k, v := range step.Environment {
+			env[k] = v
+		}
+
+		// inject the default environment
+		// variables to the build step
+		for k, v := range defaultEnv {
 			env[k] = v
 		}
 
@@ -73,12 +80,19 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, error) {
 	// iterate through all services
 	for _, service := range s {
+		env := make(map[string]string)
 		// gather set of default environment variables
-		env := environment(c.build, c.metadata, c.repo, c.user)
+		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
 
 		// inject the declared environment
 		// variables to the build service
 		for k, v := range service.Environment {
+			env[k] = v
+		}
+
+		// inject the default environment
+		// variables to the build service
+		for k, v := range defaultEnv {
 			env[k] = v
 		}
 

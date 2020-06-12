@@ -6,6 +6,8 @@ package native
 
 import (
 	"flag"
+	"fmt"
+	"github.com/go-vela/types/raw"
 	"reflect"
 	"testing"
 
@@ -77,15 +79,62 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 			Image: "alpine",
 			Name:  str,
 			Pull:  true,
+			Environment: raw.StringSliceMap{
+				"BUILD_CHANNEL": "foo",
+			},
 		},
 	}
 
 	want := yaml.StepSlice{
 		&yaml.Step{
-			Environment: environment(nil, nil, nil, nil),
-			Image:       "alpine",
-			Name:        str,
-			Pull:        true,
+			Image: "alpine",
+			Name:  str,
+			Pull:  true,
+			Environment: raw.StringSliceMap{
+				"BUILD_AUTHOR":         "",
+				"BUILD_AUTHOR_EMAIL":   "",
+				"BUILD_BRANCH":         "",
+				"BUILD_CHANNEL":        "TODO",
+				"BUILD_COMMIT":         "",
+				"BUILD_CREATED":        "0",
+				"BUILD_ENQUEUED":       "0",
+				"BUILD_EVENT":          "",
+				"BUILD_FINISHED":       "0",
+				"BUILD_HOST":           "TODO",
+				"BUILD_LINK":           "",
+				"BUILD_MESSAGE":        "",
+				"BUILD_NUMBER":         "0",
+				"BUILD_PARENT":         "0",
+				"BUILD_REF":            "",
+				"BUILD_SOURCE":         "",
+				"BUILD_STARTED":        "0",
+				"BUILD_TITLE":          "",
+				"BUILD_WORKSPACE":      "/home//",
+				"CI":                   "vela",
+				"REPOSITORY_BRANCH":    "",
+				"REPOSITORY_CLONE":     "",
+				"REPOSITORY_FULL_NAME": "",
+				"REPOSITORY_LINK":      "",
+				"REPOSITORY_NAME":      "",
+				"REPOSITORY_ORG":       "",
+				"REPOSITORY_PRIVATE":   "false",
+				"REPOSITORY_TIMEOUT":   "0",
+				"REPOSITORY_TRUSTED":   "false",
+				"VELA":                 "true",
+				"VELA_ADDR":            "TODO",
+				"VELA_CHANNEL":         "TODO",
+				"VELA_DATABASE":        "TODO",
+				"VELA_DISTRIBUTION":    "TODO",
+				"VELA_HOST":            "TODO",
+				"VELA_NETRC_MACHINE":   "TODO",
+				"VELA_NETRC_PASSWORD":  "",
+				"VELA_NETRC_USERNAME":  "x-oauth-basic",
+				"VELA_QUEUE":           "TODO",
+				"VELA_RUNTIME":         "TODO",
+				"VELA_SOURCE":          "TODO",
+				"VELA_VERSION":         "TODO",
+				"VELA_WORKSPACE":       "/home//",
+			},
 		},
 	}
 
@@ -98,6 +147,14 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 	got, err := compiler.EnvironmentSteps(s)
 	if err != nil {
 		t.Errorf("EnvironmentSteps returned err: %v", err)
+	}
+
+	for _, step := range got {
+		fmt.Println(step.Environment)
+	}
+
+	for _, step := range want {
+		fmt.Println(step.Environment)
 	}
 
 	if !reflect.DeepEqual(got, want) {
@@ -116,15 +173,62 @@ func TestNative_EnvironmentServices(t *testing.T) {
 			Image: "postgres",
 			Name:  str,
 			Pull:  true,
+			Environment: raw.StringSliceMap{
+				"BUILD_CHANNEL": "foo",
+			},
 		},
 	}
 
 	want := yaml.ServiceSlice{
 		&yaml.Service{
-			Environment: environment(nil, nil, nil, nil),
-			Image:       "postgres",
-			Name:        str,
-			Pull:        true,
+			Image: "postgres",
+			Name:  str,
+			Pull:  true,
+			Environment: raw.StringSliceMap{
+				"BUILD_AUTHOR":         "",
+				"BUILD_AUTHOR_EMAIL":   "",
+				"BUILD_BRANCH":         "",
+				"BUILD_CHANNEL":        "TODO",
+				"BUILD_COMMIT":         "",
+				"BUILD_CREATED":        "0",
+				"BUILD_ENQUEUED":       "0",
+				"BUILD_EVENT":          "",
+				"BUILD_FINISHED":       "0",
+				"BUILD_HOST":           "TODO",
+				"BUILD_LINK":           "",
+				"BUILD_MESSAGE":        "",
+				"BUILD_NUMBER":         "0",
+				"BUILD_PARENT":         "0",
+				"BUILD_REF":            "",
+				"BUILD_SOURCE":         "",
+				"BUILD_STARTED":        "0",
+				"BUILD_TITLE":          "",
+				"BUILD_WORKSPACE":      "/home//",
+				"CI":                   "vela",
+				"REPOSITORY_BRANCH":    "",
+				"REPOSITORY_CLONE":     "",
+				"REPOSITORY_FULL_NAME": "",
+				"REPOSITORY_LINK":      "",
+				"REPOSITORY_NAME":      "",
+				"REPOSITORY_ORG":       "",
+				"REPOSITORY_PRIVATE":   "false",
+				"REPOSITORY_TIMEOUT":   "0",
+				"REPOSITORY_TRUSTED":   "false",
+				"VELA":                 "true",
+				"VELA_ADDR":            "TODO",
+				"VELA_CHANNEL":         "TODO",
+				"VELA_DATABASE":        "TODO",
+				"VELA_DISTRIBUTION":    "TODO",
+				"VELA_HOST":            "TODO",
+				"VELA_NETRC_MACHINE":   "TODO",
+				"VELA_NETRC_PASSWORD":  "",
+				"VELA_NETRC_USERNAME":  "x-oauth-basic",
+				"VELA_QUEUE":           "TODO",
+				"VELA_RUNTIME":         "TODO",
+				"VELA_SOURCE":          "TODO",
+				"VELA_VERSION":         "TODO",
+				"VELA_WORKSPACE":       "/home//",
+			},
 		},
 	}
 
