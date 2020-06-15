@@ -6,9 +6,10 @@ package native
 
 import (
 	"flag"
-	"github.com/go-vela/types/raw"
 	"reflect"
 	"testing"
+
+	"github.com/go-vela/types/raw"
 
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
