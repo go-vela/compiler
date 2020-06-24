@@ -56,7 +56,7 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 			step.ID = pattern
 
 			// set the workspace directory
-			step.Directory = fmt.Sprintf("/home/%s/%s", org, name)
+			step.Directory = fmt.Sprintf("/vela/src/%s/%s/%s", c.metadata.Source.Host, org, name)
 		}
 	}
 
@@ -101,7 +101,7 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 		step.ID = pattern
 
 		// set the workspace directory
-		step.Directory = fmt.Sprintf("/home/%s/%s", org, name)
+		step.Directory = fmt.Sprintf("/vela/src/%s/%s/%s", c.metadata.Source.Host, org, name)
 	}
 
 	// set the unique ID for each service in the executable pipeline
