@@ -26,21 +26,21 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 
 	m := &types.Metadata{
 		Database: &types.Database{
-			Driver: "TODO",
-			Host:   "TODO",
+			Driver: "foo",
+			Host:   "foo",
 		},
 		Queue: &types.Queue{
-			Channel: "TODO",
-			Driver:  "TODO",
-			Host:    "TODO",
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
 		},
 		Source: &types.Source{
 			Driver: "foo",
 			Host:   "foo",
 		},
 		Vela: &types.Vela{
-			Address:    "TODO",
-			WebAddress: "TODO",
+			Address:    "foo",
+			WebAddress: "foo",
 		},
 	}
 
@@ -240,21 +240,21 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 
 	m := &types.Metadata{
 		Database: &types.Database{
-			Driver: "TODO",
-			Host:   "TODO",
+			Driver: "foo",
+			Host:   "foo",
 		},
 		Queue: &types.Queue{
-			Channel: "TODO",
-			Driver:  "TODO",
-			Host:    "TODO",
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
 		},
 		Source: &types.Source{
 			Driver: "foo",
 			Host:   "foo",
 		},
 		Vela: &types.Vela{
-			Address:    "TODO",
-			WebAddress: "TODO",
+			Address:    "foo",
+			WebAddress: "foo",
 		},
 	}
 
@@ -427,21 +427,21 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 
 	m := &types.Metadata{
 		Database: &types.Database{
-			Driver: "TODO",
-			Host:   "TODO",
+			Driver: "foo",
+			Host:   "foo",
 		},
 		Queue: &types.Queue{
-			Channel: "TODO",
-			Driver:  "TODO",
-			Host:    "TODO",
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
 		},
 		Source: &types.Source{
 			Driver: "foo",
 			Host:   "foo",
 		},
 		Vela: &types.Vela{
-			Address:    "TODO",
-			WebAddress: "TODO",
+			Address:    "foo",
+			WebAddress: "foo",
 		},
 	}
 
@@ -648,21 +648,21 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 
 	m := &types.Metadata{
 		Database: &types.Database{
-			Driver: "TODO",
-			Host:   "TODO",
+			Driver: "foo",
+			Host:   "foo",
 		},
 		Queue: &types.Queue{
-			Channel: "TODO",
-			Driver:  "TODO",
-			Host:    "TODO",
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
 		},
 		Source: &types.Source{
 			Driver: "foo",
 			Host:   "foo",
 		},
 		Vela: &types.Vela{
-			Address:    "TODO",
-			WebAddress: "TODO",
+			Address:    "foo",
+			WebAddress: "foo",
 		},
 	}
 
