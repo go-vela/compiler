@@ -9,7 +9,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-vela/types"
 	"github.com/go-vela/types/pipeline"
 	"github.com/go-vela/types/yaml"
 
@@ -20,26 +19,6 @@ func TestNative_TransformStages(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
-
-	m := &types.Metadata{
-		Database: &types.Database{
-			Driver: "foo",
-			Host:   "foo",
-		},
-		Queue: &types.Queue{
-			Channel: "foo",
-			Driver:  "foo",
-			Host:    "foo",
-		},
-		Source: &types.Source{
-			Driver: "foo",
-			Host:   "foo",
-		},
-		Vela: &types.Vela{
-			Address:    "foo",
-			WebAddress: "foo",
-		},
-	}
 
 	p := &yaml.Build{
 		Version: "v1",
@@ -110,7 +89,7 @@ func TestNative_TransformStages(t *testing.T) {
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
 						ID:        "__0_install deps_install",
-						Directory: "/vela/src/foo//",
+						Directory: "/home//",
 						Commands:  []string{"./gradlew downloadDependencies"},
 						Image:     "openjdk:latest",
 						Name:      "install",
@@ -127,8 +106,6 @@ func TestNative_TransformStages(t *testing.T) {
 	if err != nil {
 		t.Errorf("Creating compiler returned err: %v", err)
 	}
-
-	compiler.WithMetadata(m)
 
 	got, err := compiler.TransformStages(new(pipeline.RuleData), p)
 	if err != nil {
@@ -156,26 +133,6 @@ func TestNative_TransformSteps(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
-
-	m := &types.Metadata{
-		Database: &types.Database{
-			Driver: "foo",
-			Host:   "foo",
-		},
-		Queue: &types.Queue{
-			Channel: "foo",
-			Driver:  "foo",
-			Host:    "foo",
-		},
-		Source: &types.Source{
-			Driver: "foo",
-			Host:   "foo",
-		},
-		Vela: &types.Vela{
-			Address:    "foo",
-			WebAddress: "foo",
-		},
-	}
 
 	p := &yaml.Build{
 		Version: "v1",
@@ -232,7 +189,7 @@ func TestNative_TransformSteps(t *testing.T) {
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:        "step___0_install deps",
-				Directory: "/vela/src/foo//",
+				Directory: "/home//",
 				Commands:  []string{"./gradlew downloadDependencies"},
 				Image:     "openjdk:latest",
 				Name:      "install deps",
@@ -247,8 +204,6 @@ func TestNative_TransformSteps(t *testing.T) {
 	if err != nil {
 		t.Errorf("Creating compiler returned err: %v", err)
 	}
-
-	compiler.WithMetadata(m)
 
 	got, err := compiler.TransformSteps(new(pipeline.RuleData), p)
 	if err != nil {
