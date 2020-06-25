@@ -111,7 +111,11 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
-	workspace := fmt.Sprintf("/home/%s/%s", r.GetOrg(), r.GetName())
+	workspace := "/vela"
+
+	if m != nil {
+		workspace = fmt.Sprintf("/vela/src/%s/%s/%s", m.Source.Host, r.GetOrg(), r.GetName())
+	}
 
 	env := map[string]string{
 		// build specific environment variables
