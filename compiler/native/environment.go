@@ -109,6 +109,42 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 	return s, nil
 }
 
+// EnvironmentSecrets injects environment variables
+// for each secret plugin in a yaml configuration.
+func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error) {
+	// iterate through all secrets
+	for _, secret := range s {
+		// skip non plugin secrets
+		if secret.Origin.Empty() {
+			continue
+		}
+
+		// make empty map of environment variables
+		env := make(map[string]string)
+		// gather set of default environment variables
+		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
+
+		// inject the declared environment
+		// variables to the build secret
+		for k, v := range secret.Origin.Environment {
+			env[k] = v
+		}
+
+		// inject the default environment
+		// variables to the build service
+		// we do this after injecting the declared environment
+		// to ensure the default env overrides any conflicts
+		for k, v := range defaultEnv {
+			env[k] = v
+		}
+
+		// overwrite existing build service environment
+		secret.Origin.Environment = env
+	}
+
+	return s, nil
+}
+
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
 	workspace := "/vela"

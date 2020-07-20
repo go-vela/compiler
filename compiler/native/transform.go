@@ -18,12 +18,15 @@ const (
 	// default ID for steps in a stage in a pipeline.
 	// format: `<org name>_<repo name>_<build number>_<stage name>_<step name>`
 	stageID = "%s_%s_%d_%s_%s"
-	// default ID for steps in a pipeline.
+	// default ID for stage steps in a pipeline.
 	// format: `step_<org name>_<repo name>_<build number>_<step name>`
 	stepID = "step_%s_%s_%d_%s"
-	// default ID for steps in a pipeline.
+	// default ID for services in a pipeline.
 	// format: `service_<org name>_<repo name>_<build number>_<service name>`
 	serviceID = "service_%s_%s_%d_%s"
+	// default ID for secrets in a pipeline.
+	// format: `secret_<org name>_<repo name>_<build number>_<secret name>`
+	secretID = "secret_%s_%s_%d_%s"
 )
 
 // TransformStages converts a yaml configuration with stages into an executable pipeline.
@@ -69,6 +72,20 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 		service.ID = pattern
 	}
 
+	// set the unique ID for each secret in the executable pipeline
+	for _, secret := range pipeline.Secrets {
+		// skip non plugin secrets
+		if secret.Origin.Empty() {
+			continue
+		}
+
+		// create pattern for secrets
+		pattern := fmt.Sprintf(secretID, org, name, number, secret.Origin.Name)
+
+		// set id to the pattern
+		secret.Origin.ID = pattern
+	}
+
 	return pipeline.Purge(r), nil
 }
 
@@ -111,6 +128,20 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 
 		// set id to the pattern
 		service.ID = pattern
+	}
+
+	// set the unique ID for each secret in the executable pipeline
+	for _, secret := range pipeline.Secrets {
+		// skip non plugin secrets
+		if secret.Origin.Empty() {
+			continue
+		}
+
+		// create pattern for secrets
+		pattern := fmt.Sprintf(secretID, org, name, number, secret.Origin.Name)
+
+		// set id to the pattern
+		secret.Origin.ID = pattern
 	}
 
 	return pipeline.Purge(r), nil

@@ -240,6 +240,98 @@ func TestNative_EnvironmentServices(t *testing.T) {
 	}
 }
 
+func TestNative_EnvironmentSecrets(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+
+	str := "foo"
+	s := yaml.SecretSlice{
+		&yaml.Secret{
+			Name: str,
+			Origin: yaml.Origin{
+				Image: "vault",
+				Name:  str,
+				Pull:  true,
+				Environment: raw.StringSliceMap{
+					"BUILD_CHANNEL": "foo",
+				},
+			},
+		},
+	}
+
+	want := yaml.SecretSlice{
+		&yaml.Secret{
+			Name: str,
+			Origin: yaml.Origin{
+				Image: "vault",
+				Name:  str,
+				Pull:  true,
+				Environment: raw.StringSliceMap{
+					"BUILD_AUTHOR":         "",
+					"BUILD_AUTHOR_EMAIL":   "",
+					"BUILD_BRANCH":         "",
+					"BUILD_CHANNEL":        "TODO",
+					"BUILD_COMMIT":         "",
+					"BUILD_CREATED":        "0",
+					"BUILD_ENQUEUED":       "0",
+					"BUILD_EVENT":          "",
+					"BUILD_FINISHED":       "0",
+					"BUILD_HOST":           "TODO",
+					"BUILD_LINK":           "",
+					"BUILD_MESSAGE":        "",
+					"BUILD_NUMBER":         "0",
+					"BUILD_PARENT":         "0",
+					"BUILD_REF":            "",
+					"BUILD_SOURCE":         "",
+					"BUILD_STARTED":        "0",
+					"BUILD_TITLE":          "",
+					"BUILD_WORKSPACE":      "/vela",
+					"CI":                   "vela",
+					"REPOSITORY_BRANCH":    "",
+					"REPOSITORY_CLONE":     "",
+					"REPOSITORY_FULL_NAME": "",
+					"REPOSITORY_LINK":      "",
+					"REPOSITORY_NAME":      "",
+					"REPOSITORY_ORG":       "",
+					"REPOSITORY_PRIVATE":   "false",
+					"REPOSITORY_TIMEOUT":   "0",
+					"REPOSITORY_TRUSTED":   "false",
+					"VELA":                 "true",
+					"VELA_ADDR":            "TODO",
+					"VELA_CHANNEL":         "TODO",
+					"VELA_DATABASE":        "TODO",
+					"VELA_DISTRIBUTION":    "TODO",
+					"VELA_HOST":            "TODO",
+					"VELA_NETRC_MACHINE":   "TODO",
+					"VELA_NETRC_PASSWORD":  "",
+					"VELA_NETRC_USERNAME":  "x-oauth-basic",
+					"VELA_QUEUE":           "TODO",
+					"VELA_RUNTIME":         "TODO",
+					"VELA_SOURCE":          "TODO",
+					"VELA_VERSION":         "TODO",
+					"VELA_WORKSPACE":       "/vela",
+				},
+			},
+		},
+	}
+
+	// run test
+	compiler, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	got, err := compiler.EnvironmentSecrets(s)
+	if err != nil {
+		t.Errorf("EnvironmentSecrets returned err: %v", err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("EnvironmentSecrets is %v, want %v", got, want)
+	}
+}
+
 func TestNative_environment(t *testing.T) {
 	// setup types
 	booL := false

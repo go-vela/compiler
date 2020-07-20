@@ -85,6 +85,16 @@ func TestNative_TransformStages(t *testing.T) {
 				},
 			},
 		},
+		Secrets: yaml.SecretSlice{
+			&yaml.Secret{
+				Name: "foobar",
+				Origin: yaml.Origin{
+					Image: "vault:latest",
+					Name:  "vault",
+					Pull:  true,
+				},
+			},
+		},
 	}
 
 	want := &pipeline.Build{
@@ -117,6 +127,18 @@ func TestNative_TransformStages(t *testing.T) {
 						Number:    1,
 						Pull:      true,
 					},
+				},
+			},
+		},
+		Secrets: pipeline.SecretSlice{
+			&pipeline.Secret{
+				Name: "foobar",
+				Origin: &pipeline.Container{
+					ID:     "secret___0_vault",
+					Name:   "vault",
+					Image:  "vault:latest",
+					Pull:   true,
+					Number: 1,
 				},
 			},
 		},
@@ -210,6 +232,16 @@ func TestNative_TransformSteps(t *testing.T) {
 				},
 			},
 		},
+		Secrets: yaml.SecretSlice{
+			&yaml.Secret{
+				Name: "foobar",
+				Origin: yaml.Origin{
+					Image: "vault:latest",
+					Name:  "vault",
+					Pull:  true,
+				},
+			},
+		},
 	}
 
 	want := &pipeline.Build{
@@ -238,6 +270,18 @@ func TestNative_TransformSteps(t *testing.T) {
 				Name:      "install deps",
 				Number:    1,
 				Pull:      true,
+			},
+		},
+		Secrets: pipeline.SecretSlice{
+			&pipeline.Secret{
+				Name: "foobar",
+				Origin: &pipeline.Container{
+					ID:     "secret___0_vault",
+					Name:   "vault",
+					Image:  "vault:latest",
+					Pull:   true,
+					Number: 1,
+				},
 			},
 		},
 	}

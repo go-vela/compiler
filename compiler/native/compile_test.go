@@ -188,12 +188,14 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 				Key:    "org/repo/docker/username",
 				Engine: "native",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 			&pipeline.Secret{
 				Name:   "docker_password",
 				Key:    "org/repo/docker/password",
 				Engine: "vault",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 		},
 	}
@@ -368,12 +370,14 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Key:    "org/repo/docker/username",
 				Engine: "native",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 			&pipeline.Secret{
 				Name:   "docker_password",
 				Key:    "org/repo/docker/password",
 				Engine: "vault",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 		},
 	}
@@ -577,12 +581,14 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Key:    "org/repo/docker/username",
 				Engine: "native",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 			&pipeline.Secret{
 				Name:   "docker_password",
 				Key:    "org/repo/docker/password",
 				Engine: "vault",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 		},
 	}
@@ -776,12 +782,14 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Key:    "org/repo/docker/username",
 				Engine: "native",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 			&pipeline.Secret{
 				Name:   "docker_password",
 				Key:    "org/repo/docker/password",
 				Engine: "vault",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 		},
 	}
@@ -913,12 +921,14 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 				Key:    "org/repo/docker/username",
 				Engine: "native",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 			&pipeline.Secret{
 				Name:   "docker_password",
 				Key:    "org/repo/docker/password",
 				Engine: "vault",
 				Type:   "repo",
+				Origin: &pipeline.Container{},
 			},
 		},
 	}
