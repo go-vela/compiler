@@ -14,6 +14,7 @@ import (
 
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/pipeline"
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli/v2"
@@ -401,6 +402,9 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(got, want) {
+		if diff := cmp.Diff(want, got); diff != "" {
+			t.Errorf("MakeGatewayInfo() mismatch (-want +got):\n%s", diff)
+		}
 		t.Errorf("Compile is %v, want %v", got, want)
 	}
 }

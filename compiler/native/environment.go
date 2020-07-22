@@ -138,6 +138,22 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 			env[k] = v
 		}
 
+		// inject the declared parameter
+		// variables to the build step
+		for k, v := range secret.Origin.Parameters {
+			if v == nil {
+				continue
+			}
+
+			// parameter keys are passed to the image
+			// as PARAMETER_ environment variables
+			k = "PARAMETER_" + strings.ToUpper(k)
+
+			// parameter values are passed to the image
+			// as string environment variables
+			env[k] = unmarshal(v)
+		}
+
 		// overwrite existing build service environment
 		secret.Origin.Environment = env
 	}

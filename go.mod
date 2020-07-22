@@ -14,6 +14,7 @@ require (
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/go-vela/types v0.4.4-0.20200720135309-f00b29c3308f
 	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/google/go-cmp v0.5.0
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/goware/urlx v0.3.1
