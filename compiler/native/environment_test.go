@@ -253,6 +253,9 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 				Image: "vault",
 				Name:  str,
 				Pull:  true,
+				Parameters: map[string]interface{}{
+					"foo": "bar",
+				},
 				Environment: raw.StringSliceMap{
 					"BUILD_CHANNEL": "foo",
 				},
@@ -267,6 +270,9 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 				Image: "vault",
 				Name:  str,
 				Pull:  true,
+				Parameters: map[string]interface{}{
+					"foo": "bar",
+				},
 				Environment: raw.StringSliceMap{
 					"BUILD_AUTHOR":         "",
 					"BUILD_AUTHOR_EMAIL":   "",
@@ -288,6 +294,7 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 					"BUILD_TITLE":          "",
 					"BUILD_WORKSPACE":      "/vela",
 					"CI":                   "vela",
+					"PARAMETER_FOO":        "bar",
 					"REPOSITORY_BRANCH":    "",
 					"REPOSITORY_CLONE":     "",
 					"REPOSITORY_FULL_NAME": "",
