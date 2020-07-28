@@ -131,7 +131,7 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 		}
 
 		// inject the default environment
-		// variables to the build service
+		// variables to the build secret
 		// we do this after injecting the declared environment
 		// to ensure the default env overrides any conflicts
 		for k, v := range defaultEnv {
@@ -139,7 +139,7 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 		}
 
 		// inject the declared parameter
-		// variables to the build step
+		// variables to the build secret
 		for k, v := range secret.Origin.Parameters {
 			if v == nil {
 				continue
@@ -154,7 +154,7 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 			env[k] = unmarshal(v)
 		}
 
-		// overwrite existing build service environment
+		// overwrite existing build secret environment
 		secret.Origin.Environment = env
 	}
 

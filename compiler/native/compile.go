@@ -45,7 +45,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
-	// inject the environment variables into the services
+	// inject the environment variables into the secrets
 	p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
 	if err != nil {
 		return nil, err

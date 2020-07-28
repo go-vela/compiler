@@ -18,7 +18,7 @@ const (
 	// default ID for steps in a stage in a pipeline.
 	// format: `<org name>_<repo name>_<build number>_<stage name>_<step name>`
 	stageID = "%s_%s_%d_%s_%s"
-	// default ID for stage steps in a pipeline.
+	// default ID for steps in a pipeline.
 	// format: `step_<org name>_<repo name>_<build number>_<step name>`
 	stepID = "step_%s_%s_%d_%s"
 	// default ID for services in a pipeline.
