@@ -141,7 +141,6 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 
 	// populate environment variables from metadata
 	if m != nil {
-		env["BUILD_CHANNEL"] = m.Queue.Channel
 		env["VELA_ADDR"] = m.Vela.WebAddress
 		env["VELA_CHANNEL"] = m.Queue.Channel
 		env["VELA_DATABASE"] = m.Database.Driver
@@ -160,6 +159,12 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 	mergeMap(env, b.Environment(workspace))
 	// populate environment variables from user library
 	mergeMap(env, u.Environment())
+
+	// TODO: add this to types
+
+	if m != nil {
+		env["BUILD_CHANNEL"] = m.Queue.Channel
+	}
 
 	return env
 }
