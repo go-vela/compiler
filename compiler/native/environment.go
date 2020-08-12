@@ -108,6 +108,58 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 	return s, nil
 }
 
+// EnvironmentSecrets injects environment variables
+// for each secret plugin in a yaml configuration.
+func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error) {
+	// iterate through all secrets
+	for _, secret := range s {
+		// skip non plugin secrets
+		if secret.Origin.Empty() {
+			continue
+		}
+
+		// make empty map of environment variables
+		env := make(map[string]string)
+		// gather set of default environment variables
+		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
+
+		// inject the declared environment
+		// variables to the build secret
+		for k, v := range secret.Origin.Environment {
+			env[k] = v
+		}
+
+		// inject the default environment
+		// variables to the build secret
+		// we do this after injecting the declared environment
+		// to ensure the default env overrides any conflicts
+		for k, v := range defaultEnv {
+			env[k] = v
+		}
+
+		// inject the declared parameter
+		// variables to the build secret
+		for k, v := range secret.Origin.Parameters {
+			if v == nil {
+				continue
+			}
+
+			// parameter keys are passed to the image
+			// as PARAMETER_ environment variables
+			k = "PARAMETER_" + strings.ToUpper(k)
+
+			// parameter values are passed to the image
+			// as string environment variables
+			env[k] = library.ToString(v)
+		}
+
+		// overwrite existing build secret environment
+		secret.Origin.Environment = env
+	}
+
+	return s, nil
+}
+
 // helper function to merge two maps together.
 func mergeMap(combinedMap, loopMap map[string]string) map[string]string {
 	for key, value := range loopMap {
