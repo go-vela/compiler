@@ -172,23 +172,24 @@ func mergeMap(combinedMap, loopMap map[string]string) map[string]string {
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
 	workspace := "/vela"
+	notImplemented := "TODO"
 
 	env := make(map[string]string)
 
 	// vela specific environment variables
 	env["VELA"] = library.ToString(true)
-	env["VELA_ADDR"] = "TODO"
-	env["VELA_CHANNEL"] = "TODO"
-	env["VELA_DATABASE"] = "TODO"
-	env["VELA_DISTRIBUTION"] = "TODO"
-	env["VELA_HOST"] = "TODO"
-	env["VELA_NETRC_MACHINE"] = "TODO"
+	env["VELA_ADDR"] = notImplemented
+	env["VELA_CHANNEL"] = notImplemented
+	env["VELA_DATABASE"] = notImplemented
+	env["VELA_DISTRIBUTION"] = notImplemented
+	env["VELA_HOST"] = notImplemented
+	env["VELA_NETRC_MACHINE"] = notImplemented
 	env["VELA_NETRC_PASSWORD"] = u.GetToken()
 	env["VELA_NETRC_USERNAME"] = "x-oauth-basic"
-	env["VELA_QUEUE"] = "TODO"
-	env["VELA_RUNTIME"] = "TODO"
-	env["VELA_SOURCE"] = "TODO"
-	env["VELA_VERSION"] = "TODO"
+	env["VELA_QUEUE"] = notImplemented
+	env["VELA_RUNTIME"] = notImplemented
+	env["VELA_SOURCE"] = notImplemented
+	env["VELA_VERSION"] = notImplemented
 	env["CI"] = "vela"
 
 	// populate environment variables from metadata
