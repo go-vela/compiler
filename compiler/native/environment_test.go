@@ -111,29 +111,52 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 				"BUILD_TITLE":          "",
 				"BUILD_WORKSPACE":      "/vela",
 				"CI":                   "vela",
-				"REPOSITORY_BRANCH":    "",
-				"REPOSITORY_CLONE":     "",
+				"REPOSITORY_ACTIVE": "false",
+				"REPOSITORY_ALLOW_COMMENT": "false",
+				"REPOSITORY_ALLOW_DEPLOY": "false",
+				"REPOSITORY_ALLOW_PULL": "false",
+				"REPOSITORY_ALLOW_PUSH": "false",
+				"REPOSITORY_ALLOW_TAG": "false",
+				"REPOSITORY_BRANCH": "",
+				"REPOSITORY_CLONE": "",
 				"REPOSITORY_FULL_NAME": "",
-				"REPOSITORY_LINK":      "",
-				"REPOSITORY_NAME":      "",
-				"REPOSITORY_ORG":       "",
-				"REPOSITORY_PRIVATE":   "false",
-				"REPOSITORY_TIMEOUT":   "0",
-				"REPOSITORY_TRUSTED":   "false",
-				"VELA":                 "true",
-				"VELA_ADDR":            "TODO",
-				"VELA_CHANNEL":         "TODO",
-				"VELA_DATABASE":        "TODO",
-				"VELA_DISTRIBUTION":    "TODO",
-				"VELA_HOST":            "TODO",
-				"VELA_NETRC_MACHINE":   "TODO",
-				"VELA_NETRC_PASSWORD":  "",
-				"VELA_NETRC_USERNAME":  "x-oauth-basic",
-				"VELA_QUEUE":           "TODO",
-				"VELA_RUNTIME":         "TODO",
-				"VELA_SOURCE":          "TODO",
-				"VELA_VERSION":         "TODO",
-				"VELA_WORKSPACE":       "/vela",
+				"REPOSITORY_LINK": "",
+				"REPOSITORY_NAME": "",
+				"REPOSITORY_ORG": "",
+				"REPOSITORY_PRIVATE": "false",
+				"REPOSITORY_TIMEOUT": "0",
+				"REPOSITORY_TRUSTED": "false",
+				"REPOSITORY_VISIBILITY": "",
+				"VELA": "true",
+				"VELA_ADDR": "TODO",
+				"VELA_CHANNEL": "TODO",
+				"VELA_DATABASE": "TODO",
+				"VELA_DISTRIBUTION": "TODO",
+				"VELA_HOST": "TODO",
+				"VELA_NETRC_MACHINE": "TODO",
+				"VELA_NETRC_PASSWORD": "",
+				"VELA_NETRC_USERNAME": "x-oauth-basic",
+				"VELA_QUEUE": "TODO",
+				"VELA_REPO_ACTIVE": "false",
+				"VELA_REPO_ALLOW_COMMENT": "false",
+				"VELA_REPO_ALLOW_DEPLOY": "false",
+				"VELA_REPO_ALLOW_PULL": "false",
+				"VELA_REPO_ALLOW_PUSH": "false",
+				"VELA_REPO_ALLOW_TAG": "false",
+				"VELA_REPO_BRANCH": "",
+				"VELA_REPO_CLONE": "",
+				"VELA_REPO_FULL_NAME": "",
+				"VELA_REPO_LINK": "",
+				"VELA_REPO_NAME": "",
+				"VELA_REPO_ORG": "",
+				"VELA_REPO_PRIVATE": "false",
+				"VELA_REPO_TIMEOUT": "0",
+				"VELA_REPO_TRUSTED": "false",
+				"VELA_REPO_VISIBILITY": "",
+				"VELA_RUNTIME": "TODO",
+				"VELA_SOURCE": "TODO",
+				"VELA_VERSION": "TODO",
+				"VELA_WORKSPACE": "/vela",
 			},
 		},
 	}
@@ -197,29 +220,52 @@ func TestNative_EnvironmentServices(t *testing.T) {
 				"BUILD_TITLE":          "",
 				"BUILD_WORKSPACE":      "/vela",
 				"CI":                   "vela",
-				"REPOSITORY_BRANCH":    "",
-				"REPOSITORY_CLONE":     "",
+				"REPOSITORY_ACTIVE": "false",
+				"REPOSITORY_ALLOW_COMMENT": "false",
+				"REPOSITORY_ALLOW_DEPLOY": "false",
+				"REPOSITORY_ALLOW_PULL": "false",
+				"REPOSITORY_ALLOW_PUSH": "false",
+				"REPOSITORY_ALLOW_TAG": "false",
+				"REPOSITORY_BRANCH": "",
+				"REPOSITORY_CLONE": "",
 				"REPOSITORY_FULL_NAME": "",
-				"REPOSITORY_LINK":      "",
-				"REPOSITORY_NAME":      "",
-				"REPOSITORY_ORG":       "",
-				"REPOSITORY_PRIVATE":   "false",
-				"REPOSITORY_TIMEOUT":   "0",
-				"REPOSITORY_TRUSTED":   "false",
-				"VELA":                 "true",
-				"VELA_ADDR":            "TODO",
-				"VELA_CHANNEL":         "TODO",
-				"VELA_DATABASE":        "TODO",
-				"VELA_DISTRIBUTION":    "TODO",
-				"VELA_HOST":            "TODO",
-				"VELA_NETRC_MACHINE":   "TODO",
-				"VELA_NETRC_PASSWORD":  "",
-				"VELA_NETRC_USERNAME":  "x-oauth-basic",
-				"VELA_QUEUE":           "TODO",
-				"VELA_RUNTIME":         "TODO",
-				"VELA_SOURCE":          "TODO",
-				"VELA_VERSION":         "TODO",
-				"VELA_WORKSPACE":       "/vela",
+				"REPOSITORY_LINK": "",
+				"REPOSITORY_NAME": "",
+				"REPOSITORY_ORG": "",
+				"REPOSITORY_PRIVATE": "false",
+				"REPOSITORY_TIMEOUT": "0",
+				"REPOSITORY_TRUSTED": "false",
+				"REPOSITORY_VISIBILITY": "",
+				"VELA": "true",
+				"VELA_ADDR": "TODO",
+				"VELA_CHANNEL": "TODO",
+				"VELA_DATABASE": "TODO",
+				"VELA_DISTRIBUTION": "TODO",
+				"VELA_HOST": "TODO",
+				"VELA_NETRC_MACHINE": "TODO",
+				"VELA_NETRC_PASSWORD": "",
+				"VELA_NETRC_USERNAME": "x-oauth-basic",
+				"VELA_QUEUE": "TODO",
+				"VELA_REPO_ACTIVE": "false",
+				"VELA_REPO_ALLOW_COMMENT": "false",
+				"VELA_REPO_ALLOW_DEPLOY": "false",
+				"VELA_REPO_ALLOW_PULL": "false",
+				"VELA_REPO_ALLOW_PUSH": "false",
+				"VELA_REPO_ALLOW_TAG": "false",
+				"VELA_REPO_BRANCH": "",
+				"VELA_REPO_CLONE": "",
+				"VELA_REPO_FULL_NAME": "",
+				"VELA_REPO_LINK": "",
+				"VELA_REPO_NAME": "",
+				"VELA_REPO_ORG": "",
+				"VELA_REPO_PRIVATE": "false",
+				"VELA_REPO_TIMEOUT": "0",
+				"VELA_REPO_TRUSTED": "false",
+				"VELA_REPO_VISIBILITY": "",
+				"VELA_RUNTIME": "TODO",
+				"VELA_SOURCE": "TODO",
+				"VELA_VERSION": "TODO",
+				"VELA_WORKSPACE": "/vela",
 			},
 		},
 	}
@@ -274,7 +320,7 @@ func TestNative_environment(t *testing.T) {
 			m:    &types.Metadata{Database: &types.Database{Driver: str, Host: str}, Queue: &types.Queue{Channel: str, Driver: str, Host: str}, Source: &types.Source{Driver: str, Host: str}, Vela: &types.Vela{Address: str, WebAddress: str}},
 			r:    &library.Repo{ID: &num64, UserID: &num64, Org: &str, Name: &str, FullName: &str, Link: &str, Clone: &str, Branch: &str, Timeout: &num64, Visibility: &str, Private: &booL, Trusted: &booL, Active: &booL, AllowPull: &booL, AllowPush: &booL, AllowDeploy: &booL, AllowTag: &booL, AllowComment: &booL},
 			u:    &library.User{ID: &num64, Name: &str, Token: &str, Active: &booL, Admin: &booL},
-			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "push", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "foo", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false"},
+			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "push", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "foo", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_ACTIVE": "false", "REPOSITORY_ALLOW_COMMENT": "false", "REPOSITORY_ALLOW_DEPLOY": "false", "REPOSITORY_ALLOW_PULL": "false", "REPOSITORY_ALLOW_PUSH": "false", "REPOSITORY_ALLOW_TAG": "false", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false", "REPOSITORY_VISIBILITY": "foo", "VELA_REPO_ACTIVE": "false", "VELA_REPO_ALLOW_COMMENT": "false", "VELA_REPO_ALLOW_DEPLOY": "false", "VELA_REPO_ALLOW_PULL": "false", "VELA_REPO_ALLOW_PUSH": "false", "VELA_REPO_ALLOW_TAG": "false", "VELA_REPO_BRANCH": "foo", "VELA_REPO_CLONE": "foo", "VELA_REPO_FULL_NAME": "foo", "VELA_REPO_LINK": "foo", "VELA_REPO_NAME": "foo", "VELA_REPO_ORG": "foo", "VELA_REPO_PRIVATE": "false", "VELA_REPO_TIMEOUT": "1", "VELA_REPO_TRUSTED": "false", "VELA_REPO_VISIBILITY": "foo"},
 		},
 		// tag
 		{
@@ -283,7 +329,7 @@ func TestNative_environment(t *testing.T) {
 			m:    &types.Metadata{Database: &types.Database{Driver: str, Host: str}, Queue: &types.Queue{Channel: str, Driver: str, Host: str}, Source: &types.Source{Driver: str, Host: str}, Vela: &types.Vela{Address: str, WebAddress: str}},
 			r:    &library.Repo{ID: &num64, UserID: &num64, Org: &str, Name: &str, FullName: &str, Link: &str, Clone: &str, Branch: &str, Timeout: &num64, Visibility: &str, Private: &booL, Trusted: &booL, Active: &booL, AllowPull: &booL, AllowPush: &booL, AllowDeploy: &booL, AllowTag: &booL, AllowComment: &booL},
 			u:    &library.User{ID: &num64, Name: &str, Token: &str, Active: &booL, Admin: &booL},
-			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "tag", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "refs/tags/1", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TAG": "1", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false"},
+			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "tag", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "refs/tags/1", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TAG": "1", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false", "REPOSITORY_ACTIVE": "false", "REPOSITORY_ALLOW_COMMENT": "false", "REPOSITORY_ALLOW_DEPLOY": "false", "REPOSITORY_ALLOW_PULL": "false", "REPOSITORY_ALLOW_PUSH": "false", "REPOSITORY_ALLOW_TAG": "false", "REPOSITORY_VISIBILITY": "foo", "VELA_REPO_ACTIVE": "false", "VELA_REPO_ALLOW_COMMENT": "false", "VELA_REPO_ALLOW_DEPLOY": "false", "VELA_REPO_ALLOW_PULL": "false", "VELA_REPO_ALLOW_PUSH": "false", "VELA_REPO_ALLOW_TAG": "false", "VELA_REPO_BRANCH": "foo", "VELA_REPO_CLONE": "foo", "VELA_REPO_FULL_NAME": "foo", "VELA_REPO_LINK": "foo", "VELA_REPO_NAME": "foo", "VELA_REPO_ORG": "foo", "VELA_REPO_PRIVATE": "false", "VELA_REPO_TIMEOUT": "1", "VELA_REPO_TRUSTED": "false", "VELA_REPO_VISIBILITY": "foo"},
 		},
 		// pull_request
 		{
@@ -292,7 +338,7 @@ func TestNative_environment(t *testing.T) {
 			m:    &types.Metadata{Database: &types.Database{Driver: str, Host: str}, Queue: &types.Queue{Channel: str, Driver: str, Host: str}, Source: &types.Source{Driver: str, Host: str}, Vela: &types.Vela{Address: str, WebAddress: str}},
 			r:    &library.Repo{ID: &num64, UserID: &num64, Org: &str, Name: &str, FullName: &str, Link: &str, Clone: &str, Branch: &str, Timeout: &num64, Visibility: &str, Private: &booL, Trusted: &booL, Active: &booL, AllowPull: &booL, AllowPush: &booL, AllowDeploy: &booL, AllowTag: &booL, AllowComment: &booL},
 			u:    &library.User{ID: &num64, Name: &str, Token: &str, Active: &booL, Admin: &booL},
-			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "pull_request", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_PULL_REQUEST_NUMBER": "1", "BUILD_REF": "refs/pull/1/head", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false"},
+			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "pull_request", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_PULL_REQUEST_NUMBER": "1", "BUILD_REF": "refs/pull/1/head", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false", "REPOSITORY_ACTIVE": "false", "REPOSITORY_ALLOW_COMMENT": "false", "REPOSITORY_ALLOW_DEPLOY": "false", "REPOSITORY_ALLOW_PULL": "false", "REPOSITORY_ALLOW_PUSH": "false", "REPOSITORY_ALLOW_TAG": "false", "REPOSITORY_VISIBILITY": "foo", "VELA_REPO_ACTIVE": "false", "VELA_REPO_ALLOW_COMMENT": "false", "VELA_REPO_ALLOW_DEPLOY": "false", "VELA_REPO_ALLOW_PULL": "false", "VELA_REPO_ALLOW_PUSH": "false", "VELA_REPO_ALLOW_TAG": "false", "VELA_REPO_BRANCH": "foo", "VELA_REPO_CLONE": "foo", "VELA_REPO_FULL_NAME": "foo", "VELA_REPO_LINK": "foo", "VELA_REPO_NAME": "foo", "VELA_REPO_ORG": "foo", "VELA_REPO_PRIVATE": "false", "VELA_REPO_TIMEOUT": "1", "VELA_REPO_TRUSTED": "false", "VELA_REPO_VISIBILITY": "foo"},
 		},
 		// deployment
 		{
@@ -301,7 +347,7 @@ func TestNative_environment(t *testing.T) {
 			m:    &types.Metadata{Database: &types.Database{Driver: str, Host: str}, Queue: &types.Queue{Channel: str, Driver: str, Host: str}, Source: &types.Source{Driver: str, Host: str}, Vela: &types.Vela{Address: str, WebAddress: str}},
 			r:    &library.Repo{ID: &num64, UserID: &num64, Org: &str, Name: &str, FullName: &str, Link: &str, Clone: &str, Branch: &str, Timeout: &num64, Visibility: &str, Private: &booL, Trusted: &booL, Active: &booL, AllowPull: &booL, AllowPush: &booL, AllowDeploy: &booL, AllowTag: &booL, AllowComment: &booL},
 			u:    &library.User{ID: &num64, Name: &str, Token: &str, Active: &booL, Admin: &booL},
-			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "deployment", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "refs/pull/1/head", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TARGET": "production", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false"},
+			want: map[string]string{"BUILD_AUTHOR": "foo", "BUILD_AUTHOR_EMAIL": "", "BUILD_BRANCH": "foo", "BUILD_CHANNEL": "foo", "BUILD_COMMIT": "foo", "BUILD_CREATED": "1", "BUILD_ENQUEUED": "1", "BUILD_EVENT": "deployment", "BUILD_FINISHED": "1", "BUILD_HOST": "TODO", "BUILD_LINK": "", "BUILD_MESSAGE": "foo", "BUILD_NUMBER": "1", "BUILD_PARENT": "1", "BUILD_REF": "refs/pull/1/head", "BUILD_STARTED": "1", "BUILD_SOURCE": "foo", "BUILD_TARGET": "production", "BUILD_TITLE": "foo", "BUILD_WORKSPACE": "/vela/src/foo/foo/foo", "VELA": "true", "VELA_ADDR": "foo", "VELA_CHANNEL": "foo", "VELA_DATABASE": "foo", "VELA_DISTRIBUTION": "TODO", "VELA_HOST": "foo", "VELA_NETRC_MACHINE": "foo", "VELA_NETRC_PASSWORD": "foo", "VELA_NETRC_USERNAME": "x-oauth-basic", "VELA_QUEUE": "foo", "VELA_RUNTIME": "TODO", "VELA_SOURCE": "foo", "VELA_VERSION": "TODO", "VELA_WORKSPACE": "/vela/src/foo/foo/foo", "CI": "vela", "REPOSITORY_BRANCH": "foo", "REPOSITORY_CLONE": "foo", "REPOSITORY_FULL_NAME": "foo", "REPOSITORY_LINK": "foo", "REPOSITORY_NAME": "foo", "REPOSITORY_ORG": "foo", "REPOSITORY_PRIVATE": "false", "REPOSITORY_TIMEOUT": "1", "REPOSITORY_TRUSTED": "false", "REPOSITORY_ACTIVE": "false", "REPOSITORY_ALLOW_COMMENT": "false", "REPOSITORY_ALLOW_DEPLOY": "false", "REPOSITORY_ALLOW_PULL": "false", "REPOSITORY_ALLOW_PUSH": "false", "REPOSITORY_ALLOW_TAG": "false", "REPOSITORY_VISIBILITY": "foo", "VELA_REPO_ACTIVE": "false", "VELA_REPO_ALLOW_COMMENT": "false", "VELA_REPO_ALLOW_DEPLOY": "false", "VELA_REPO_ALLOW_PULL": "false", "VELA_REPO_ALLOW_PUSH": "false", "VELA_REPO_ALLOW_TAG": "false", "VELA_REPO_BRANCH": "foo", "VELA_REPO_CLONE": "foo", "VELA_REPO_FULL_NAME": "foo", "VELA_REPO_LINK": "foo", "VELA_REPO_NAME": "foo", "VELA_REPO_ORG": "foo", "VELA_REPO_PRIVATE": "false", "VELA_REPO_TIMEOUT": "1", "VELA_REPO_TRUSTED": "false", "VELA_REPO_VISIBILITY": "foo"},
 		},
 	}
 
@@ -312,5 +358,40 @@ func TestNative_environment(t *testing.T) {
 		if !reflect.DeepEqual(got, test.want) {
 			t.Errorf("environment is %v, want %v", got, test.want)
 		}
+	}
+}
+
+func Test_mergeMap(t *testing.T) {
+	type args struct {
+		combinedMap map[string]string
+		loopMap     map[string]string
+	}
+	tests := []struct {
+		name string
+		args args
+		want map[string]string
+	}{
+		{"empty", args{
+			combinedMap: map[string]string{},
+			loopMap:     map[string]string{},
+		}, map[string]string{}},
+		{"content", args{
+			combinedMap: map[string]string{
+				"VELA_FOO": "bar",
+			},
+			loopMap:     map[string]string{
+				"VELA_TEST": "foo",
+			},
+		}, map[string]string{
+			"VELA_FOO": "bar",
+			"VELA_TEST": "foo",
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := mergeMap(tt.args.combinedMap, tt.args.loopMap); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("mergeMap() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
