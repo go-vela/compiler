@@ -161,18 +161,19 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 }
 
 // helper function to merge two maps together.
-func mergeMap(combinedMap, loopMap map[string]string) map[string]string {
-	for key, value := range loopMap {
-		combinedMap[key] = value
+func appendMap(originalMap, otherMap map[string]string) map[string]string {
+	for key, value := range otherMap {
+		originalMap[key] = value
 	}
 
-	return combinedMap
+	return originalMap
 }
 
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
 	workspace := "/vela"
 	notImplemented := "TODO"
+	channel := notImplemented
 
 	env := make(map[string]string)
 
@@ -201,23 +202,18 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 		env["VELA_NETRC_MACHINE"] = m.Source.Host
 		env["VELA_QUEUE"] = m.Queue.Driver
 		env["VELA_SOURCE"] = m.Source.Driver
+		channel = m.Queue.Channel
 		workspace = fmt.Sprintf("/vela/src/%s/%s/%s", m.Source.Host, r.GetOrg(), r.GetName())
 	}
 
 	env["VELA_WORKSPACE"] = workspace
 
 	// populate environment variables from repo library
-	mergeMap(env, r.Environment())
+	env = appendMap(env, r.Environment())
 	// populate environment variables from build library
-	mergeMap(env, b.Environment(workspace))
+	env = appendMap(env, b.Environment(workspace, channel))
 	// populate environment variables from user library
-	mergeMap(env, u.Environment())
-
-	// TODO: add this to types
-
-	if m != nil {
-		env["BUILD_CHANNEL"] = m.Queue.Channel
-	}
+	env = appendMap(env, u.Environment())
 
 	return env
 }
