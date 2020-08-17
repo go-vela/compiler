@@ -5,11 +5,55 @@
 package native
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
-	"strings"
-
 	"github.com/go-vela/types/pipeline"
+	"github.com/go-vela/types/yaml"
+	"io/ioutil"
+	"net/http"
+	"strings"
 )
+
+// modifyConfig sends the configuration to external http endpoint for modification
+// returns the updated yaml.Build for further compilation
+func (c *client) modifyConfig(build *yaml.Build) (*yaml.Build, error) {
+	b, err := json.Marshal(build)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode build")
+	}
+
+	newBuild := new(yaml.Build)
+	req, err := http.NewRequest("POST", c.ModificationService.Endpoint, bytes.NewBuffer(b))
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{
+		Timeout: c.ModificationService.Timeout,
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.ModificationService.Secret))
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read payload")
+	}
+
+	err = json.Unmarshal(body, newBuild)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal payload")
+	}
+
+	return newBuild, nil
+}
 
 // Compile produces an executable pipeline from a yaml configuration.
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
@@ -70,6 +114,18 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 			return nil, err
 		}
 
+		// send config to external endpoint for modification
+		p, err = c.modifyConfig(p)
+		if err != nil {
+			return nil, err
+		}
+
+		// validate the yaml configuration
+		err = c.Validate(p)
+		if err != nil {
+			return nil, fmt.Errorf("invalid pipeline: %w", err)
+		}
+
 		// inject the environment variables into the stages
 		p.Stages, err = c.EnvironmentStages(p.Stages)
 		if err != nil {
@@ -108,6 +164,18 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	p.Steps, err = c.ExpandSteps(p.Steps, tmpls)
 	if err != nil {
 		return nil, err
+	}
+
+	// send config to external endpoint for modification
+	p, err = c.modifyConfig(p)
+	if err != nil {
+		return nil, err
+	}
+
+	// validate the yaml configuration
+	err = c.Validate(p)
+	if err != nil {
+		return nil, fmt.Errorf("invalid pipeline: %w", err)
 	}
 
 	// inject the environment variables into the steps

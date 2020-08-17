@@ -2,6 +2,8 @@ module github.com/go-vela/compiler
 
 go 1.13
 
+replace github.com/go-vela/types => github.com/JordanSussman/types v0.1.2-0.20200817233341-2853ce2956de
+
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
@@ -11,7 +13,7 @@ require (
 	github.com/drone/envsubst v1.0.2
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
-	github.com/go-vela/types v0.5.1-0.20200813130059-cdc173a9834b
+	github.com/go-vela/types v0.5.0
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect

@@ -6,6 +6,7 @@ package native
 
 import (
 	"github.com/go-vela/compiler/compiler"
+	"time"
 
 	"github.com/go-vela/compiler/registry"
 	"github.com/go-vela/compiler/registry/github"
@@ -17,9 +18,16 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+type ModificationConfig struct {
+	Timeout  time.Duration
+	Endpoint string
+	Secret   string
+}
+
 type client struct {
-	Github        registry.Service
-	PrivateGithub registry.Service
+	Github              registry.Service
+	PrivateGithub       registry.Service
+	ModificationService ModificationConfig
 
 	build    *library.Build
 	comment  string
@@ -32,8 +40,15 @@ type client struct {
 // New returns a Pipeline implementation that integrates with the supported registries.
 func New(ctx *cli.Context) (*client, error) {
 	logrus.Debug("Creating registry clients from CLI configuration")
-
 	c := client{}
+
+	if ctx.String("modification-addr") != "" {
+		c.ModificationService = ModificationConfig{
+			Timeout:  ctx.Duration("modification-timeout"),
+			Endpoint: ctx.String("modification-addr"),
+			Secret:   ctx.String("modification-secret"),
+		}
+	}
 
 	// setup github template service
 	github, err := setupGithub()
