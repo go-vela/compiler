@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/go-vela/types"
-	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
 )
@@ -68,7 +67,7 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 
 			// parameter values are passed to the image
 			// as string environment variables
-			env[k] = unmarshal(v)
+			env[k] = library.ToString(v)
 		}
 
 		// overwrite existing build step environment
@@ -151,7 +150,7 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 
 			// parameter values are passed to the image
 			// as string environment variables
-			env[k] = unmarshal(v)
+			env[k] = library.ToString(v)
 		}
 
 		// overwrite existing build secret environment
@@ -161,83 +160,41 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 	return s, nil
 }
 
+// helper function to merge two maps together.
+func appendMap(originalMap, otherMap map[string]string) map[string]string {
+	for key, value := range otherMap {
+		originalMap[key] = value
+	}
+
+	return originalMap
+}
+
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
 	workspace := "/vela"
+	notImplemented := "TODO"
+	channel := notImplemented
 
-	if m != nil {
-		workspace = fmt.Sprintf("/vela/src/%s/%s/%s", m.Source.Host, r.GetOrg(), r.GetName())
-	}
+	env := make(map[string]string)
 
-	env := map[string]string{
-		// build specific environment variables
-		"BUILD_AUTHOR":       b.GetAuthor(),
-		"BUILD_AUTHOR_EMAIL": b.GetEmail(),
-		"BUILD_BRANCH":       b.GetBranch(),
-		"BUILD_CHANNEL":      "TODO",
-		"BUILD_COMMIT":       b.GetCommit(),
-		"BUILD_CREATED":      unmarshal(b.GetCreated()),
-		"BUILD_ENQUEUED":     unmarshal(b.GetEnqueued()),
-		"BUILD_EVENT":        b.GetEvent(),
-		"BUILD_FINISHED":     unmarshal(b.GetFinished()),
-		"BUILD_HOST":         "TODO",
-		"BUILD_LINK":         b.GetLink(),
-		"BUILD_MESSAGE":      b.GetMessage(),
-		"BUILD_NUMBER":       unmarshal(b.GetNumber()),
-		"BUILD_PARENT":       unmarshal(b.GetParent()),
-		"BUILD_REF":          b.GetRef(),
-		"BUILD_STARTED":      unmarshal(b.GetStarted()),
-		"BUILD_SOURCE":       b.GetSource(),
-		"BUILD_TITLE":        b.GetTitle(),
-		"BUILD_WORKSPACE":    workspace,
-
-		// vela specific environment variables
-		"VELA":                unmarshal(true),
-		"VELA_ADDR":           "TODO",
-		"VELA_CHANNEL":        "TODO",
-		"VELA_DATABASE":       "TODO",
-		"VELA_DISTRIBUTION":   "TODO",
-		"VELA_HOST":           "TODO",
-		"VELA_NETRC_MACHINE":  "TODO",
-		"VELA_NETRC_PASSWORD": u.GetToken(),
-		"VELA_NETRC_USERNAME": "x-oauth-basic",
-		"VELA_QUEUE":          "TODO",
-		"VELA_RUNTIME":        "TODO",
-		"VELA_SOURCE":         "TODO",
-		"VELA_VERSION":        "TODO",
-		"VELA_WORKSPACE":      workspace,
-		"CI":                  "vela",
-
-		// repo specific environment variables
-		"REPOSITORY_BRANCH":    r.GetBranch(),
-		"REPOSITORY_CLONE":     r.GetClone(),
-		"REPOSITORY_FULL_NAME": r.GetFullName(),
-		"REPOSITORY_LINK":      r.GetLink(),
-		"REPOSITORY_NAME":      r.GetName(),
-		"REPOSITORY_ORG":       r.GetOrg(),
-		"REPOSITORY_PRIVATE":   unmarshal(r.GetPrivate()),
-		"REPOSITORY_TIMEOUT":   unmarshal(r.GetTimeout()),
-		"REPOSITORY_TRUSTED":   unmarshal(r.GetTrusted()),
-	}
-
-	// set tag environment variable if proper build event
-	if b.GetEvent() == constants.EventTag {
-		env["BUILD_TAG"] = strings.SplitN(b.GetRef(), "refs/tags/", 2)[1]
-	}
-
-	// set pull request number variable if proper build event
-	if b.GetEvent() == constants.EventPull {
-		env["BUILD_PULL_REQUEST_NUMBER"] = strings.SplitN(b.GetRef(), "/", 4)[2]
-	}
-
-	// set deployment target if proper build event
-	if b.GetEvent() == constants.EventDeploy {
-		env["BUILD_TARGET"] = b.GetDeploy()
-	}
+	// vela specific environment variables
+	env["VELA"] = library.ToString(true)
+	env["VELA_ADDR"] = notImplemented
+	env["VELA_CHANNEL"] = notImplemented
+	env["VELA_DATABASE"] = notImplemented
+	env["VELA_DISTRIBUTION"] = notImplemented
+	env["VELA_HOST"] = notImplemented
+	env["VELA_NETRC_MACHINE"] = notImplemented
+	env["VELA_NETRC_PASSWORD"] = u.GetToken()
+	env["VELA_NETRC_USERNAME"] = "x-oauth-basic"
+	env["VELA_QUEUE"] = notImplemented
+	env["VELA_RUNTIME"] = notImplemented
+	env["VELA_SOURCE"] = notImplemented
+	env["VELA_VERSION"] = notImplemented
+	env["CI"] = "vela"
 
 	// populate environment variables from metadata
 	if m != nil {
-		env["BUILD_CHANNEL"] = m.Queue.Channel
 		env["VELA_ADDR"] = m.Vela.WebAddress
 		env["VELA_CHANNEL"] = m.Queue.Channel
 		env["VELA_DATABASE"] = m.Database.Driver
@@ -245,7 +202,18 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 		env["VELA_NETRC_MACHINE"] = m.Source.Host
 		env["VELA_QUEUE"] = m.Queue.Driver
 		env["VELA_SOURCE"] = m.Source.Driver
+		channel = m.Queue.Channel
+		workspace = fmt.Sprintf("/vela/src/%s/%s/%s", m.Source.Host, r.GetOrg(), r.GetName())
 	}
+
+	env["VELA_WORKSPACE"] = workspace
+
+	// populate environment variables from repo library
+	env = appendMap(env, r.Environment())
+	// populate environment variables from build library
+	env = appendMap(env, b.Environment(workspace, channel))
+	// populate environment variables from user library
+	env = appendMap(env, u.Environment())
 
 	return env
 }
