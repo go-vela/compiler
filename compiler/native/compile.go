@@ -17,6 +17,7 @@ import (
 	"github.com/go-vela/types/yaml"
 )
 
+// ModifyRequest contains the payload passed to the modification endpoint
 type ModifyRequest struct {
 	Pipeline *yaml.Build `json:"pipeline,omitempty"`
 	Build    int         `json:"build,omitempty"`

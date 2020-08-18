@@ -242,6 +242,58 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 	}
 }
 
+func TestNative_Compile_StagesPipeline_Modification(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+	set.String("modification-addr", "foo", "doc")
+	name := "foo"
+	author := "author"
+	number := 1
+
+	// run test
+	yaml, err := ioutil.ReadFile("testdata/stages_pipeline.yml")
+	if err != nil {
+		t.Errorf("Reading yaml file return err: %v", err)
+	}
+
+	compiler, err := New(c)
+	if err != nil {
+		t.Errorf("Creating compiler returned err: %v", err)
+	}
+
+	_, err = compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	if err == nil {
+		t.Errorf("Compile should have returned err")
+	}
+}
+
+func TestNative_Compile_StepsPipeline_Modification(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+	set.String("modification-addr", "foo", "doc")
+	name := "foo"
+	author := "author"
+	number := 1
+
+	// run test
+	yaml, err := ioutil.ReadFile("testdata/steps_pipeline.yml")
+	if err != nil {
+		t.Errorf("Reading yaml file return err: %v", err)
+	}
+
+	compiler, err := New(c)
+	if err != nil {
+		t.Errorf("Creating compiler returned err: %v", err)
+	}
+
+	_, err = compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	if err == nil {
+		t.Errorf("Compile should have returned err")
+	}
+}
+
 func TestNative_Compile_StepsPipeline(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
@@ -1149,6 +1201,11 @@ func Test_client_modifyConfig(t *testing.T) {
 		c.JSON(http.StatusOK, output)
 	})
 
+	engine.POST("/config/unathorized", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusForbidden, want)
+	})
+
 	s := httptest.NewServer(engine)
 	defer s.Close()
 
@@ -1172,21 +1229,33 @@ func Test_client_modifyConfig(t *testing.T) {
 			build:        want,
 			libraryBuild: &library.Build{Number: &number, Author: &author},
 			repo:         &library.Repo{Name: &name},
-			endpoint:     "config/unmodified",
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/unmodified"),
 		}, want, false},
 		{"modified", args{
 			build:        want,
 			libraryBuild: &library.Build{Number: &number, Author: &author},
 			repo:         &library.Repo{Name: &name},
-			endpoint:     "config/modified",
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/modified"),
 		}, want2, false},
+		{"invalid endpoint", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     "bad",
+		}, nil, true},
+		{"unathorized endpoint", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/unathorized"),
+		}, nil, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			compiler := client{
 				ModificationService: ModificationConfig{
 					Timeout:  10 * time.Second,
-					Endpoint: fmt.Sprintf("%s/%s", s.URL, tt.args.endpoint),
+					Endpoint: tt.args.endpoint,
 				},
 			}
 			got, err := compiler.modifyConfig(tt.args.build, tt.args.libraryBuild, tt.args.repo)
