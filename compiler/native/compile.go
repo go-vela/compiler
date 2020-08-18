@@ -8,55 +8,82 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/go-vela/types/pipeline"
-	"github.com/go-vela/types/yaml"
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/go-vela/types/library"
+	"github.com/go-vela/types/pipeline"
+	"github.com/go-vela/types/yaml"
 )
 
-// modifyConfig sends the configuration to external http endpoint for modification
-// returns the updated yaml.Build for further compilation
-func (c *client) modifyConfig(build *yaml.Build) (*yaml.Build, error) {
-	b, err := json.Marshal(build)
-	if err != nil {
-		return nil, fmt.Errorf("failed to encode build")
+type ModifyRequest struct {
+	Pipeline *yaml.Build `json:"pipeline,omitempty"`
+	Build    int         `json:"build,omitempty"`
+	Repo     string      `json:"repo,omitempty"`
+	User     string      `json:"user,omitempty"`
+}
+
+// modifyConfig sends the configuration to external http endpoint for modification.
+func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, repo *library.Repo) (*yaml.Build, error) {
+	// create request to send to endpoint
+	modReq := &ModifyRequest{
+		Pipeline: build,
+		Build:    libraryBuild.GetNumber(),
+		Repo:     repo.GetName(),
+		User:     libraryBuild.GetAuthor(),
 	}
 
-	newBuild := new(yaml.Build)
+	// marshal json to send in request
+	b, err := json.Marshal(modReq)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal modify payload")
+	}
+
+	// create POST request
 	req, err := http.NewRequest("POST", c.ModificationService.Endpoint, bytes.NewBuffer(b))
 	if err != nil {
 		return nil, err
 	}
 
+	// create the client with timeouts
 	client := &http.Client{
 		Timeout: c.ModificationService.Timeout,
 	}
 
+	// add content-type and auth headers
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.ModificationService.Secret))
 
+	// send the request
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
+	// fail if the response code was not 200
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("modification endpoint returned status code %v", resp.StatusCode)
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read payload")
 	}
 
+	newBuild := new(yaml.Build)
+	// unmarshal the response into the yaml.Build struct
 	err = json.Unmarshal(body, newBuild)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal payload")
+		return nil, fmt.Errorf("failed to unmarshal modification payload")
 	}
 
 	return newBuild, nil
 }
 
 // Compile produces an executable pipeline from a yaml configuration.
-func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
+func (c *client) Compile(v interface{}, build *library.Build, repo *library.Repo) (*pipeline.Build, error) {
 	// parse the object into a yaml configuration
 	p, err := c.Parse(v)
 	if err != nil {
@@ -114,10 +141,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 			return nil, err
 		}
 
-		// send config to external endpoint for modification
-		p, err = c.modifyConfig(p)
-		if err != nil {
-			return nil, err
+		if c.ModificationService.Endpoint != "" {
+			// send config to external endpoint for modification
+			p, err = c.modifyConfig(p, build, repo)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		// validate the yaml configuration
@@ -166,10 +195,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
-	// send config to external endpoint for modification
-	p, err = c.modifyConfig(p)
-	if err != nil {
-		return nil, err
+	if c.ModificationService.Endpoint != "" {
+		// send config to external endpoint for modification
+		p, err = c.modifyConfig(p, build, repo)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// validate the yaml configuration

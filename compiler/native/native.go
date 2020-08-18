@@ -5,8 +5,9 @@
 package native
 
 import (
-	"github.com/go-vela/compiler/compiler"
 	"time"
+
+	"github.com/go-vela/compiler/compiler"
 
 	"github.com/go-vela/compiler/registry"
 	"github.com/go-vela/compiler/registry/github"
