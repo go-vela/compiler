@@ -21,6 +21,7 @@ import (
 
 type ModificationConfig struct {
 	Timeout  time.Duration
+	Retries  int
 	Endpoint string
 	Secret   string
 }

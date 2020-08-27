@@ -1254,6 +1254,12 @@ func Test_client_modifyConfig(t *testing.T) {
 		c.JSON(http.StatusOK, want)
 	})
 
+	engine.POST("/config/timeout", func(c *gin.Context) {
+		time.Sleep(3 * time.Second)
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusOK, want)
+	})
+
 	engine.POST("/config/modified", func(c *gin.Context) {
 		c.Header("Content-Type", "application/json")
 		output := want
@@ -1322,6 +1328,12 @@ func Test_client_modifyConfig(t *testing.T) {
 			repo:         &library.Repo{Name: &name},
 			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/unathorized"),
 		}, nil, true},
+		{"timeout endpoint", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/timeout"),
+		}, nil, true},
 		{"empty payload", args{
 			build:        want,
 			libraryBuild: &library.Build{Number: &number, Author: &author},
@@ -1333,7 +1345,8 @@ func Test_client_modifyConfig(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			compiler := client{
 				ModificationService: ModificationConfig{
-					Timeout:  1 * time.Second,
+					Timeout:  2 * time.Second,
+					Retries:  2,
 					Endpoint: tt.args.endpoint,
 				},
 			}

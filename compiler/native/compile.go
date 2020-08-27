@@ -9,7 +9,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -188,28 +187,6 @@ func errorHandler(resp *http.Response, err error, attempts int) (*http.Response,
 	return resp, err
 }
 
-// retryPolicy generates a callback for retryablehttp.Client
-// will retry on connection errors and certain status codes
-func retryPolicy(ctx context.Context, resp *http.Response, err error) (bool, error) {
-	// do not retry if context contains some error
-	if ctx.Err() != nil {
-		return false, ctx.Err()
-	}
-
-	if err != nil {
-		return true, err
-	}
-
-	// check the response code
-	// accept codes of 0 (failed request), 429 (rate limiting), 5xx (server error) excluding 501
-	if resp.StatusCode == 0 || resp.StatusCode == 429 || (resp.StatusCode >= 500 && resp.StatusCode != 501) {
-		logrus.Debugf("retrying connection to modification endpoint since it returned status code of %v", resp.StatusCode)
-		return true, nil
-	}
-
-	return false, nil
-}
-
 // modifyConfig sends the configuration to external http endpoint for modification.
 func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, repo *library.Repo) (*yaml.Build, error) {
 	// create request to send to endpoint
@@ -231,8 +208,8 @@ func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, re
 		HTTPClient:   cleanhttp.DefaultPooledClient(),
 		RetryWaitMin: 500 * time.Millisecond,
 		RetryWaitMax: 1 * time.Second,
-		RetryMax:     10,
-		CheckRetry:   retryPolicy,
+		RetryMax:     c.ModificationService.Retries,
+		CheckRetry:   retryablehttp.DefaultRetryPolicy,
 		ErrorHandler: errorHandler,
 		Backoff:      retryablehttp.DefaultBackoff,
 	}
