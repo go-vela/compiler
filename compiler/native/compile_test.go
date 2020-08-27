@@ -27,9 +27,6 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
-	name := "foo"
-	author := "author"
-	number := 1
 
 	m := &types.Metadata{
 		Database: &types.Database{
@@ -220,7 +217,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 
 	compiler.WithMetadata(m)
 
-	got, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	got, err := compiler.Compile(yaml)
 	if err != nil {
 		t.Errorf("Compile returned err: %v", err)
 	}
@@ -293,11 +290,13 @@ func TestNative_Compile_StagesPipeline_Modification(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			compiler := client{
 				ModificationService: ModificationConfig{
-					Timeout:  10 * time.Second,
+					Timeout:  1 * time.Second,
 					Endpoint: tt.args.endpoint,
 				},
+				repo: &library.Repo{Name: &author},
+				build: &library.Build{Author: &name, Number: &number},
 			}
-			_, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+			_, err := compiler.Compile(yaml)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Compile() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -357,11 +356,13 @@ func TestNative_Compile_StepsPipeline_Modification(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			compiler := client{
 				ModificationService: ModificationConfig{
-					Timeout:  10 * time.Second,
+					Timeout:  1 * time.Second,
 					Endpoint: tt.args.endpoint,
 				},
+				repo: tt.args.repo,
+				build: tt.args.libraryBuild,
 			}
-			_, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+			_, err := compiler.Compile(yaml)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Compile() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -374,9 +375,6 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
-	name := "foo"
-	author := "author"
-	number := 1
 
 	m := &types.Metadata{
 		Database: &types.Database{
@@ -533,7 +531,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 
 	compiler.WithMetadata(m)
 
-	got, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	got, err := compiler.Compile(yaml)
 	if err != nil {
 		t.Errorf("Compile returned err: %v", err)
 	}
@@ -566,9 +564,6 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 	set.String("github-url", s.URL, "doc")
 	set.String("github-token", "", "doc")
 	c := cli.NewContext(nil, set, nil)
-	name := "foo"
-	author := "author"
-	number := 1
 
 	m := &types.Metadata{
 		Database: &types.Database{
@@ -747,7 +742,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 
 	compiler.WithMetadata(m)
 
-	got, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	got, err := compiler.Compile(yaml)
 	if err != nil {
 		t.Errorf("Compile returned err: %v", err)
 	}
@@ -792,9 +787,6 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 	set.String("github-url", s.URL, "doc")
 	set.String("github-token", "", "doc")
 	c := cli.NewContext(nil, set, nil)
-	name := "foo"
-	author := "author"
-	number := 1
 
 	m := &types.Metadata{
 		Database: &types.Database{
@@ -951,7 +943,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 
 	compiler.WithMetadata(m)
 
-	got, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	got, err := compiler.Compile(yaml)
 	if err != nil {
 		t.Errorf("Compile returned err: %v", err)
 	}
@@ -984,9 +976,6 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 	set.String("github-url", s.URL, "doc")
 	set.String("github-token", "", "doc")
 	c := cli.NewContext(nil, set, nil)
-	name := "foo"
-	author := "author"
-	number := 1
 
 	m := &types.Metadata{
 		Database: &types.Database{
@@ -1093,7 +1082,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 
 	compiler.WithMetadata(m)
 
-	got, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	got, err := compiler.Compile(yaml)
 	if err != nil {
 		t.Errorf("Compile returned err: %v", err)
 	}
@@ -1121,8 +1110,10 @@ func TestNative_Compile_NoStepsorStages(t *testing.T) {
 	if err != nil {
 		t.Errorf("Creating compiler returned err: %v", err)
 	}
+	compiler.repo = &library.Repo{Name: &author}
+	compiler.build = &library.Build{Author: &name, Number: &number}
 
-	got, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	got, err := compiler.Compile(yaml)
 	if err == nil {
 		t.Errorf("Compile should have returned err")
 	}
@@ -1150,8 +1141,10 @@ func TestNative_Compile_StepsandStages(t *testing.T) {
 	if err != nil {
 		t.Errorf("Creating compiler returned err: %v", err)
 	}
+	compiler.repo = &library.Repo{Name: &author}
+	compiler.build = &library.Build{Author: &name, Number: &number}
 
-	got, err := compiler.Compile(yaml, &library.Build{Author: &name, Number: &number}, &library.Repo{Name: &author})
+	got, err := compiler.Compile(yaml)
 	if err == nil {
 		t.Errorf("Compile should have returned err")
 	}
@@ -1340,7 +1333,7 @@ func Test_client_modifyConfig(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			compiler := client{
 				ModificationService: ModificationConfig{
-					Timeout:  10 * time.Second,
+					Timeout:  1 * time.Second,
 					Endpoint: tt.args.endpoint,
 				},
 			}

@@ -6,15 +6,20 @@ package native
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
 	"github.com/go-vela/types/yaml"
+	"github.com/hashicorp/go-retryablehttp"
+	"github.com/hashicorp/go-cleanhttp"
 )
 
 // ModifyRequest contains the payload passed to the modification endpoint
@@ -25,66 +30,8 @@ type ModifyRequest struct {
 	User     string      `json:"user,omitempty"`
 }
 
-// modifyConfig sends the configuration to external http endpoint for modification.
-func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, repo *library.Repo) (*yaml.Build, error) {
-	// create request to send to endpoint
-	modReq := &ModifyRequest{
-		Pipeline: build,
-		Build:    libraryBuild.GetNumber(),
-		Repo:     repo.GetName(),
-		User:     libraryBuild.GetAuthor(),
-	}
-
-	// marshal json to send in request
-	b, err := json.Marshal(modReq)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal modify payload")
-	}
-
-	// create POST request
-	req, err := http.NewRequest("POST", c.ModificationService.Endpoint, bytes.NewBuffer(b))
-	if err != nil {
-		return nil, err
-	}
-
-	// create the client with timeouts
-	client := &http.Client{
-		Timeout: c.ModificationService.Timeout,
-	}
-
-	// add content-type and auth headers
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.ModificationService.Secret))
-
-	// send the request
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	// fail if the response code was not 200
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("modification endpoint returned status code %v", resp.StatusCode)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read payload")
-	}
-
-	newBuild := new(yaml.Build)
-	// unmarshal the response into the yaml.Build struct
-	err = json.Unmarshal(body, newBuild)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal modification payload")
-	}
-
-	return newBuild, nil
-}
-
 // Compile produces an executable pipeline from a yaml configuration.
-func (c *client) Compile(v interface{}, build *library.Build, repo *library.Repo) (*pipeline.Build, error) {
+func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	// parse the object into a yaml configuration
 	p, err := c.Parse(v)
 	if err != nil {
@@ -144,7 +91,7 @@ func (c *client) Compile(v interface{}, build *library.Build, repo *library.Repo
 
 		if c.ModificationService.Endpoint != "" {
 			// send config to external endpoint for modification
-			p, err = c.modifyConfig(p, build, repo)
+			p, err = c.modifyConfig(p, c.build, c.repo)
 			if err != nil {
 				return nil, err
 			}
@@ -198,7 +145,7 @@ func (c *client) Compile(v interface{}, build *library.Build, repo *library.Repo
 
 	if c.ModificationService.Endpoint != "" {
 		// send config to external endpoint for modification
-		p, err = c.modifyConfig(p, build, repo)
+		p, err = c.modifyConfig(p, c.build, c.repo)
 		if err != nil {
 			return nil, err
 		}
@@ -230,4 +177,104 @@ func (c *client) Compile(v interface{}, build *library.Build, repo *library.Repo
 
 	// return executable representation
 	return c.TransformSteps(r, p)
+}
+
+// errorHandler ensures the error contains the number of request attempts
+func errorHandler(resp *http.Response, err error, attempts int) (*http.Response, error) {
+	if err != nil {
+		err = fmt.Errorf("giving up connecting to modification endpoint after %d attempts due to: %v", attempts, err)
+	}
+
+	return resp, err
+}
+
+// retryPolicy generates a callback for retryablehttp.Client
+// will retry on connection errors and certain status codes
+func retryPolicy(ctx context.Context, resp *http.Response, err error) (bool, error) {
+	// do not retry if context contains some error
+	if ctx.Err() != nil {
+		return false, ctx.Err()
+	}
+
+	if err != nil {
+		return true, err
+	}
+
+	// check the response code
+	// accept codes of 0 (failed request), 429 (rate limiting), 5xx (server error) excluding 501
+	if resp.StatusCode == 0 || resp.StatusCode == 429|| (resp.StatusCode >= 500 && resp.StatusCode != 501) {
+		logrus.Debugf("retrying connection to modification endpoint since it returned status code of %v", resp.StatusCode)
+		return true, nil
+	}
+
+	return false, nil
+}
+
+// modifyConfig sends the configuration to external http endpoint for modification.
+func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, repo *library.Repo) (*yaml.Build, error) {
+	// create request to send to endpoint
+	modReq := &ModifyRequest{
+		Pipeline: build,
+		Build:    libraryBuild.GetNumber(),
+		Repo:     repo.GetName(),
+		User:     libraryBuild.GetAuthor(),
+	}
+
+	// marshal json to send in request
+	b, err := json.Marshal(modReq)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal modify payload")
+	}
+
+	// setup http client
+	retryClient := retryablehttp.Client{
+		HTTPClient: cleanhttp.DefaultPooledClient(),
+		RetryWaitMin: 500 * time.Millisecond,
+		RetryWaitMax: 1 * time.Second,
+		RetryMax: 10,
+		CheckRetry: retryPolicy,
+		ErrorHandler: errorHandler,
+		Backoff: retryablehttp.DefaultBackoff,
+	}
+
+	// create POST request
+	req, err := retryablehttp.NewRequest("POST", c.ModificationService.Endpoint, bytes.NewBuffer(b))
+	if err != nil {
+		return nil, err
+	}
+
+	// ensure the overall request(s) do not take over the defined timeout
+	ctx, cancel := context.WithTimeout(req.Request.Context(), c.ModificationService.Timeout)
+	defer cancel()
+	req.WithContext(ctx)
+
+	// add content-type and auth headers
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.ModificationService.Secret))
+
+	// send the request
+	resp, err := retryClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// fail if the response code was not 200
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("modification endpoint returned status code %v", resp.StatusCode)
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read payload")
+	}
+
+	newBuild := new(yaml.Build)
+	// unmarshal the response into the yaml.Build struct
+	err = json.Unmarshal(body, newBuild)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal modification payload")
+	}
+
+	return newBuild, nil
 }

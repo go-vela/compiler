@@ -19,7 +19,7 @@ type Engine interface {
 	// Compile defines a function that produces an executable
 	// representation of a pipeline from an object. This calls
 	// Parse internally to convert the object to a yaml configuration.
-	Compile(interface{}, *library.Build, *library.Repo) (*pipeline.Build, error)
+	Compile(interface{}) (*pipeline.Build, error)
 
 	// Parse defines a function that converts
 	// an object to a yaml configuration.
