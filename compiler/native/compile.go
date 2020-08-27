@@ -18,8 +18,8 @@ import (
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
 	"github.com/go-vela/types/yaml"
-	"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/hashicorp/go-retryablehttp"
 )
 
 // ModifyRequest contains the payload passed to the modification endpoint
@@ -202,7 +202,7 @@ func retryPolicy(ctx context.Context, resp *http.Response, err error) (bool, err
 
 	// check the response code
 	// accept codes of 0 (failed request), 429 (rate limiting), 5xx (server error) excluding 501
-	if resp.StatusCode == 0 || resp.StatusCode == 429|| (resp.StatusCode >= 500 && resp.StatusCode != 501) {
+	if resp.StatusCode == 0 || resp.StatusCode == 429 || (resp.StatusCode >= 500 && resp.StatusCode != 501) {
 		logrus.Debugf("retrying connection to modification endpoint since it returned status code of %v", resp.StatusCode)
 		return true, nil
 	}
@@ -228,13 +228,13 @@ func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, re
 
 	// setup http client
 	retryClient := retryablehttp.Client{
-		HTTPClient: cleanhttp.DefaultPooledClient(),
+		HTTPClient:   cleanhttp.DefaultPooledClient(),
 		RetryWaitMin: 500 * time.Millisecond,
 		RetryWaitMax: 1 * time.Second,
-		RetryMax: 10,
-		CheckRetry: retryPolicy,
+		RetryMax:     10,
+		CheckRetry:   retryPolicy,
 		ErrorHandler: errorHandler,
-		Backoff: retryablehttp.DefaultBackoff,
+		Backoff:      retryablehttp.DefaultBackoff,
 	}
 
 	// create POST request

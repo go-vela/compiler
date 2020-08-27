@@ -293,7 +293,7 @@ func TestNative_Compile_StagesPipeline_Modification(t *testing.T) {
 					Timeout:  1 * time.Second,
 					Endpoint: tt.args.endpoint,
 				},
-				repo: &library.Repo{Name: &author},
+				repo:  &library.Repo{Name: &author},
 				build: &library.Build{Author: &name, Number: &number},
 			}
 			_, err := compiler.Compile(yaml)
@@ -359,7 +359,7 @@ func TestNative_Compile_StepsPipeline_Modification(t *testing.T) {
 					Timeout:  1 * time.Second,
 					Endpoint: tt.args.endpoint,
 				},
-				repo: tt.args.repo,
+				repo:  tt.args.repo,
 				build: tt.args.libraryBuild,
 			}
 			_, err := compiler.Compile(yaml)
