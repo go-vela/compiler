@@ -7,14 +7,15 @@ package native
 import (
 	"flag"
 	"fmt"
-	"github.com/go-vela/types/library"
-	"github.com/go-vela/types/yaml"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/go-vela/types/library"
+	"github.com/go-vela/types/yaml"
 
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/pipeline"

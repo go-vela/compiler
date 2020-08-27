@@ -178,7 +178,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	return c.TransformSteps(r, p)
 }
 
-// errorHandler ensures the error contains the number of request attempts
+// errorHandler ensures the error contains the number of request attempts.
 func errorHandler(resp *http.Response, err error, attempts int) (*http.Response, error) {
 	if err != nil {
 		err = fmt.Errorf("giving up connecting to modification endpoint after %d attempts due to: %v", attempts, err)
