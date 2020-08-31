@@ -49,6 +49,7 @@ func New(ctx *cli.Context) (*client, error) {
 			Timeout:  ctx.Duration("modification-timeout"),
 			Endpoint: ctx.String("modification-addr"),
 			Secret:   ctx.String("modification-secret"),
+			Retries:  ctx.String("modification-retries"),
 		}
 	}
 
