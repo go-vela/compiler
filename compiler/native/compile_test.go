@@ -92,7 +92,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Image:       "#init",
 						Name:        "init",
 						Number:      1,
-						Pull:        true,
+						Pull:        "not_present",
 					},
 				},
 			},
@@ -106,7 +106,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Image:       "target/vela-git:v0.3.0",
 						Name:        "clone",
 						Number:      2,
-						Pull:        true,
+						Pull:        "not_present",
 					},
 				},
 			},
@@ -123,7 +123,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Image:       "openjdk:latest",
 						Name:        "install",
 						Number:      3,
-						Pull:        true,
+						Pull:        "always",
 					},
 				},
 			},
@@ -140,7 +140,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Image:       "openjdk:latest",
 						Name:        "test",
 						Number:      4,
-						Pull:        true,
+						Pull:        "always",
 					},
 				},
 			},
@@ -157,7 +157,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Image:       "openjdk:latest",
 						Name:        "build",
 						Number:      5,
-						Pull:        true,
+						Pull:        "always",
 					},
 				},
 			},
@@ -172,7 +172,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 						Environment: dockerEnv,
 						Name:        "publish",
 						Number:      6,
-						Pull:        true,
+						Pull:        "always",
 						Secrets: pipeline.StepSecretSlice{
 							&pipeline.StepSecret{
 								Source: "docker_username",
@@ -437,7 +437,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Image:       "#init",
 				Name:        "init",
 				Number:      1,
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
@@ -446,7 +446,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Image:       "target/vela-git:v0.3.0",
 				Name:        "clone",
 				Number:      2,
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&pipeline.Container{
 				ID:          "step___0_install",
@@ -457,7 +457,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Image:       "openjdk:latest",
 				Name:        "install",
 				Number:      3,
-				Pull:        true,
+				Pull:        "always",
 			},
 			&pipeline.Container{
 				ID:          "step___0_test",
@@ -468,7 +468,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Image:       "openjdk:latest",
 				Name:        "test",
 				Number:      4,
-				Pull:        true,
+				Pull:        "always",
 			},
 			&pipeline.Container{
 				ID:          "step___0_build",
@@ -479,7 +479,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Image:       "openjdk:latest",
 				Name:        "build",
 				Number:      5,
-				Pull:        true,
+				Pull:        "always",
 			},
 			&pipeline.Container{
 				ID:          "step___0_publish",
@@ -488,7 +488,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 				Environment: dockerEnv,
 				Name:        "publish",
 				Number:      6,
-				Pull:        true,
+				Pull:        "always",
 				Secrets: pipeline.StepSecretSlice{
 					&pipeline.StepSecret{
 						Source: "docker_username",
@@ -629,7 +629,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Image:       "#init",
 						Name:        "init",
 						Number:      1,
-						Pull:        true,
+						Pull:        "not_present",
 					},
 				},
 			},
@@ -643,7 +643,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Image:       "target/vela-git:v0.3.0",
 						Name:        "clone",
 						Number:      2,
-						Pull:        true,
+						Pull:        "not_present",
 					},
 				},
 			},
@@ -660,7 +660,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Image:       "openjdk:latest",
 						Name:        "sample_install",
 						Number:      3,
-						Pull:        true,
+						Pull:        "always",
 					},
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_test",
@@ -671,7 +671,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Image:       "openjdk:latest",
 						Name:        "sample_test",
 						Number:      4,
-						Pull:        true,
+						Pull:        "always",
 					},
 					&pipeline.Container{
 						ID:          "__0_gradle_sample_build",
@@ -682,7 +682,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Image:       "openjdk:latest",
 						Name:        "sample_build",
 						Number:      5,
-						Pull:        true,
+						Pull:        "always",
 					},
 				},
 			},
@@ -697,7 +697,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Environment: dockerEnv,
 						Name:        "publish",
 						Number:      6,
-						Pull:        true,
+						Pull:        "always",
 						Secrets: pipeline.StepSecretSlice{
 							&pipeline.StepSecret{
 								Source: "docker_username",
@@ -849,7 +849,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Image:       "#init",
 				Name:        "init",
 				Number:      1,
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
@@ -858,7 +858,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Image:       "target/vela-git:v0.3.0",
 				Name:        "clone",
 				Number:      2,
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_install",
@@ -869,7 +869,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Image:       "openjdk:latest",
 				Name:        "sample_install",
 				Number:      3,
-				Pull:        true,
+				Pull:        "always",
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_test",
@@ -880,7 +880,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Image:       "openjdk:latest",
 				Name:        "sample_test",
 				Number:      4,
-				Pull:        true,
+				Pull:        "always",
 			},
 			&pipeline.Container{
 				ID:          "step___0_sample_build",
@@ -891,7 +891,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Image:       "openjdk:latest",
 				Name:        "sample_build",
 				Number:      5,
-				Pull:        true,
+				Pull:        "always",
 			},
 			&pipeline.Container{
 				ID:          "step___0_docker",
@@ -900,7 +900,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Environment: dockerEnv,
 				Name:        "docker",
 				Number:      6,
-				Pull:        true,
+				Pull:        "always",
 				Secrets: pipeline.StepSecretSlice{
 					&pipeline.StepSecret{
 						Source: "docker_username",
@@ -1021,7 +1021,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 				Image:       "#init",
 				Name:        "init",
 				Number:      1,
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&pipeline.Container{
 				ID:          "step___0_clone",
@@ -1030,7 +1030,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 				Image:       "target/vela-git:v0.3.0",
 				Name:        "clone",
 				Number:      2,
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&pipeline.Container{
 				ID:          "step___0_docker",
@@ -1039,7 +1039,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 				Environment: dockerEnv,
 				Name:        "docker",
 				Number:      3,
-				Pull:        true,
+				Pull:        "always",
 				Secrets: pipeline.StepSecretSlice{
 					&pipeline.StepSecret{
 						Source: "docker_username",
@@ -1199,19 +1199,19 @@ func Test_client_modifyConfig(t *testing.T) {
 				Environment: environment(nil, m, nil, nil),
 				Image:       "#init",
 				Name:        "init",
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&yaml.Step{
 				Environment: environment(nil, m, nil, nil),
 				Image:       "target/vela-git:v0.3.0",
 				Name:        "clone",
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&yaml.Step{
 				Image:       "plugins/docker:18.09",
 				Environment: nil,
 				Name:        "docker",
-				Pull:        true,
+				Pull:        "always",
 			},
 		},
 	}
@@ -1226,25 +1226,25 @@ func Test_client_modifyConfig(t *testing.T) {
 				Environment: environment(nil, m, nil, nil),
 				Image:       "#init",
 				Name:        "init",
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&yaml.Step{
 				Environment: environment(nil, m, nil, nil),
 				Image:       "target/vela-git:v0.3.0",
 				Name:        "clone",
-				Pull:        true,
+				Pull:        "not_present",
 			},
 			&yaml.Step{
 				Image:       "plugins/docker:18.09",
 				Environment: nil,
 				Name:        "docker",
-				Pull:        true,
+				Pull:        "always",
 			},
 			&yaml.Step{
 				Image:       "alpine",
 				Environment: nil,
 				Name:        "modification",
-				Pull:        true,
+				Pull:        "always",
 				Commands:    []string{"echo hello from modification"},
 			},
 		},
@@ -1270,7 +1270,7 @@ func Test_client_modifyConfig(t *testing.T) {
 			Image:       "alpine",
 			Environment: nil,
 			Name:        "modification",
-			Pull:        true,
+			Pull:        "always",
 			Commands:    []string{"echo hello from modification"},
 		})
 		output.Steps = steps

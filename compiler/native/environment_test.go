@@ -32,7 +32,7 @@ func TestNative_EnvironmentStages(t *testing.T) {
 				&yaml.Step{
 					Image: "alpine",
 					Name:  str,
-					Pull:  true,
+					Pull:  "always",
 				},
 			},
 		},
@@ -46,7 +46,7 @@ func TestNative_EnvironmentStages(t *testing.T) {
 					Environment: environment(nil, nil, nil, nil),
 					Image:       "alpine",
 					Name:        str,
-					Pull:        true,
+					Pull:        "always",
 				},
 			},
 		},
@@ -78,7 +78,7 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 		&yaml.Step{
 			Image: "alpine",
 			Name:  str,
-			Pull:  true,
+			Pull:  "always",
 			Environment: raw.StringSliceMap{
 				"BUILD_CHANNEL": "foo",
 			},
@@ -89,7 +89,7 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 		&yaml.Step{
 			Image: "alpine",
 			Name:  str,
-			Pull:  true,
+			Pull:  "always",
 			Environment: raw.StringSliceMap{
 				"BUILD_AUTHOR":             "",
 				"BUILD_AUTHOR_EMAIL":       "",
@@ -220,7 +220,7 @@ func TestNative_EnvironmentServices(t *testing.T) {
 		&yaml.Service{
 			Image: "postgres",
 			Name:  str,
-			Pull:  true,
+			Pull:  "always",
 			Environment: raw.StringSliceMap{
 				"BUILD_CHANNEL": "foo",
 			},
@@ -231,7 +231,7 @@ func TestNative_EnvironmentServices(t *testing.T) {
 		&yaml.Service{
 			Image: "postgres",
 			Name:  str,
-			Pull:  true,
+			Pull:  "always",
 			Environment: raw.StringSliceMap{
 				"BUILD_AUTHOR":             "",
 				"BUILD_AUTHOR_EMAIL":       "",
@@ -364,7 +364,7 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 			Origin: yaml.Origin{
 				Image: "vault",
 				Name:  str,
-				Pull:  true,
+				Pull:  "always",
 				Parameters: map[string]interface{}{
 					"foo": "bar",
 				},
@@ -381,7 +381,7 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 			Origin: yaml.Origin{
 				Image: "vault",
 				Name:  str,
-				Pull:  true,
+				Pull:  "always",
 				Parameters: map[string]interface{}{
 					"foo": "bar",
 				},

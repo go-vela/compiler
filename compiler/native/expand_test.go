@@ -81,7 +81,7 @@ func TestNative_ExpandStages(t *testing.T) {
 					},
 					Image: "openjdk:latest",
 					Name:  "sample_install",
-					Pull:  true,
+					Pull:  "always",
 				},
 				&yaml.Step{
 					Commands: []string{"./gradlew check"},
@@ -91,7 +91,7 @@ func TestNative_ExpandStages(t *testing.T) {
 					},
 					Image: "openjdk:latest",
 					Name:  "sample_test",
-					Pull:  true,
+					Pull:  "always",
 				},
 				&yaml.Step{
 					Commands: []string{"./gradlew build"},
@@ -101,7 +101,7 @@ func TestNative_ExpandStages(t *testing.T) {
 					},
 					Image: "openjdk:latest",
 					Name:  "sample_build",
-					Pull:  true,
+					Pull:  "always",
 				},
 			},
 		},
@@ -178,7 +178,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 			},
 			Image: "openjdk:latest",
 			Name:  "sample_install",
-			Pull:  true,
+			Pull:  "always",
 		},
 		&yaml.Step{
 			Commands: []string{"./gradlew check"},
@@ -188,7 +188,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 			},
 			Image: "openjdk:latest",
 			Name:  "sample_test",
-			Pull:  true,
+			Pull:  "always",
 		},
 		&yaml.Step{
 			Commands: []string{"./gradlew build"},
@@ -198,7 +198,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 			},
 			Image: "openjdk:latest",
 			Name:  "sample_build",
-			Pull:  true,
+			Pull:  "always",
 		},
 	}
 

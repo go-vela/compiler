@@ -175,7 +175,7 @@ func TestNative_Parse_Parameters(t *testing.T) {
 					"tags":     []interface{}{"latest", "dev"},
 				},
 				Name: "docker",
-				Pull: true,
+				Pull: "always",
 				Secrets: yaml.StepSecretSlice{
 					&yaml.StepSecret{
 						Source: "docker_username",
@@ -227,7 +227,7 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 						},
 						Image: "openjdk:latest",
 						Name:  "install",
-						Pull:  true,
+						Pull:  "always",
 					},
 				},
 			},
@@ -243,7 +243,7 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 						},
 						Image: "openjdk:latest",
 						Name:  "test",
-						Pull:  true,
+						Pull:  "always",
 					},
 				},
 			},
@@ -259,7 +259,7 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 						},
 						Image: "openjdk:latest",
 						Name:  "build",
-						Pull:  true,
+						Pull:  "always",
 					},
 				},
 			},
@@ -275,7 +275,7 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 							"tags":     []interface{}{"latest", "dev"},
 						},
 						Name: "publish",
-						Pull: true,
+						Pull: "always",
 						Secrets: yaml.StepSecretSlice{
 							&yaml.StepSecret{
 								Source: "docker_username",
@@ -339,7 +339,7 @@ func TestNative_Parse_StepsPipeline(t *testing.T) {
 				},
 				Image: "openjdk:latest",
 				Name:  "install",
-				Pull:  true,
+				Pull:  "always",
 			},
 			&yaml.Step{
 				Commands: []string{"./gradlew check"},
@@ -349,7 +349,7 @@ func TestNative_Parse_StepsPipeline(t *testing.T) {
 				},
 				Image: "openjdk:latest",
 				Name:  "test",
-				Pull:  true,
+				Pull:  "always",
 			},
 			&yaml.Step{
 				Commands: []string{"./gradlew build"},
@@ -359,7 +359,7 @@ func TestNative_Parse_StepsPipeline(t *testing.T) {
 				},
 				Image: "openjdk:latest",
 				Name:  "build",
-				Pull:  true,
+				Pull:  "always",
 			},
 			&yaml.Step{
 				Image: "plugins/docker:18.09",
@@ -369,7 +369,7 @@ func TestNative_Parse_StepsPipeline(t *testing.T) {
 					"tags":     []interface{}{"latest", "dev"},
 				},
 				Name: "publish",
-				Pull: true,
+				Pull: "always",
 				Secrets: yaml.StepSecretSlice{
 					&yaml.StepSecret{
 						Source: "docker_username",
@@ -492,7 +492,7 @@ func TestNative_Parse_Stages(t *testing.T) {
 						},
 						Image: "openjdk:latest",
 						Name:  "install",
-						Pull:  true,
+						Pull:  "always",
 					},
 				},
 			},
@@ -508,7 +508,7 @@ func TestNative_Parse_Stages(t *testing.T) {
 						},
 						Image: "openjdk:latest",
 						Name:  "test",
-						Pull:  true,
+						Pull:  "always",
 					},
 				},
 			},
@@ -524,7 +524,7 @@ func TestNative_Parse_Stages(t *testing.T) {
 						},
 						Image: "openjdk:latest",
 						Name:  "build",
-						Pull:  true,
+						Pull:  "always",
 					},
 				},
 			},
@@ -561,7 +561,7 @@ func TestNative_Parse_Steps(t *testing.T) {
 				},
 				Image: "openjdk:latest",
 				Name:  "install",
-				Pull:  true,
+				Pull:  "always",
 			},
 			&yaml.Step{
 				Commands: []string{"./gradlew check"},
@@ -571,7 +571,7 @@ func TestNative_Parse_Steps(t *testing.T) {
 				},
 				Image: "openjdk:latest",
 				Name:  "test",
-				Pull:  true,
+				Pull:  "always",
 			},
 			&yaml.Step{
 				Commands: []string{"./gradlew build"},
@@ -581,7 +581,7 @@ func TestNative_Parse_Steps(t *testing.T) {
 				},
 				Image: "openjdk:latest",
 				Name:  "build",
-				Pull:  true,
+				Pull:  "always",
 			},
 		},
 	}
