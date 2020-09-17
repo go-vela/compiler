@@ -11,7 +11,7 @@ require (
 	github.com/drone/envsubst v1.0.2
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
-	github.com/go-vela/types v0.5.1
+	github.com/go-vela/types v0.5.3-0.20200915182859-26f35b0bc7f1
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.1 // indirect
