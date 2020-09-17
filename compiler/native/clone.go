@@ -5,6 +5,7 @@
 package native
 
 import (
+	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/yaml"
 )
 
@@ -30,7 +31,7 @@ func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 				Image:      cloneImage,
 				Name:       cloneStepName,
 				Privileged: false,
-				Pull:       true,
+				Pull:       constants.PullNotPresent,
 			},
 		},
 	}
@@ -57,7 +58,7 @@ func (c *client) CloneStep(p *yaml.Build) (*yaml.Build, error) {
 		Image:      cloneImage,
 		Name:       cloneStepName,
 		Privileged: false,
-		Pull:       true,
+		Pull:       constants.PullNotPresent,
 	}
 
 	// add clone step as first step
