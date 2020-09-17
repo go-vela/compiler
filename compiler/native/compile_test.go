@@ -6,11 +6,16 @@ package native
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
+
+	"github.com/go-vela/types/library"
+	"github.com/go-vela/types/yaml"
 
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/pipeline"
@@ -232,6 +237,138 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Compile is %v, want %v", got, want)
+	}
+}
+
+func TestNative_Compile_StagesPipeline_Modification(t *testing.T) {
+	// setup context
+	gin.SetMode(gin.TestMode)
+
+	resp := httptest.NewRecorder()
+	_, engine := gin.CreateTestContext(resp)
+
+	engine.POST("/config/bad", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusOK, gin.H{"foo": "bar"})
+	})
+
+	s := httptest.NewServer(engine)
+	defer s.Close()
+
+	// setup types
+	name := "foo"
+	author := "author"
+	number := 1
+
+	// run test
+	yaml, err := ioutil.ReadFile("testdata/stages_pipeline.yml")
+	if err != nil {
+		t.Errorf("Reading yaml file return err: %v", err)
+	}
+
+	type args struct {
+		endpoint     string
+		libraryBuild *library.Build
+		repo         *library.Repo
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{"bad url", args{
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     "bad",
+		}, true},
+		{"invalid return", args{
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/bad"),
+		}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			compiler := client{
+				ModificationService: ModificationConfig{
+					Timeout:  1 * time.Second,
+					Endpoint: tt.args.endpoint,
+				},
+				repo:  &library.Repo{Name: &author},
+				build: &library.Build{Author: &name, Number: &number},
+			}
+			_, err := compiler.Compile(yaml)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Compile() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestNative_Compile_StepsPipeline_Modification(t *testing.T) {
+	// setup context
+	gin.SetMode(gin.TestMode)
+
+	resp := httptest.NewRecorder()
+	_, engine := gin.CreateTestContext(resp)
+
+	engine.POST("/config/bad", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusOK, gin.H{"foo": "bar"})
+	})
+
+	s := httptest.NewServer(engine)
+	defer s.Close()
+
+	// setup types
+	name := "foo"
+	author := "author"
+	number := 1
+
+	// run test
+	yaml, err := ioutil.ReadFile("testdata/steps_pipeline.yml")
+	if err != nil {
+		t.Errorf("Reading yaml file return err: %v", err)
+	}
+
+	type args struct {
+		endpoint     string
+		libraryBuild *library.Build
+		repo         *library.Repo
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{"bad url", args{
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     "bad",
+		}, true},
+		{"invalid return", args{
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/bad"),
+		}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			compiler := client{
+				ModificationService: ModificationConfig{
+					Timeout:  1 * time.Second,
+					Endpoint: tt.args.endpoint,
+				},
+				repo:  tt.args.repo,
+				build: tt.args.libraryBuild,
+			}
+			_, err := compiler.Compile(yaml)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Compile() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
 	}
 }
 
@@ -960,6 +1097,9 @@ func TestNative_Compile_NoStepsorStages(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
+	name := "foo"
+	author := "author"
+	number := 1
 
 	// run test
 	yaml, err := ioutil.ReadFile("testdata/metadata.yml")
@@ -971,6 +1111,8 @@ func TestNative_Compile_NoStepsorStages(t *testing.T) {
 	if err != nil {
 		t.Errorf("Creating compiler returned err: %v", err)
 	}
+	compiler.repo = &library.Repo{Name: &author}
+	compiler.build = &library.Build{Author: &name, Number: &number}
 
 	got, err := compiler.Compile(yaml)
 	if err == nil {
@@ -986,6 +1128,9 @@ func TestNative_Compile_StepsandStages(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
+	name := "foo"
+	author := "author"
+	number := 1
 
 	// run test
 	yaml, err := ioutil.ReadFile("testdata/steps_and_stages.yml")
@@ -997,6 +1142,8 @@ func TestNative_Compile_StepsandStages(t *testing.T) {
 	if err != nil {
 		t.Errorf("Creating compiler returned err: %v", err)
 	}
+	compiler.repo = &library.Repo{Name: &author}
+	compiler.build = &library.Build{Author: &name, Number: &number}
 
 	got, err := compiler.Compile(yaml)
 	if err == nil {
@@ -1005,5 +1152,214 @@ func TestNative_Compile_StepsandStages(t *testing.T) {
 
 	if got != nil {
 		t.Errorf("Compile is %v, want %v", got, nil)
+	}
+}
+
+func Test_client_modifyConfig(t *testing.T) {
+	// setup context
+	gin.SetMode(gin.TestMode)
+
+	resp := httptest.NewRecorder()
+	_, engine := gin.CreateTestContext(resp)
+
+	// setup mock server
+	engine.GET("/api/v3/repos/foo/bar/contents/:path", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.Status(http.StatusOK)
+		c.File("testdata/template.json")
+	})
+
+	m := &types.Metadata{
+		Database: &types.Database{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Queue: &types.Queue{
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
+		},
+		Source: &types.Source{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Vela: &types.Vela{
+			Address:    "foo",
+			WebAddress: "foo",
+		},
+	}
+
+	want := &yaml.Build{
+		Version: "1",
+		Metadata: yaml.Metadata{
+			Template: false,
+		},
+		Steps: yaml.StepSlice{
+			&yaml.Step{
+				Environment: environment(nil, m, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Pull:        true,
+			},
+			&yaml.Step{
+				Environment: environment(nil, m, nil, nil),
+				Image:       "target/vela-git:v0.3.0",
+				Name:        "clone",
+				Pull:        true,
+			},
+			&yaml.Step{
+				Image:       "plugins/docker:18.09",
+				Environment: nil,
+				Name:        "docker",
+				Pull:        true,
+			},
+		},
+	}
+
+	want2 := &yaml.Build{
+		Version: "1",
+		Metadata: yaml.Metadata{
+			Template: false,
+		},
+		Steps: yaml.StepSlice{
+			&yaml.Step{
+				Environment: environment(nil, m, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Pull:        true,
+			},
+			&yaml.Step{
+				Environment: environment(nil, m, nil, nil),
+				Image:       "target/vela-git:v0.3.0",
+				Name:        "clone",
+				Pull:        true,
+			},
+			&yaml.Step{
+				Image:       "plugins/docker:18.09",
+				Environment: nil,
+				Name:        "docker",
+				Pull:        true,
+			},
+			&yaml.Step{
+				Image:       "alpine",
+				Environment: nil,
+				Name:        "modification",
+				Pull:        true,
+				Commands:    []string{"echo hello from modification"},
+			},
+		},
+	}
+
+	engine.POST("/config/unmodified", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusOK, want)
+	})
+
+	engine.POST("/config/timeout", func(c *gin.Context) {
+		time.Sleep(3 * time.Second)
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusOK, want)
+	})
+
+	engine.POST("/config/modified", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		output := want
+		var steps []*yaml.Step
+		steps = append(steps, want.Steps...)
+		steps = append(steps, &yaml.Step{
+			Image:       "alpine",
+			Environment: nil,
+			Name:        "modification",
+			Pull:        true,
+			Commands:    []string{"echo hello from modification"},
+		})
+		output.Steps = steps
+		c.JSON(http.StatusOK, output)
+	})
+
+	engine.POST("/config/empty", func(c *gin.Context) {
+		c.Status(http.StatusOK)
+	})
+
+	engine.POST("/config/unathorized", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusForbidden, want)
+	})
+
+	s := httptest.NewServer(engine)
+	defer s.Close()
+
+	name := "foo"
+	author := "author"
+	number := 1
+
+	type args struct {
+		endpoint     string
+		build        *yaml.Build
+		libraryBuild *library.Build
+		repo         *library.Repo
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *yaml.Build
+		wantErr bool
+	}{
+		{"unmodified", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/unmodified"),
+		}, want, false},
+		{"modified", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/modified"),
+		}, want2, false},
+		{"invalid endpoint", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     "bad",
+		}, nil, true},
+		{"unathorized endpoint", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/unathorized"),
+		}, nil, true},
+		{"timeout endpoint", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/timeout"),
+		}, nil, true},
+		{"empty payload", args{
+			build:        want,
+			libraryBuild: &library.Build{Number: &number, Author: &author},
+			repo:         &library.Repo{Name: &name},
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/empty"),
+		}, nil, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			compiler := client{
+				ModificationService: ModificationConfig{
+					Timeout:  2 * time.Second,
+					Retries:  2,
+					Endpoint: tt.args.endpoint,
+				},
+			}
+			got, err := compiler.modifyConfig(tt.args.build, tt.args.libraryBuild, tt.args.repo)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("modifyConfig() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("modifyConfig() got = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
