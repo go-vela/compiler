@@ -28,7 +28,7 @@ func TestNative_InitStage(t *testing.T) {
 					&yaml.Step{
 						Image: "alpine",
 						Name:  str,
-						Pull:  true,
+						Pull:  "not_present",
 					},
 				},
 			},
@@ -44,7 +44,7 @@ func TestNative_InitStage(t *testing.T) {
 					&yaml.Step{
 						Image: "#init",
 						Name:  "init",
-						Pull:  true,
+						Pull:  "not_present",
 					},
 				},
 			},
@@ -54,7 +54,7 @@ func TestNative_InitStage(t *testing.T) {
 					&yaml.Step{
 						Image: "alpine",
 						Name:  str,
-						Pull:  true,
+						Pull:  "not_present",
 					},
 				},
 			},
@@ -89,7 +89,7 @@ func TestNative_InitStep(t *testing.T) {
 			&yaml.Step{
 				Image: "alpine",
 				Name:  str,
-				Pull:  true,
+				Pull:  "not_present",
 			},
 		},
 	}
@@ -100,12 +100,12 @@ func TestNative_InitStep(t *testing.T) {
 			&yaml.Step{
 				Image: "#init",
 				Name:  "init",
-				Pull:  true,
+				Pull:  "not_present",
 			},
 			&yaml.Step{
 				Image: "alpine",
 				Name:  str,
-				Pull:  true,
+				Pull:  "not_present",
 			},
 		},
 	}

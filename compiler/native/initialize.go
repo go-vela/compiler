@@ -5,6 +5,7 @@
 package native
 
 import (
+	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/yaml"
 )
 
@@ -30,7 +31,7 @@ func (c *client) InitStage(p *yaml.Build) (*yaml.Build, error) {
 				Image:      initImage,
 				Name:       initStepName,
 				Privileged: false,
-				Pull:       true,
+				Pull:       constants.PullNotPresent,
 			},
 		},
 	}
@@ -57,7 +58,7 @@ func (c *client) InitStep(p *yaml.Build) (*yaml.Build, error) {
 		Image:      initImage,
 		Name:       initStepName,
 		Privileged: false,
-		Pull:       true,
+		Pull:       constants.PullNotPresent,
 	}
 
 	// add init step as first step

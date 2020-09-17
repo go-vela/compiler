@@ -28,7 +28,7 @@ func TestNative_CloneStage(t *testing.T) {
 					&yaml.Step{
 						Image: "alpine",
 						Name:  str,
-						Pull:  true,
+						Pull:  "not_present",
 					},
 				},
 			},
@@ -44,7 +44,7 @@ func TestNative_CloneStage(t *testing.T) {
 					&yaml.Step{
 						Image: "target/vela-git:v0.3.0",
 						Name:  "clone",
-						Pull:  true,
+						Pull:  "not_present",
 					},
 				},
 			},
@@ -54,7 +54,7 @@ func TestNative_CloneStage(t *testing.T) {
 					&yaml.Step{
 						Image: "alpine",
 						Name:  str,
-						Pull:  true,
+						Pull:  "not_present",
 					},
 				},
 			},
@@ -89,7 +89,7 @@ func TestNative_CloneStep(t *testing.T) {
 			&yaml.Step{
 				Image: "alpine",
 				Name:  str,
-				Pull:  true,
+				Pull:  "not_present",
 			},
 		},
 	}
@@ -100,12 +100,12 @@ func TestNative_CloneStep(t *testing.T) {
 			&yaml.Step{
 				Image: "target/vela-git:v0.3.0",
 				Name:  "clone",
-				Pull:  true,
+				Pull:  "not_present",
 			},
 			&yaml.Step{
 				Image: "alpine",
 				Name:  str,
-				Pull:  true,
+				Pull:  "not_present",
 			},
 		},
 	}

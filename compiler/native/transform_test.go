@@ -62,7 +62,7 @@ func TestNative_TransformStages(t *testing.T) {
 						Commands: []string{"./gradlew downloadDependencies"},
 						Image:    "openjdk:latest",
 						Name:     "install",
-						Pull:     true,
+						Pull:     "always",
 					},
 				},
 			},
@@ -74,7 +74,7 @@ func TestNative_TransformStages(t *testing.T) {
 						Commands: []string{"./gradlew check"},
 						Image:    "openjdk:latest",
 						Name:     "test",
-						Pull:     true,
+						Pull:     "always",
 						Ruleset: yaml.Ruleset{
 							If: yaml.Rules{
 								Event: []string{"push"},
@@ -91,7 +91,7 @@ func TestNative_TransformStages(t *testing.T) {
 				Origin: yaml.Origin{
 					Image: "vault:latest",
 					Name:  "vault",
-					Pull:  true,
+					Pull:  "always",
 				},
 			},
 		},
@@ -125,7 +125,7 @@ func TestNative_TransformStages(t *testing.T) {
 						Image:     "openjdk:latest",
 						Name:      "install",
 						Number:    1,
-						Pull:      true,
+						Pull:      "always",
 					},
 				},
 			},
@@ -137,7 +137,7 @@ func TestNative_TransformStages(t *testing.T) {
 					ID:     "secret___0_vault",
 					Name:   "vault",
 					Image:  "vault:latest",
-					Pull:   true,
+					Pull:   "always",
 					Number: 1,
 				},
 			},
@@ -217,13 +217,13 @@ func TestNative_TransformSteps(t *testing.T) {
 				Commands: []string{"./gradlew downloadDependencies"},
 				Image:    "openjdk:latest",
 				Name:     "install deps",
-				Pull:     true,
+				Pull:     "always",
 			},
 			&yaml.Step{
 				Commands: []string{"./gradlew check"},
 				Image:    "openjdk:latest",
 				Name:     "test",
-				Pull:     true,
+				Pull:     "always",
 				Ruleset: yaml.Ruleset{
 					If: yaml.Rules{
 						Event: []string{"push"},
@@ -238,7 +238,7 @@ func TestNative_TransformSteps(t *testing.T) {
 				Origin: yaml.Origin{
 					Image: "vault:latest",
 					Name:  "vault",
-					Pull:  true,
+					Pull:  "always",
 				},
 			},
 		},
@@ -269,7 +269,7 @@ func TestNative_TransformSteps(t *testing.T) {
 				Image:     "openjdk:latest",
 				Name:      "install deps",
 				Number:    1,
-				Pull:      true,
+				Pull:      "always",
 			},
 		},
 		Secrets: pipeline.SecretSlice{
@@ -279,7 +279,7 @@ func TestNative_TransformSteps(t *testing.T) {
 					ID:     "secret___0_vault",
 					Name:   "vault",
 					Image:  "vault:latest",
-					Pull:   true,
+					Pull:   "always",
 					Number: 1,
 				},
 			},
