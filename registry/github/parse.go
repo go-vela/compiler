@@ -12,8 +12,11 @@ import (
 	"github.com/goware/urlx"
 )
 
-// Parse creates the registry source object from a template path.
-func (c *client) Parse(path string) (*registry.Source, error) {
+const defaultRef = "main"
+
+// Parse creates the registry source object from
+// a template path and default branch.
+func (c *client) Parse(path string, defaultBranch string) (*registry.Source, error) {
 	// parse the path provided
 	//
 	// goware/urlx is used over net/url because it is more consistent for parsing
@@ -33,8 +36,13 @@ func (c *client) Parse(path string) (*registry.Source, error) {
 	// * <org>/<repo>/<path>/<to>/<filename>
 	parts := strings.SplitN(u.Path, "/", 3)
 
-	// set the default reference to master
-	ref := "master"
+	// use the fallback default reference
+	ref := defaultRef
+
+	// override with supplied defaultBranch
+	if len(defaultBranch) > 0 {
+		ref = defaultBranch
+	}
 
 	// check for reference provided in filename:
 	// * <org>/<repo>/<filename>@<reference>
