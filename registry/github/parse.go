@@ -16,7 +16,7 @@ const defaultRef = "main"
 
 // Parse creates the registry source object from
 // a template path and default branch.
-func (c *client) Parse(path string, defaultBranch string) (*registry.Source, error) {
+func (c *client) Parse(path, defaultBranch string) (*registry.Source, error) {
 	// parse the path provided
 	//
 	// goware/urlx is used over net/url because it is more consistent for parsing
