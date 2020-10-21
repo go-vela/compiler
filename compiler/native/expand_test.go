@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli/v2"
@@ -214,6 +215,77 @@ func TestNative_ExpandSteps(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(got, want) {
+		t.Errorf("ExpandSteps is %v, want %v", got, want)
+	}
+}
+
+func TestNative_ExpandStepsStarlark(t *testing.T) {
+	// setup context
+	gin.SetMode(gin.TestMode)
+
+	resp := httptest.NewRecorder()
+	_, engine := gin.CreateTestContext(resp)
+
+	// setup mock server
+	engine.GET("/api/v3/repos/foo/bar/contents/:path", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.Status(http.StatusOK)
+		c.File("testdata/template-starlark.json")
+	})
+
+	s := httptest.NewServer(engine)
+	defer s.Close()
+
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-url", s.URL, "doc")
+	set.String("github-token", "", "doc")
+	c := cli.NewContext(nil, set, nil)
+
+	tmpls := map[string]*yaml.Template{
+		"go": {
+			Name:   "go",
+			Source: "github.example.com/foo/bar/template.star",
+			Format: "starlark",
+			Type:   "github",
+		},
+	}
+
+	steps := yaml.StepSlice{
+		&yaml.Step{
+			Name: "sample",
+			Template: yaml.StepTemplate{
+				Name:      "go",
+				Variables: map[string]interface{}{},
+			},
+		},
+	}
+
+	want := yaml.StepSlice{
+		&yaml.Step{
+			Commands: []string{"go build", "go test"},
+			Image:    "golang:latest",
+			Name:     "sample_build",
+			Pull:     "not_present",
+		},
+	}
+
+	// run test
+	compiler, err := New(c)
+	if err != nil {
+		t.Errorf("Creating new compiler returned err: %v", err)
+	}
+
+	got, err := compiler.ExpandSteps(steps, tmpls)
+	if err != nil {
+		t.Errorf("ExpandSteps returned err: %v", err)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		if diff := cmp.Diff(want, got); diff != "" {
+			t.Errorf("MakeGatewayInfo() mismatch (-want +got):\n%s", diff)
+		}
 		t.Errorf("ExpandSteps is %v, want %v", got, want)
 	}
 }

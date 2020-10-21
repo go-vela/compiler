@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-vela/compiler/template/native"
+	"github.com/go-vela/compiler/template/starlark"
 
 	"github.com/go-vela/types/yaml"
 	"github.com/sirupsen/logrus"
@@ -76,10 +77,24 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 			}
 		}
 
-		// render template for steps
-		tmplSteps, err := native.Render(string(bytes), step)
-		if err != nil {
-			return yaml.StepSlice{}, err
+		var tmplSteps yaml.StepSlice
+
+		// TODO: provider friendlier error messages with file type mismatches
+		switch tmpl.Format {
+		case "go", "":
+			// render template for steps
+			tmplSteps, err = native.Render(string(bytes), step)
+			if err != nil {
+				return yaml.StepSlice{}, err
+			}
+		case "starlark":
+			// render template for steps
+			tmplSteps, err = starlark.Render(string(bytes), step)
+			if err != nil {
+				return yaml.StepSlice{}, err
+			}
+		default:
+			// TODO: send some user error
 		}
 
 		// add templated steps
