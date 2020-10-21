@@ -8,7 +8,6 @@ import (
 	"os"
 
 	types "github.com/go-vela/types/yaml"
-	"github.com/sirupsen/logrus"
 	"go.starlark.net/starlark"
 	"gopkg.in/yaml.v2"
 
@@ -22,14 +21,14 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	// setup filesystem
 	file, err := ioutil.TempFile("/tmp", "sample")
 	if err != nil {
-		logrus.Error(err)
+		return nil, err
 	}
 
 	defer os.Remove(file.Name())
 
 	_, err = file.Write([]byte(tmpl))
 	if err != nil {
-		logrus.Error(err)
+		return nil, err
 	}
 
 	config := new(types.Build)
@@ -37,7 +36,7 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	thread := &starlark.Thread{Name: "my thread"}
 	globals, err := starlark.ExecFile(thread, file.Name(), nil, nil)
 	if err != nil {
-		logrus.Error(err)
+		return nil, err
 	}
 
 	mainVal, ok := globals["main"]
@@ -58,7 +57,7 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	// Call Starlark function from Go.
 	mainVal, err = starlark.Call(thread, main, args, nil)
 	if err != nil {
-		logrus.Error(err)
+		return nil, err
 	}
 
 	buf := new(bytes.Buffer)
