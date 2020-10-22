@@ -7,7 +7,9 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"strings"
 
+	"github.com/go-vela/types/raw"
 	types "github.com/go-vela/types/yaml"
 	"github.com/sirupsen/logrus"
 	"go.starlark.net/starlark"
@@ -51,14 +53,23 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		return nil, fmt.Errorf("main must be a function")
 	}
 
-	vars, err := userData(s.Template.Variables)
+	userVars, err := userData(s.Template.Variables)
+	if err != nil {
+		return nil, err
+	}
+
+	velaVars, err := velaEnvironmentData(s.Environment)
 	if err != nil {
 		return nil, err
 	}
 
 	args := starlark.Tuple([]starlark.Value{
 		starlarkstruct.FromStringDict(
-			starlark.String("context"), vars,
+			starlark.String("context"),
+			starlark.StringDict{
+				"vars": starlarkstruct.FromStringDict(starlark.String("vars"), userVars),
+				"vela": starlarkstruct.FromStringDict(starlark.String("vela"), velaVars),
+			},
 		),
 	})
 
@@ -193,6 +204,54 @@ func userData(m map[string]interface{}) (starlark.StringDict, error) {
 			return nil, err
 		}
 		dict[key] = val
+	}
+
+	return dict, nil
+}
+
+func velaEnvironmentData(slice raw.StringSliceMap) (starlark.StringDict, error) {
+	build := starlark.NewDict(0)
+	repo := starlark.NewDict(0)
+	user := starlark.NewDict(0)
+	system := starlark.NewDict(0)
+
+	// TODO look at fixing access to variables:
+	// ctx.vela.repo["full_name"] vs ctx.vela.repo.full_name
+	dict := starlark.StringDict{
+		"build":  build,
+		"repo":   repo,
+		"user":   user,
+		"system": system,
+	}
+
+	for key, value := range slice {
+		key = strings.ToLower(key)
+		if strings.HasPrefix(key, "vela_") {
+			key = strings.TrimPrefix(key, "vela_")
+
+			switch {
+			case strings.HasPrefix(key, "build_"):
+				err := build.SetKey(starlark.String(strings.TrimPrefix(key, "build_")), starlark.String(value))
+				if err != nil {
+					return nil, err
+				}
+			case strings.HasPrefix(key, "repo_"):
+				err := repo.SetKey(starlark.String(strings.TrimPrefix(key, "repo_")), starlark.String(value))
+				if err != nil {
+					return nil, err
+				}
+			case strings.HasPrefix(key, "user_"):
+				err := user.SetKey(starlark.String(strings.TrimPrefix(key, "user_")), starlark.String(value))
+				if err != nil {
+					return nil, err
+				}
+			default:
+				err := system.SetKey(starlark.String(key), starlark.String(value))
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
 	}
 
 	return dict, nil
