@@ -8,6 +8,7 @@ import (
 	"os"
 
 	types "github.com/go-vela/types/yaml"
+	"github.com/sirupsen/logrus"
 	"go.starlark.net/starlark"
 	"gopkg.in/yaml.v2"
 
@@ -50,7 +51,11 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 
 	args := starlark.Tuple([]starlark.Value{
 		starlarkstruct.FromStringDict(
-			starlark.String("context"), starlark.StringDict{},
+			starlark.String("context"), starlark.StringDict{
+				"tags":        starlark.String("[latest, \"1.14\", \"1.15\"]"),
+				"pull_policy": starlark.String("always"),
+				"commands":    starlark.String("should be map"),
+			},
 		),
 	})
 
@@ -136,7 +141,10 @@ func writeJSON(out *bytes.Buffer, v starlark.Value) error {
 			fmt.Fprintf(out, "%q", s)
 		} else {
 			// vanishingly rare for text strings
-			data, _ := json.Marshal(s)
+			data, err := json.Marshal(s)
+			if err != nil {
+				logrus.Error(err)
+			}
 			out.Write(data)
 		}
 	case starlark.Indexable: // Tuple, List
@@ -171,4 +179,14 @@ func writeJSON(out *bytes.Buffer, v starlark.Value) error {
 		return fmt.Errorf("TypeError: value %s (type `%s') can't be converted to JSON.", v.String(), v.Type())
 	}
 	return nil
+}
+
+func userData(m map[string]interface{}) starlark.StringDict {
+	dict := new(starlark.Dict)
+
+	for k, v := range m {
+		dict.SetKey(starlark.String(k), starlark.String(v.(string)))
+	}
+
+	return starlark.StringDict{"vars": dict}
 }

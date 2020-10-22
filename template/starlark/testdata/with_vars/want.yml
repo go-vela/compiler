@@ -1,0 +1,22 @@
+version: "1"
+steps:
+  - name: build latest
+    image: golang:latest
+    pull: always
+    commands:
+      - go test ./...
+      - go build 
+
+  - name: build 1.14
+    image: golang:latest
+    pull: always
+    commands:
+      - go test ./...
+      - go build
+
+  - name: build 1.15
+    image: golang:latest
+    pull: always
+    commands:
+      - go test ./...
+      - go build     
