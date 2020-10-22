@@ -11,7 +11,7 @@ def main(ctx):
 def step(tag, pull_policy, commands):
     return {
         "name": "build %s" % tag,
-        "image": "alpine:%s" % tag,
+        "image": "golang:%s" % tag,
         "pull": pull_policy,
-        'commands': commands,
+        'commands': commands.values(),
     }

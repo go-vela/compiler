@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
 
 	types "github.com/go-vela/types/yaml"
 	"github.com/sirupsen/logrus"
 	"go.starlark.net/starlark"
 	"gopkg.in/yaml.v2"
+	"k8s.io/apimachinery/pkg/util/intstr"
 
 	"go.starlark.net/starlarkstruct"
 )
@@ -49,13 +51,14 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		return nil, fmt.Errorf("main must be a function")
 	}
 
+	vars, err := userData(s.Template.Variables)
+	if err != nil {
+		return nil, err
+	}
+
 	args := starlark.Tuple([]starlark.Value{
 		starlarkstruct.FromStringDict(
-			starlark.String("context"), starlark.StringDict{
-				"tags":        starlark.String("[latest, \"1.14\", \"1.15\"]"),
-				"pull_policy": starlark.String("always"),
-				"commands":    starlark.String("should be map"),
-			},
+			starlark.String("context"), vars,
 		),
 	})
 
@@ -181,12 +184,106 @@ func writeJSON(out *bytes.Buffer, v starlark.Value) error {
 	return nil
 }
 
-func userData(m map[string]interface{}) starlark.StringDict {
-	dict := new(starlark.Dict)
+func userData(m map[string]interface{}) (starlark.StringDict, error) {
+	dict := make(starlark.StringDict)
 
-	for k, v := range m {
-		dict.SetKey(starlark.String(k), starlark.String(v.(string)))
+	for key, value := range m {
+		val, err := toStarlark(value)
+		if err != nil {
+			return nil, err
+		}
+		dict[key] = val
 	}
 
-	return starlark.StringDict{"vars": dict}
+	return dict, nil
+}
+
+func toStarlark(vi interface{}) (starlark.Value, error) {
+	if vi == nil {
+		return starlark.None, nil
+	}
+	switch v := reflect.ValueOf(vi); v.Kind() {
+	case reflect.String:
+		return starlark.String(v.String()), nil
+	case reflect.Bool:
+		return starlark.Bool(v.Bool()), nil
+	case reflect.Int:
+		fallthrough
+	case reflect.Int32:
+		fallthrough
+	case reflect.Int64:
+		fallthrough
+	case reflect.Int16:
+		return starlark.MakeInt64(v.Int()), nil
+	case reflect.Uint:
+		fallthrough
+	case reflect.Uint32:
+		fallthrough
+	case reflect.Uint64:
+		fallthrough
+	case reflect.Uint16:
+		return starlark.MakeUint64(v.Uint()), nil
+	case reflect.Float32:
+		return starlark.Float(v.Float()), nil
+	case reflect.Float64:
+		return starlark.Float(v.Float()), nil
+	case reflect.Slice:
+		if b, ok := vi.([]byte); ok {
+			return starlark.String(string(b)), nil
+		}
+		a := make([]starlark.Value, 0)
+		for i := 0; i < v.Len(); i++ {
+			val, err := toStarlark(v.Index(i).Interface())
+			if err != nil {
+				return nil, err
+			}
+			a = append(a, val)
+		}
+		return starlark.Tuple(a), nil
+	case reflect.Ptr:
+		val, err := toStarlark(v.Elem().Interface())
+		if err != nil {
+			return nil, err
+		}
+		return val, nil
+	case reflect.Map:
+		d := starlark.NewDict(16)
+		for _, key := range v.MapKeys() {
+			strct := v.MapIndex(key)
+			keyValue, err := toStarlark(key.Interface())
+			if err != nil {
+				return nil, err
+			}
+
+			kv, err := toStarlark(strct.Interface())
+			if err != nil {
+				return nil, err
+			}
+
+			d.SetKey(keyValue, kv)
+		}
+		return d, nil
+	case reflect.Struct:
+		ios, ok := vi.(intstr.IntOrString)
+		if ok {
+			switch ios.Type {
+			case intstr.String:
+				return starlark.String(ios.StrVal), nil
+			case intstr.Int:
+				return starlark.MakeInt(int(ios.IntVal)), nil
+			}
+		} else {
+			data, err := json.Marshal(vi)
+			if err != nil {
+				return nil, err
+			}
+			var m map[string]interface{}
+			err = json.Unmarshal(data, &m)
+			if err != nil {
+				return nil, err
+			}
+			return toStarlark(m)
+		}
+	}
+	return nil, fmt.Errorf("cannot convert %v to starlark", vi)
 }

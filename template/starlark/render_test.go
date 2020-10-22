@@ -9,11 +9,11 @@ import (
 	"reflect"
 	"testing"
 
-	goyaml "gopkg.in/yaml.v2"
-
 	"github.com/go-vela/types/yaml"
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
+	"go.starlark.net/starlark"
+	goyaml "gopkg.in/yaml.v2"
 )
 
 func TestNative_Render_StarlarkBasic(t *testing.T) {
@@ -106,5 +106,51 @@ func TestNative_Render_StarlarkWithVars(t *testing.T) {
 			t.Errorf("MakeGatewayInfo() mismatch (-want +got):\n%s", diff)
 		}
 		t.Errorf("Render is %v, want %v", got, want)
+	}
+}
+
+func TestNative_Render_userData(t *testing.T) {
+	// setup types
+	tags := starlark.Tuple(nil)
+	tags = append(tags, starlark.String("latest"))
+	tags = append(tags, starlark.String("1.14"))
+	tags = append(tags, starlark.String("1.15"))
+
+	commands := starlark.NewDict(16)
+	err := commands.SetKey(starlark.String("test"), starlark.String("go test ./..."))
+	assert.NoError(t, err)
+	err = commands.SetKey(starlark.String("build"), starlark.String("go build"))
+	assert.NoError(t, err)
+
+	tests := []struct {
+		name string
+		args map[string]interface{}
+		want starlark.StringDict
+	}{
+		{
+			name: "test for a user passed string",
+			args: map[string]interface{}{"pull": "always"},
+			want: starlark.StringDict{"pull": starlark.String("always")},
+		},
+		{
+			name: "test for a user passed array",
+			args: map[string]interface{}{"tags": []string{"latest", "1.14", "1.15"}},
+			want: starlark.StringDict{"tags": tags},
+		},
+		{
+			name: "test for a user passed map",
+			args: map[string]interface{}{"commands": map[string]string{"test": "go test ./...", "build": "go build"}},
+			want: starlark.StringDict{"commands": commands},
+		}}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := userData(tt.args)
+			assert.NoError(t, err)
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("userData() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
