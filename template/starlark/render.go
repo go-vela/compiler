@@ -6,6 +6,7 @@ package starlark
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -19,12 +20,27 @@ import (
 	"go.starlark.net/starlarkstruct"
 )
 
-// Render combines the template with the step in the yaml pipeline.
-func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
-	// TODO: investigate way to not use tmp filesystem
+var (
+	// ErrMissingMainFunc defines the error type when the
+	// main function does not exist in the provided template.
+	ErrMissingMainFunc = errors.New("unable to find main function in template")
 
-	// setup filesystem
-	file, err := ioutil.TempFile("/tmp", "sample")
+	// ErrInvalidMainFunc defines the error type when the
+	// main function is invalid within the provided template.
+	ErrInvalidMainFunc = errors.New("invalid main function (main must be a function) in template")
+
+	// ErrInvalidPipelineReturn defines the error type when the
+	// return type is not a pipeline within the provided template.
+	ErrInvalidPipelineReturn = errors.New("invalid pipeline return in template")
+)
+
+// Render combines the template with the step in the yaml pipeline.
+// nolint // ignore function line length
+func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
+	config := new(types.Build)
+
+	// setup temporary file
+	file, err := ioutil.TempFile("/tmp", s.Template.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -36,33 +52,39 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		return nil, err
 	}
 
-	config := new(types.Build)
-
-	thread := &starlark.Thread{Name: "my thread"}
+	thread := &starlark.Thread{Name: s.Name}
 	globals, err := starlark.ExecFile(thread, file.Name(), nil, nil)
 	if err != nil {
 		return nil, err
 	}
 
+	// check the provided template has a main function
 	mainVal, ok := globals["main"]
 	if !ok {
-		return nil, fmt.Errorf("no main function found")
-	}
-	main, ok := mainVal.(starlark.Callable)
-	if !ok {
-		return nil, fmt.Errorf("main must be a function")
+		return nil, fmt.Errorf("%s: %s", ErrMissingMainFunc, s.Template.Name)
 	}
 
+	// check the provided main is a function
+	main, ok := mainVal.(starlark.Callable)
+	if !ok {
+		return nil, fmt.Errorf("%s: %s", ErrInvalidMainFunc, s.Template.Name)
+	}
+
+	// load the user provided vars into a starlark type
 	userVars, err := userData(s.Template.Variables)
 	if err != nil {
 		return nil, err
 	}
 
+	// load the platform provided vars into a starlark type
 	velaVars, err := velaEnvironmentData(s.Environment)
 	if err != nil {
 		return nil, err
 	}
 
+	// assemble vars into a starlark type for injected context:
+	// ctx.vars.<user defind space> i.e. ctx.vars.message = "Hello, World!"
+	// ctx.vela.<platform defind space> i.e. ctx.vela.build.number = 1
 	args := starlark.Tuple([]starlark.Value{
 		starlarkstruct.FromStringDict(
 			starlark.String("context"),
@@ -73,13 +95,15 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		),
 	})
 
-	// Call Starlark function from Go.
+	// execute Starlark program from Go.
 	mainVal, err = starlark.Call(thread, main, args, nil)
 	if err != nil {
 		return nil, err
 	}
 
 	buf := new(bytes.Buffer)
+
+	// extract the pipeline from the starlark program
 	switch v := mainVal.(type) {
 	case *starlark.List:
 		for i := 0; i < v.Len(); i++ {
@@ -98,10 +122,8 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 			return nil, err
 		}
 	default:
-		return nil, fmt.Errorf("invalid return type (got a %s)", mainVal.Type())
+		return nil, fmt.Errorf("%s: %s", ErrInvalidPipelineReturn, mainVal.Type())
 	}
-
-	fmt.Println(buf.String())
 
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buf.Bytes(), config)
@@ -114,19 +136,19 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		config.Steps[index].Name = fmt.Sprintf("%s_%s", s.Name, newStep.Name)
 	}
 
-	fmt.Println(buf.String())
-
 	return config.Steps, nil
 }
 
 func userData(m map[string]interface{}) (starlark.StringDict, error) {
 	dict := make(starlark.StringDict)
 
+	// loop through user vars converting provided types to starklark primitives
 	for key, value := range m {
 		val, err := toStarlark(value)
 		if err != nil {
 			return nil, err
 		}
+
 		dict[key] = val
 	}
 
