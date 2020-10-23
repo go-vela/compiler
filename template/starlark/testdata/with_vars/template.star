@@ -1,5 +1,5 @@
 def main(ctx):
-    steps = [step(x, ctx.pull_policy, ctx.commands) for x in ctx.tags]
+    steps = [step(x, ctx.vars.pull_policy, ctx.vars.commands) for x in ctx.vars.tags]
 
     pipeline = {
         'version': '1',
