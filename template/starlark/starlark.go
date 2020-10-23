@@ -7,12 +7,23 @@ package starlark
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 
 	"github.com/sirupsen/logrus"
 	"go.starlark.net/starlark"
 	"k8s.io/apimachinery/pkg/util/intstr"
+)
+
+var (
+	// ErrUnableToConvertStarlark defines the error type when the
+	// toStarlark cannot convert the provided value.
+	ErrUnableToConvertStarlark = errors.New("unable to convert to starlark type")
+
+	// ErrUnableToConvertJSON defines the error type when the
+	// writeJSON cannot convert the provided value.
+	ErrUnableToConvertJSON = errors.New("unable to convert to json")
 )
 
 // toStarlark takes an value as an interface an
@@ -123,7 +134,7 @@ func toStarlark(value interface{}) (starlark.Value, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("unable to convert %v to starlark", value)
+	return nil, fmt.Errorf("%s: %v", ErrUnableToConvertStarlark, value)
 }
 
 // writeJSON takes an starlark input and return the valid JSON
@@ -131,27 +142,52 @@ func toStarlark(value interface{}) (starlark.Value, error) {
 //
 // This code is under copyright (full attribution in NOTICE) and is from:
 // https://github.com/drone/drone-cli/blob/master/drone/starlark/starlark.go#L214-L274
+//
+// Note: we are using logrus log unchecked errors that the original implementation ignored.
+// if/when we try to return values it breaks the recursion. Panics were swapped to error
+// returns from implementation.
+// nolint // ignore function line length
 func writeJSON(out *bytes.Buffer, v starlark.Value) error {
+	logrus.Tracef("converting %v to JSON", v)
+
 	if marshaler, ok := v.(json.Marshaler); ok {
 		jsonData, err := marshaler.MarshalJSON()
 		if err != nil {
 			return err
 		}
-		out.Write(jsonData)
+
+		_, err = out.Write(jsonData)
+		if err != nil {
+			logrus.Error(err)
+		}
+
 		return nil
 	}
 
 	switch v := v.(type) {
 	case starlark.NoneType:
-		out.WriteString("null")
+		_, err := out.WriteString("null")
+		if err != nil {
+			logrus.Error(err)
+		}
 	case starlark.Bool:
-		fmt.Fprintf(out, "%t", v)
+		_, err := fmt.Fprintf(out, "%t", v)
+		if err != nil {
+			logrus.Error(err)
+		}
 	case starlark.Int:
-		out.WriteString(v.String())
+		_, err := out.WriteString(v.String())
+		if err != nil {
+			logrus.Error(err)
+		}
 	case starlark.Float:
-		fmt.Fprintf(out, "%g", v)
+		_, err := fmt.Fprintf(out, "%g", v)
+		if err != nil {
+			logrus.Error(err)
+		}
 	case starlark.String:
 		s := string(v)
+
 		if goQuoteIsSafe(s) {
 			fmt.Fprintf(out, "%q", s)
 		} else {
@@ -160,39 +196,76 @@ func writeJSON(out *bytes.Buffer, v starlark.Value) error {
 			if err != nil {
 				logrus.Error(err)
 			}
-			out.Write(data)
+
+			_, err = out.Write(data)
+			if err != nil {
+				logrus.Error(err)
+			}
 		}
 	case starlark.Indexable: // Tuple, List
-		out.WriteByte('[')
+		err := out.WriteByte('[')
+		if err != nil {
+			logrus.Error(err)
+		}
+
 		for i, n := 0, starlark.Len(v); i < n; i++ {
 			if i > 0 {
-				out.WriteString(", ")
+				_, err := out.WriteString(", ")
+				if err != nil {
+					logrus.Error(err)
+				}
 			}
-			if err := writeJSON(out, v.Index(i)); err != nil {
+
+			err := writeJSON(out, v.Index(i))
+			if err != nil {
 				return err
 			}
 		}
-		out.WriteByte(']')
+
+		err = out.WriteByte(']')
+		if err != nil {
+			logrus.Error(err)
+		}
 	case *starlark.Dict:
-		out.WriteByte('{')
+		err := out.WriteByte('{')
+		if err != nil {
+			logrus.Error(err)
+		}
+
 		for i, itemPair := range v.Items() {
-			key := itemPair[0]
-			value := itemPair[1]
+			key, value := itemPair[0], itemPair[1]
+
 			if i > 0 {
-				out.WriteString(", ")
+				_, err := out.WriteString(", ")
+				if err != nil {
+					logrus.Error(err)
+				}
 			}
-			if err := writeJSON(out, key); err != nil {
+
+			err := writeJSON(out, key)
+			if err != nil {
 				return err
 			}
-			out.WriteString(": ")
-			if err := writeJSON(out, value); err != nil {
+
+			_, err = out.WriteString(": ")
+			if err != nil {
+				logrus.Error(err)
+			}
+
+			err = writeJSON(out, value)
+			if err != nil {
 				return err
 			}
 		}
-		out.WriteByte('}')
+
+		err = out.WriteByte('}')
+		if err != nil {
+			logrus.Error(err)
+		}
 	default:
-		return fmt.Errorf("unable to convert value %s (type `%s') can't be converted to json.", v.String(), v.Type())
+		return fmt.Errorf("%s: %v", ErrUnableToConvertJSON, v)
 	}
+
 	return nil
 }
 
