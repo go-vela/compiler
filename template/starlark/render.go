@@ -10,9 +10,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
 
-	"github.com/go-vela/types/raw"
 	types "github.com/go-vela/types/yaml"
 	"go.starlark.net/starlark"
 	"gopkg.in/yaml.v2"
@@ -71,13 +69,13 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	}
 
 	// load the user provided vars into a starlark type
-	userVars, err := userData(s.Template.Variables)
+	userVars, err := convertTemplateVars(s.Template.Variables)
 	if err != nil {
 		return nil, err
 	}
 
 	// load the platform provided vars into a starlark type
-	velaVars, err := velaEnvironmentData(s.Environment)
+	velaVars, err := convertPlatformVars(s.Environment)
 	if err != nil {
 		return nil, err
 	}
@@ -137,68 +135,4 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	}
 
 	return config.Steps, nil
-}
-
-func userData(m map[string]interface{}) (starlark.StringDict, error) {
-	dict := make(starlark.StringDict)
-
-	// loop through user vars converting provided types to starklark primitives
-	for key, value := range m {
-		val, err := toStarlark(value)
-		if err != nil {
-			return nil, err
-		}
-
-		dict[key] = val
-	}
-
-	return dict, nil
-}
-
-func velaEnvironmentData(slice raw.StringSliceMap) (starlark.StringDict, error) {
-	build := starlark.NewDict(0)
-	repo := starlark.NewDict(0)
-	user := starlark.NewDict(0)
-	system := starlark.NewDict(0)
-
-	// TODO look at fixing access to variables:
-	// ctx.vela.repo["full_name"] vs ctx.vela.repo.full_name
-	dict := starlark.StringDict{
-		"build":  build,
-		"repo":   repo,
-		"user":   user,
-		"system": system,
-	}
-
-	for key, value := range slice {
-		key = strings.ToLower(key)
-		if strings.HasPrefix(key, "vela_") {
-			key = strings.TrimPrefix(key, "vela_")
-
-			switch {
-			case strings.HasPrefix(key, "build_"):
-				err := build.SetKey(starlark.String(strings.TrimPrefix(key, "build_")), starlark.String(value))
-				if err != nil {
-					return nil, err
-				}
-			case strings.HasPrefix(key, "repo_"):
-				err := repo.SetKey(starlark.String(strings.TrimPrefix(key, "repo_")), starlark.String(value))
-				if err != nil {
-					return nil, err
-				}
-			case strings.HasPrefix(key, "user_"):
-				err := user.SetKey(starlark.String(strings.TrimPrefix(key, "user_")), starlark.String(value))
-				if err != nil {
-					return nil, err
-				}
-			default:
-				err := system.SetKey(starlark.String(key), starlark.String(value))
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
-	}
-
-	return dict, nil
 }
