@@ -35,44 +35,55 @@ func (c *client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
-		// make empty map of environment variables
-		env := make(map[string]string)
-		// gather set of default environment variables
-		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
-
-		// inject the declared environment
-		// variables to the build step
-		for k, v := range step.Environment {
-			env[k] = v
+		_, err := c.EnvironmentStep(step)
+		if err != nil {
+			return nil, err
 		}
-
-		// inject the default environment
-		// variables to the build step
-		// we do this after injecting the declared environment
-		// to ensure the default env overrides any conflicts
-		for k, v := range defaultEnv {
-			env[k] = v
-		}
-
-		// inject the declared parameter
-		// variables to the build step
-		for k, v := range step.Parameters {
-			if v == nil {
-				continue
-			}
-
-			// parameter keys are passed to the image
-			// as PARAMETER_ environment variables
-			k = "PARAMETER_" + strings.ToUpper(k)
-
-			// parameter values are passed to the image
-			// as string environment variables
-			env[k] = library.ToString(v)
-		}
-
-		// overwrite existing build step environment
-		step.Environment = env
 	}
+
+	return s, nil
+}
+
+// EnvironmentStep injects environment variables
+// a single step in a yaml configuration.
+func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
+	// make empty map of environment variables
+	env := make(map[string]string)
+	// gather set of default environment variables
+	defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
+
+	// inject the declared environment
+	// variables to the build step
+	for k, v := range s.Environment {
+		env[k] = v
+	}
+
+	// inject the default environment
+	// variables to the build step
+	// we do this after injecting the declared environment
+	// to ensure the default env overrides any conflicts
+	for k, v := range defaultEnv {
+		env[k] = v
+	}
+
+	// inject the declared parameter
+	// variables to the build step
+	for k, v := range s.Parameters {
+		if v == nil {
+			continue
+		}
+
+		// parameter keys are passed to the image
+		// as PARAMETER_ environment variables
+		k = "PARAMETER_" + strings.ToUpper(k)
+
+		// parameter values are passed to the image
+		// as string environment variables
+		env[k] = library.ToString(v)
+	}
+
+	// overwrite existing build step environment
+	s.Environment = env
 
 	return s, nil
 }

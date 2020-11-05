@@ -78,7 +78,8 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		return nil, err
 	}
 
-	// convert
+	// add the user and platform vars to a context to be used
+	// within the template caller i.e. ctx["vela"] or ctx["vars"]
 	context := starlark.NewDict(0)
 	context.SetKey(starlark.String("vela"), velaVars)
 	context.SetKey(starlark.String("vars"), userVars)

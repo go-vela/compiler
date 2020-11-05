@@ -49,6 +49,12 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 			continue
 		}
 
+		// inject environment information for template
+		step, err := c.EnvironmentStep(step)
+		if err != nil {
+			return yaml.StepSlice{}, err
+		}
+
 		// skip processing template if the type isn't github
 		if tmpl.Type != "github" {
 			logrus.Errorf("Unsupported template type: %v", tmpl.Type)
@@ -79,7 +85,7 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 
 		var tmplSteps yaml.StepSlice
 
-		// TODO: provider friendlier error messages with file type mismatches
+		// TODO: provide friendlier error messages with file type mismatches
 		switch tmpl.Format {
 		case "go", "":
 			// render template for steps
