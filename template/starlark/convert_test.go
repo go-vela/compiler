@@ -26,26 +26,35 @@ func TestNative_Render_convertTemplateVars(t *testing.T) {
 	err = commands.SetKey(starlark.String("build"), starlark.String("go build"))
 	assert.NoError(t, err)
 
+	strWant := starlark.NewDict(0)
+	strWant.SetKey(starlark.String("pull"), starlark.String("always"))
+
+	arrayWant := starlark.NewDict(0)
+	arrayWant.SetKey(starlark.String("tags"), tags)
+
+	mapWant := starlark.NewDict(0)
+	mapWant.SetKey(starlark.String("commands"), commands)
+
 	tests := []struct {
 		name string
 		args map[string]interface{}
-		want starlark.StringDict
+		want *starlark.Dict
 	}{
 		{
 			name: "test for a user passed string",
 			args: map[string]interface{}{"pull": "always"},
-			want: starlark.StringDict{"pull": starlark.String("always")},
+			want: strWant,
 		},
 		{
 			name: "test for a user passed array",
 			args: map[string]interface{}{"tags": []string{"latest", "1.14", "1.15"}},
-			want: starlark.StringDict{"tags": tags},
+			want: arrayWant,
 		},
 		{
 			name: "test for a user passed map",
 			// nolint // ignore line length
 			args: map[string]interface{}{"commands": map[string]string{"test": "go test ./...", "build": "go build"}},
-			want: starlark.StringDict{"commands": commands},
+			want: mapWant,
 		}}
 
 	for _, tt := range tests {
@@ -78,17 +87,16 @@ func TestNative_Render_velaEnvironmentData(t *testing.T) {
 	err = system.SetKey(starlark.String("workspace"), starlark.String("/vela/src/github.com/go-vela/hello-world"))
 	assert.NoError(t, err)
 
-	withAllPre := starlark.StringDict{
-		"build":  build,
-		"repo":   repo,
-		"user":   user,
-		"system": system,
-	}
+	withAllPre := starlark.NewDict(0)
+	withAllPre.SetKey(starlark.String("build"), build)
+	withAllPre.SetKey(starlark.String("repo"), repo)
+	withAllPre.SetKey(starlark.String("user"), user)
+	withAllPre.SetKey(starlark.String("system"), system)
 
 	tests := []struct {
 		name    string
 		args    raw.StringSliceMap
-		want    starlark.StringDict
+		want    *starlark.Dict
 		wantErr bool
 	}{
 		{

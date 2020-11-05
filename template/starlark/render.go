@@ -14,8 +14,6 @@ import (
 	types "github.com/go-vela/types/yaml"
 	"go.starlark.net/starlark"
 	"gopkg.in/yaml.v2"
-
-	"go.starlark.net/starlarkstruct"
 )
 
 var (
@@ -80,18 +78,12 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		return nil, err
 	}
 
-	// assemble vars into a starlark type for injected context:
-	// ctx.vars.<user defind space> i.e. ctx.vars.message = "Hello, World!"
-	// ctx.vela.<platform defind space> i.e. ctx.vela.build.number = 1
-	args := starlark.Tuple([]starlark.Value{
-		starlarkstruct.FromStringDict(
-			starlark.String("context"),
-			starlark.StringDict{
-				"vars": starlarkstruct.FromStringDict(starlark.String("vars"), userVars),
-				"vela": starlarkstruct.FromStringDict(starlark.String("vela"), velaVars),
-			},
-		),
-	})
+	// convert
+	context := starlark.NewDict(0)
+	context.SetKey(starlark.String("vela"), velaVars)
+	context.SetKey(starlark.String("vars"), userVars)
+
+	args := starlark.Tuple([]starlark.Value{context})
 
 	// execute Starlark program from Go.
 	mainVal, err = starlark.Call(thread, main, args, nil)

@@ -14,12 +14,12 @@ import (
 // convertTemplateVars takes template variables and converts
 // them to a starlark string dictionary for template reference.
 //
-// Example Usage within template: ctx.vars.message = "Hello, World!"
+// Example Usage within template: ctx["vars"]["message"] = "Hello, World!"
 //
 // Explanation of type "starlark.StringDict":
 // https://pkg.go.dev/go.starlark.net/starlark#StringDict
-func convertTemplateVars(m map[string]interface{}) (starlark.StringDict, error) {
-	dict := make(starlark.StringDict)
+func convertTemplateVars(m map[string]interface{}) (*starlark.Dict, error) {
+	dict := starlark.NewDict(0)
 
 	// loop through user vars converting provided types to starklark primitives
 	for key, value := range m {
@@ -28,7 +28,7 @@ func convertTemplateVars(m map[string]interface{}) (starlark.StringDict, error) 
 			return nil, err
 		}
 
-		dict[key] = val
+		dict.SetKey(starlark.String(key), val)
 	}
 
 	return dict, nil
@@ -38,24 +38,21 @@ func convertTemplateVars(m map[string]interface{}) (starlark.StringDict, error) 
 // within the step environment block and converts them to a
 // starlark string dictionary.
 //
-// Example Usage within template: ctx.vela.build.number = 1
+// Example Usage within template: ctx["vela"]["build"]["number"] = 1
 //
 // Explanation of type "starlark.StringDict":
 // https://pkg.go.dev/go.starlark.net/starlark#StringDict
-func convertPlatformVars(slice raw.StringSliceMap) (starlark.StringDict, error) {
+func convertPlatformVars(slice raw.StringSliceMap) (*starlark.Dict, error) {
 	build := starlark.NewDict(0)
 	repo := starlark.NewDict(0)
 	user := starlark.NewDict(0)
 	system := starlark.NewDict(0)
+	dict := starlark.NewDict(0)
 
-	// TODO look at fixing access to variables:
-	// ctx.vela.repo["full_name"] vs ctx.vela.repo.full_name
-	dict := starlark.StringDict{
-		"build":  build,
-		"repo":   repo,
-		"user":   user,
-		"system": system,
-	}
+	dict.SetKey(starlark.String("build"), build)
+	dict.SetKey(starlark.String("repo"), repo)
+	dict.SetKey(starlark.String("user"), user)
+	dict.SetKey(starlark.String("system"), system)
 
 	for key, value := range slice {
 		key = strings.ToLower(key)
