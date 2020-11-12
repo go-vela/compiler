@@ -66,7 +66,7 @@ func toStarlark(value interface{}) (starlark.Value, error) {
 		return starlark.Float(v.Float()), nil
 	case reflect.Slice:
 		if b, ok := value.([]byte); ok {
-			return starlark.String(b), nil
+			return starlark.String(string(b)), nil
 		}
 
 		a := make([]starlark.Value, 0)
