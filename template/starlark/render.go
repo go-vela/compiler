@@ -8,8 +8,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"os"
 
 	types "github.com/go-vela/types/yaml"
 	"go.starlark.net/starlark"
@@ -35,21 +33,8 @@ var (
 func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	config := new(types.Build)
 
-	// setup temporary file
-	file, err := ioutil.TempFile("/tmp", s.Template.Name)
-	if err != nil {
-		return nil, err
-	}
-
-	defer os.Remove(file.Name())
-
-	_, err = file.Write([]byte(tmpl))
-	if err != nil {
-		return nil, err
-	}
-
 	thread := &starlark.Thread{Name: s.Name}
-	globals, err := starlark.ExecFile(thread, file.Name(), nil, nil)
+	globals, err := starlark.ExecFile(thread, s.Template.Name, tmpl, nil)
 	if err != nil {
 		return nil, err
 	}

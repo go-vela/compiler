@@ -46,20 +46,6 @@ func TestNative_Render_StarlarkBasic(t *testing.T) {
 	}
 }
 
-// ctx.vela.build_number
-// ctx.vela.build.number
-// ctx.vela.build.foo_bar
-// ctx.vela.host
-// ctx.vela.system.<thing>
-
-// ctx.vela.host (value)
-// ctx.vela.build (dict)
-
-// if prexix == VELA_
-// remove VELA_ add to vela dict
-// if prefix == BUILD_
-// do y
-
 func TestNative_Render_StarlarkWithMethod(t *testing.T) {
 	// setup types
 	sFile, err := ioutil.ReadFile("testdata/with_method/step.yml")
