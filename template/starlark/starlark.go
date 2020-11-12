@@ -33,7 +33,7 @@ var (
 // https://github.com/wonderix/shalm/blob/899b8f7787883d40619eefcc39bd12f42a09b5e7/pkg/shalm/convert.go#L14-L85
 // nolint /// @lll ignore line length of the link
 func toStarlark(value interface{}) (starlark.Value, error) {
-	logrus.Tracef("converting %v to starklark type", value)
+	logrus.Tracef("converting %v to starlark type", value)
 
 	if value == nil {
 		return starlark.None, nil

@@ -21,7 +21,7 @@ import (
 func convertTemplateVars(m map[string]interface{}) (*starlark.Dict, error) {
 	dict := starlark.NewDict(0)
 
-	// loop through user vars converting provided types to starklark primitives
+	// loop through user vars converting provided types to starlark primitives
 	for key, value := range m {
 		val, err := toStarlark(value)
 		if err != nil {

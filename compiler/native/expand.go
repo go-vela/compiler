@@ -85,9 +85,10 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 
 		var tmplSteps yaml.StepSlice
 
+		// TODO: investigate safeguards that starlark has implemented for infinite loops and complex pipelines
 		// TODO: provide friendlier error messages with file type mismatches
 		switch tmpl.Format {
-		case "go", "":
+		case "go", "golang", "":
 			// render template for steps
 			tmplSteps, err = native.Render(string(bytes), step)
 			if err != nil {
@@ -100,7 +101,7 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 				return yaml.StepSlice{}, err
 			}
 		default:
-			// TODO: send some user error
+			return yaml.StepSlice{}, fmt.Errorf("format of %s is unsupported", tmpl.Format)
 		}
 
 		// add templated steps
