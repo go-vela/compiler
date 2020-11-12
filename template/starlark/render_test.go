@@ -6,142 +6,65 @@ package starlark
 
 import (
 	"io/ioutil"
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
-	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
 	goyaml "gopkg.in/yaml.v2"
 )
 
-func TestNative_Render_StarlarkBasic(t *testing.T) {
-	// setup types
-	sFile, err := ioutil.ReadFile("testdata/basic/step.yml")
-	assert.NoError(t, err)
-	b := &yaml.Build{}
-	err = goyaml.Unmarshal(sFile, b)
-	assert.NoError(t, err)
-
-	wFile, err := ioutil.ReadFile("testdata/basic/want.yml")
-	assert.NoError(t, err)
-	w := &yaml.Build{}
-	err = goyaml.Unmarshal(wFile, w)
-	assert.NoError(t, err)
-
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/basic/template.py")
-	assert.NoError(t, err)
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
+func TestRender(t *testing.T) {
+	type args struct {
+		velaFile     string
+		starlarkFile string
 	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
+	tests := []struct {
+		name     string
+		args     args
+		wantFile string
+		wantErr  bool
+	}{
+		{"basic", args{velaFile: "testdata/basic/step.yml", starlarkFile: "testdata/basic/template.py"}, "testdata/basic/want.yml", false},
+		{"with method", args{velaFile: "testdata/with_method/step.yml", starlarkFile: "testdata/with_method/template.star"}, "testdata/with_method/want.yml", false},
+		{"user vars", args{velaFile: "testdata/with_vars/step.yml", starlarkFile: "testdata/with_vars/template.star"}, "testdata/with_vars/want.yml", false},
+		{"platform vars", args{velaFile: "testdata/with_vars_plat/step.yml", starlarkFile: "testdata/with_vars_plat/template.star"}, "testdata/with_vars_plat/want.yml", false},
+		{"cancel due to complexity", args{velaFile: "testdata/cancel/step.yml", starlarkFile: "testdata/cancel/template.star"}, "", true},
 	}
-}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sFile, err := ioutil.ReadFile(tt.args.velaFile)
+			assert.NoError(t, err)
+			b := &yaml.Build{}
+			err = goyaml.Unmarshal(sFile, b)
+			assert.NoError(t, err)
+			b.Steps[0].Environment = raw.StringSliceMap{
+				"VELA_REPO_FULL_NAME": "octocat/hello-world",
+			}
 
-func TestNative_Render_StarlarkWithMethod(t *testing.T) {
-	// setup types
-	sFile, err := ioutil.ReadFile("testdata/with_method/step.yml")
-	assert.NoError(t, err)
-	b := &yaml.Build{}
-	err = goyaml.Unmarshal(sFile, b)
-	assert.NoError(t, err)
+			tmpl, err := ioutil.ReadFile(tt.args.starlarkFile)
+			assert.NoError(t, err)
 
-	wFile, err := ioutil.ReadFile("testdata/with_method/want.yml")
-	assert.NoError(t, err)
-	w := &yaml.Build{}
-	err = goyaml.Unmarshal(wFile, w)
-	assert.NoError(t, err)
+			got, err := Render(string(tmpl), b.Steps[0])
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Render() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 
-	want := w.Steps
+			if tt.wantErr != true {
+				wFile, err := ioutil.ReadFile(tt.wantFile)
+				assert.NoError(t, err)
+				w := &yaml.Build{}
+				err = goyaml.Unmarshal(wFile, w)
+				assert.NoError(t, err)
+				want := w.Steps
 
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/with_method/template.star")
-	assert.NoError(t, err)
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_StarlarkWithVars(t *testing.T) {
-	// setup types
-	sFile, err := ioutil.ReadFile("testdata/with_vars/step.yml")
-	assert.NoError(t, err)
-	b := &yaml.Build{}
-	err = goyaml.Unmarshal(sFile, b)
-	assert.NoError(t, err)
-
-	wFile, err := ioutil.ReadFile("testdata/with_vars/want.yml")
-	assert.NoError(t, err)
-	w := &yaml.Build{}
-	err = goyaml.Unmarshal(wFile, w)
-	assert.NoError(t, err)
-
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/with_vars/template.star")
-	assert.NoError(t, err)
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		if diff := cmp.Diff(want, got); diff != "" {
-			t.Errorf("MakeGatewayInfo() mismatch (-want +got):\n%s", diff)
-		}
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_StarlarkWithVarsPlat(t *testing.T) {
-	// setup types
-	sFile, err := ioutil.ReadFile("testdata/with_vars_plat/step.yml")
-	assert.NoError(t, err)
-	b := &yaml.Build{}
-	err = goyaml.Unmarshal(sFile, b)
-	assert.NoError(t, err)
-
-	b.Steps[0].Environment = raw.StringSliceMap{
-		"VELA_REPO_FULL_NAME": "octocat/hello-world",
-	}
-
-	wFile, err := ioutil.ReadFile("testdata/with_vars_plat/want.yml")
-	assert.NoError(t, err)
-	w := &yaml.Build{}
-	err = goyaml.Unmarshal(wFile, w)
-	assert.NoError(t, err)
-
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/with_vars_plat/template.star")
-	assert.NoError(t, err)
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		if diff := cmp.Diff(want, got); diff != "" {
-			t.Errorf("MakeGatewayInfo() mismatch (-want +got):\n%s", diff)
-		}
-		t.Errorf("Render is %v, want %v", got, want)
+				if diff := cmp.Diff(want, got); diff != "" {
+					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
+				}
+			}
+		})
 	}
 }

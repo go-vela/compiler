@@ -34,6 +34,10 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	config := new(types.Build)
 
 	thread := &starlark.Thread{Name: s.Name}
+	// arbitrarily limiting the steps of the thread to 5000 to help prevent infinite loops
+	// may need to further investigate spawning a separate POSIX process if user input is problematic
+	// see https://github.com/google/starlark-go/issues/160#issuecomment-466794230 for further details
+	thread.SetMaxExecutionSteps(5000)
 	globals, err := starlark.ExecFile(thread, s.Template.Name, tmpl, nil)
 	if err != nil {
 		return nil, err

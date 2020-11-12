@@ -85,7 +85,6 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 
 		var tmplSteps yaml.StepSlice
 
-		// TODO: investigate safeguards that starlark has implemented for infinite loops and complex pipelines
 		// TODO: provide friendlier error messages with file type mismatches
 		switch tmpl.Format {
 		case "go", "golang", "":
