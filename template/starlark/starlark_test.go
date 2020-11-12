@@ -29,7 +29,17 @@ func Test_toStarlark(t *testing.T) {
 		{"byte array", args{value: []byte("array")}, starlark.String("array"), false},
 		{"array", args{value: []string{"foo", "bar"}}, starlark.Tuple(a), false},
 		{"bool", args{value: true}, starlark.Bool(true), false},
-		{"float", args{value: 0.1}, starlark.Float(0.1), false},
+		{"float64", args{value: 0.1}, starlark.Float(0.1), false},
+		{"float32", args{value: float32(0.1)}, starlark.Float(float32(0.1)), false},
+		{"int", args{value: 1}, starlark.MakeInt(1), false},
+		{"int32", args{value: int32(1)}, starlark.MakeInt(1), false},
+		{"int64", args{value: int64(1)}, starlark.MakeInt(1), false},
+		{"int16", args{value: int16(1)}, starlark.MakeInt(1), false},
+		{"unit", args{value: uint(1)}, starlark.MakeInt(1), false},
+		{"unit32", args{value: uint32(1)}, starlark.MakeInt(1), false},
+		{"unit64", args{value: uint64(1)}, starlark.MakeInt(1), false},
+		{"unit16", args{value: uint16(1)}, starlark.MakeInt(1), false},
+		{"nil", args{value: nil}, starlark.None, false},
 		{"map", args{value: map[string]string{"foo": "bar"}}, dict, false},
 	}
 	for _, tt := range tests {
