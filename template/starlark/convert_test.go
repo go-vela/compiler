@@ -27,13 +27,16 @@ func TestNative_Render_convertTemplateVars(t *testing.T) {
 	assert.NoError(t, err)
 
 	strWant := starlark.NewDict(0)
-	strWant.SetKey(starlark.String("pull"), starlark.String("always"))
+	err = strWant.SetKey(starlark.String("pull"), starlark.String("always"))
+	assert.NoError(t, err)
 
 	arrayWant := starlark.NewDict(0)
-	arrayWant.SetKey(starlark.String("tags"), tags)
+	err = arrayWant.SetKey(starlark.String("tags"), tags)
+	assert.NoError(t, err)
 
 	mapWant := starlark.NewDict(0)
-	mapWant.SetKey(starlark.String("commands"), commands)
+	err = mapWant.SetKey(starlark.String("commands"), commands)
+	assert.NoError(t, err)
 
 	tests := []struct {
 		name string
@@ -88,10 +91,14 @@ func TestNative_Render_velaEnvironmentData(t *testing.T) {
 	assert.NoError(t, err)
 
 	withAllPre := starlark.NewDict(0)
-	withAllPre.SetKey(starlark.String("build"), build)
-	withAllPre.SetKey(starlark.String("repo"), repo)
-	withAllPre.SetKey(starlark.String("user"), user)
-	withAllPre.SetKey(starlark.String("system"), system)
+	err = withAllPre.SetKey(starlark.String("build"), build)
+	assert.NoError(t, err)
+	err = withAllPre.SetKey(starlark.String("repo"), repo)
+	assert.NoError(t, err)
+	err = withAllPre.SetKey(starlark.String("user"), user)
+	assert.NoError(t, err)
+	err = withAllPre.SetKey(starlark.String("system"), system)
+	assert.NoError(t, err)
 
 	tests := []struct {
 		name    string

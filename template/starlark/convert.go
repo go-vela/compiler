@@ -28,7 +28,10 @@ func convertTemplateVars(m map[string]interface{}) (*starlark.Dict, error) {
 			return nil, err
 		}
 
-		dict.SetKey(starlark.String(key), val)
+		err = dict.SetKey(starlark.String(key), val)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return dict, nil
@@ -49,10 +52,22 @@ func convertPlatformVars(slice raw.StringSliceMap) (*starlark.Dict, error) {
 	system := starlark.NewDict(0)
 	dict := starlark.NewDict(0)
 
-	dict.SetKey(starlark.String("build"), build)
-	dict.SetKey(starlark.String("repo"), repo)
-	dict.SetKey(starlark.String("user"), user)
-	dict.SetKey(starlark.String("system"), system)
+	err := dict.SetKey(starlark.String("build"), build)
+	if err != nil {
+		return nil, err
+	}
+	err = dict.SetKey(starlark.String("repo"), repo)
+	if err != nil {
+		return nil, err
+	}
+	err = dict.SetKey(starlark.String("user"), user)
+	if err != nil {
+		return nil, err
+	}
+	err = dict.SetKey(starlark.String("system"), system)
+	if err != nil {
+		return nil, err
+	}
 
 	for key, value := range slice {
 		key = strings.ToLower(key)
