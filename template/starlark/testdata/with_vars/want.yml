@@ -5,18 +5,18 @@ steps:
     pull: always
     commands:
       - go test ./...
-      - go build 
+      - go test ./...
 
   - name: sample_build 1.14
     image: golang:1.14
     pull: always
     commands:
       - go test ./...
-      - go build
+      - go test ./...
 
   - name: sample_build 1.15
     image: golang:1.15
     pull: always
     commands:
       - go test ./...
-      - go build     
+      - go test ./...

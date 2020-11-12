@@ -7,4 +7,4 @@ steps:
         pull_policy: always
         commands:
           test: "go test ./..."
-          build: "go build"          
+          build: "go test ./..."          
