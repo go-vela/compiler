@@ -23,8 +23,6 @@ func TestNative_Render_convertTemplateVars(t *testing.T) {
 	commands := starlark.NewDict(16)
 	err := commands.SetKey(starlark.String("test"), starlark.String("go test ./..."))
 	assert.NoError(t, err)
-	err = commands.SetKey(starlark.String("build"), starlark.String("go build"))
-	assert.NoError(t, err)
 
 	strWant := starlark.NewDict(0)
 	err = strWant.SetKey(starlark.String("pull"), starlark.String("always"))
@@ -56,7 +54,7 @@ func TestNative_Render_convertTemplateVars(t *testing.T) {
 		{
 			name: "test for a user passed map",
 			// nolint // ignore line length
-			args: map[string]interface{}{"commands": map[string]string{"test": "go test ./...", "build": "go build"}},
+			args: map[string]interface{}{"commands": map[string]string{"test": "go test ./..."}},
 			want: mapWant,
 		}}
 
