@@ -23,7 +23,6 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/sirupsen/logrus v1.7.0
-	github.com/stretchr/testify v1.4.0
 	github.com/ugorji/go v1.1.11 // indirect
 	github.com/urfave/cli/v2 v2.2.0
 	go.starlark.net v0.0.0-20201014215153-dff0ae5b4820

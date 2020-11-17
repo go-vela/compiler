@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/go-vela/types/raw"
-	"github.com/stretchr/testify/assert"
 	"go.starlark.net/starlark"
 )
 
@@ -22,19 +21,27 @@ func TestNative_Render_convertTemplateVars(t *testing.T) {
 
 	commands := starlark.NewDict(16)
 	err := commands.SetKey(starlark.String("test"), starlark.String("go test ./..."))
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	strWant := starlark.NewDict(0)
 	err = strWant.SetKey(starlark.String("pull"), starlark.String("always"))
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	arrayWant := starlark.NewDict(0)
 	err = arrayWant.SetKey(starlark.String("tags"), tags)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	mapWant := starlark.NewDict(0)
 	err = mapWant.SetKey(starlark.String("commands"), commands)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	tests := []struct {
 		name string
@@ -61,7 +68,9 @@ func TestNative_Render_convertTemplateVars(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := convertTemplateVars(tt.args)
-			assert.NoError(t, err)
+			if err != nil {
+				t.Error(err)
+			}
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertTemplateVars() = %v, want %v", got, tt.want)
@@ -74,29 +83,45 @@ func TestNative_Render_velaEnvironmentData(t *testing.T) {
 	// setup types
 	build := starlark.NewDict(1)
 	err := build.SetKey(starlark.String("author"), starlark.String("octocat"))
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	repo := starlark.NewDict(1)
 	err = repo.SetKey(starlark.String("full_name"), starlark.String("go-vela/hello-world"))
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	user := starlark.NewDict(1)
 	err = user.SetKey(starlark.String("admin"), starlark.String("true"))
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	system := starlark.NewDict(1)
 	err = system.SetKey(starlark.String("workspace"), starlark.String("/vela/src/github.com/go-vela/hello-world"))
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	withAllPre := starlark.NewDict(0)
 	err = withAllPre.SetKey(starlark.String("build"), build)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 	err = withAllPre.SetKey(starlark.String("repo"), repo)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 	err = withAllPre.SetKey(starlark.String("user"), user)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 	err = withAllPre.SetKey(starlark.String("system"), system)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Error(err)
+	}
 
 	tests := []struct {
 		name    string

@@ -12,7 +12,6 @@ import (
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
-	"github.com/stretchr/testify/assert"
 	goyaml "gopkg.in/yaml.v2"
 )
 
@@ -36,16 +35,22 @@ func TestRender(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			sFile, err := ioutil.ReadFile(tt.args.velaFile)
-			assert.NoError(t, err)
+			if err != nil {
+				t.Error(err)
+			}
 			b := &yaml.Build{}
 			err = goyaml.Unmarshal(sFile, b)
-			assert.NoError(t, err)
+			if err != nil {
+				t.Error(err)
+			}
 			b.Steps[0].Environment = raw.StringSliceMap{
 				"VELA_REPO_FULL_NAME": "octocat/hello-world",
 			}
 
 			tmpl, err := ioutil.ReadFile(tt.args.starlarkFile)
-			assert.NoError(t, err)
+			if err != nil {
+				t.Error(err)
+			}
 
 			got, err := Render(string(tmpl), b.Steps[0])
 			if (err != nil) != tt.wantErr {
@@ -55,10 +60,14 @@ func TestRender(t *testing.T) {
 
 			if tt.wantErr != true {
 				wFile, err := ioutil.ReadFile(tt.wantFile)
-				assert.NoError(t, err)
+				if err != nil {
+					t.Error(err)
+				}
 				w := &yaml.Build{}
 				err = goyaml.Unmarshal(wFile, w)
-				assert.NoError(t, err)
+				if err != nil {
+					t.Error(err)
+				}
 				want := w.Steps
 
 				if diff := cmp.Diff(want, got); diff != "" {
