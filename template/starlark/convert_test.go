@@ -12,7 +12,7 @@ import (
 	"go.starlark.net/starlark"
 )
 
-func TestNative_Render_convertTemplateVars(t *testing.T) {
+func TestStarlark_Render_convertTemplateVars(t *testing.T) {
 	// setup types
 	tags := starlark.Tuple(nil)
 	tags = append(tags, starlark.String("latest"))
@@ -79,7 +79,7 @@ func TestNative_Render_convertTemplateVars(t *testing.T) {
 	}
 }
 
-func TestNative_Render_velaEnvironmentData(t *testing.T) {
+func TestStarlark_Render_velaEnvironmentData(t *testing.T) {
 	// setup types
 	build := starlark.NewDict(1)
 	err := build.SetKey(starlark.String("author"), starlark.String("octocat"))

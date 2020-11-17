@@ -7,7 +7,7 @@ import (
 	"go.starlark.net/starlark"
 )
 
-func Test_toStarlark(t *testing.T) {
+func TestStarlark_toStarlark(t *testing.T) {
 	dict := starlark.NewDict(16)
 	err := dict.SetKey(starlark.String("foo"), starlark.String("bar"))
 	if err != nil {

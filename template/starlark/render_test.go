@@ -6,16 +6,15 @@ package starlark
 
 import (
 	"io/ioutil"
+	"reflect"
 	"testing"
-
-	"github.com/google/go-cmp/cmp"
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 	goyaml "gopkg.in/yaml.v2"
 )
 
-func TestRender(t *testing.T) {
+func TestStarlark_Render(t *testing.T) {
 	type args struct {
 		velaFile     string
 		starlarkFile string
@@ -70,8 +69,8 @@ func TestRender(t *testing.T) {
 				}
 				want := w.Steps
 
-				if diff := cmp.Diff(want, got); diff != "" {
-					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
+				if !reflect.DeepEqual(got, want) {
+					t.Errorf("Render is %v, want %v", got, want)
 				}
 			}
 		})
