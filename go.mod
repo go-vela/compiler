@@ -12,6 +12,7 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.0 // indirect
 	github.com/go-vela/types v0.6.1-0.20201113143106-92e626cf6b5b
+	github.com/google/go-cmp v0.5.1
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/goware/urlx v0.3.1

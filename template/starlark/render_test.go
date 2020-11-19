@@ -6,11 +6,11 @@ package starlark
 
 import (
 	"io/ioutil"
-	"reflect"
 	"testing"
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
+	"github.com/google/go-cmp/cmp"
 	goyaml "gopkg.in/yaml.v2"
 )
 
@@ -69,8 +69,8 @@ func TestStarlark_Render(t *testing.T) {
 				}
 				want := w.Steps
 
-				if !reflect.DeepEqual(got, want) {
-					t.Errorf("Render is %v, want %v", got, want)
+				if diff := cmp.Diff(want, got); diff != "" {
+					t.Errorf("ExpandSteps() mismatch (-want +got):\n%s", diff)
 				}
 			}
 		})
