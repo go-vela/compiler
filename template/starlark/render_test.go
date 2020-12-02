@@ -10,8 +10,8 @@ import (
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
+	goyaml "github.com/goccy/go-yaml"
 	"github.com/google/go-cmp/cmp"
-	goyaml "gopkg.in/yaml.v2"
 )
 
 func TestStarlark_Render(t *testing.T) {
