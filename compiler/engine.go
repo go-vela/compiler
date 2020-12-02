@@ -46,6 +46,9 @@ type Engine interface {
 	// EnvironmentSteps defines a function that injects the environment
 	// variables for each step into a yaml configuration.
 	EnvironmentSteps(yaml.StepSlice) (yaml.StepSlice, error)
+	// EnvironmentStep defines a function that injects the environment
+	// variables for a single step into a yaml configuration.
+	EnvironmentStep(*yaml.Step) (*yaml.Step, error)
 	// EnvironmentServices defines a function that injects the environment
 	// variables for each service into a yaml configuration.
 	EnvironmentServices(yaml.ServiceSlice) (yaml.ServiceSlice, error)
@@ -103,7 +106,7 @@ type Engine interface {
 	// the library build type in the Engine.
 	WithBuild(*library.Build) Engine
 	// WithComment defines a function that sets
-	// the commment in the Engine.
+	// the comment in the Engine.
 	WithComment(string) Engine
 	// WithFiles defines a function that sets
 	// the changeset files in the Engine.

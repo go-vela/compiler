@@ -135,3 +135,4 @@ issues:
         - goconst
         - gocyclo
         - gomnd
+        - lll

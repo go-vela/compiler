@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-vela/compiler/template/native"
+	"github.com/go-vela/compiler/template/starlark"
 
 	"github.com/go-vela/types/yaml"
 	"github.com/sirupsen/logrus"
@@ -48,6 +49,12 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 			continue
 		}
 
+		// inject environment information for template
+		step, err := c.EnvironmentStep(step)
+		if err != nil {
+			return yaml.StepSlice{}, err
+		}
+
 		// skip processing template if the type isn't github
 		if tmpl.Type != "github" {
 			logrus.Errorf("Unsupported template type: %v", tmpl.Type)
@@ -76,10 +83,24 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 			}
 		}
 
-		// render template for steps
-		tmplSteps, err := native.Render(string(bytes), step)
-		if err != nil {
-			return yaml.StepSlice{}, err
+		var tmplSteps yaml.StepSlice
+
+		// TODO: provide friendlier error messages with file type mismatches
+		switch tmpl.Format {
+		case "go", "golang", "":
+			// render template for steps
+			tmplSteps, err = native.Render(string(bytes), step)
+			if err != nil {
+				return yaml.StepSlice{}, err
+			}
+		case "starlark":
+			// render template for steps
+			tmplSteps, err = starlark.Render(string(bytes), step)
+			if err != nil {
+				return yaml.StepSlice{}, err
+			}
+		default:
+			return yaml.StepSlice{}, fmt.Errorf("format of %s is unsupported", tmpl.Format)
 		}
 
 		// add templated steps
