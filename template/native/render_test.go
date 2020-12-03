@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"testing"
 
-	goyaml "gopkg.in/yaml.v2"
+	goyaml "github.com/goccy/go-yaml"
 
 	"github.com/go-vela/types/yaml"
 )

@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/buildkite/yaml"
+	"github.com/goccy/go-yaml"
 
 	"github.com/drone/envsubst"
 

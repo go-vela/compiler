@@ -12,7 +12,7 @@ import (
 
 	types "github.com/go-vela/types/yaml"
 
-	"github.com/buildkite/yaml"
+	"github.com/goccy/go-yaml"
 )
 
 // Parse converts an object to a yaml configuration.
@@ -46,6 +46,7 @@ func ParseBytes(b []byte) (*types.Build, error) {
 	// unmarshal the bytes into the yaml configuration
 	err := yaml.Unmarshal(b, config)
 	if err != nil {
+		fmt.Fprintln(os.Stderr, yaml.FormatError(err, true, true))
 		return nil, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
