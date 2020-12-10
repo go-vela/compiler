@@ -6,6 +6,7 @@ package native
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/go-vela/types"
@@ -203,6 +204,11 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 	env["VELA_SOURCE"] = notImplemented
 	env["VELA_VERSION"] = notImplemented
 	env["CI"] = "vela"
+
+	// populate environment variables from build
+	if b != nil {
+		env["VELA_BUILD_CREATED"] = strconv.FormatInt(b.GetCreated(), 10)
+	}
 
 	// populate environment variables from metadata
 	if m != nil {
