@@ -8,7 +8,7 @@ import (
 
 // convertPlatformVars takes the platform injected variables
 // within the step environment block and modifies them to be returned
-// within the template
+// within the template.
 func convertPlatformVars(slice raw.StringSliceMap) raw.StringSliceMap {
 	envs := make(map[string]string)
 	for key, value := range slice {
@@ -26,7 +26,7 @@ type funcHandler struct {
 }
 
 // returnPlatformVar returns the value of the platform
-// variable if it exists within the map
+// variable if it exists within the environment map.
 func (h funcHandler) returnPlatformVar(input string) string {
 	input = strings.ToLower(input)
 	input = strings.TrimPrefix(input, "vela_")
