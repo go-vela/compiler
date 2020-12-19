@@ -5,10 +5,11 @@
 package native
 
 import (
-	"github.com/go-vela/types/raw"
-	"github.com/google/go-cmp/cmp"
 	"io/ioutil"
 	"testing"
+
+	"github.com/go-vela/types/raw"
+	"github.com/google/go-cmp/cmp"
 
 	goyaml "gopkg.in/yaml.v2"
 

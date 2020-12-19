@@ -1,8 +1,9 @@
 package native
 
 import (
-	"github.com/go-vela/types/raw"
 	"strings"
+
+	"github.com/go-vela/types/raw"
 )
 
 // convertPlatformVars takes the platform injected variables
