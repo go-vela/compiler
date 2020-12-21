@@ -6,213 +6,79 @@ package native
 
 import (
 	"io/ioutil"
-	"reflect"
 	"testing"
+
+	"github.com/go-vela/types/raw"
+	"github.com/google/go-cmp/cmp"
 
 	goyaml "gopkg.in/yaml.v2"
 
 	"github.com/go-vela/types/yaml"
 )
 
-func TestNative_Render_Basic(t *testing.T) {
-	// setup types
-	sFile, _ := ioutil.ReadFile("testdata/basic/step.yml")
-	b := &yaml.Build{}
-	_ = goyaml.Unmarshal(sFile, b)
-
-	wFile, _ := ioutil.ReadFile("testdata/basic/want.yml")
-	w := &yaml.Build{}
-	_ = goyaml.Unmarshal(wFile, w)
-
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/basic/tmpl.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
+func TestNative_Render(t *testing.T) {
+	type args struct {
+		velaFile     string
+		templateFile string
 	}
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
+	tests := []struct {
+		name     string
+		args     args
+		wantFile string
+		wantErr  bool
+	}{
+		{"basic", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/basic/tmpl.yml"}, "testdata/basic/want.yml", false},
+		{"multiline", args{velaFile: "testdata/multiline/step.yml", templateFile: "testdata/multiline/tmpl.yml"}, "testdata/multiline/want.yml", false},
+		{"conditional match", args{velaFile: "testdata/conditional/step.yml", templateFile: "testdata/conditional/tmpl.yml"}, "testdata/conditional/want.yml", false},
+		{"loop map", args{velaFile: "testdata/loop_map/step.yml", templateFile: "testdata/loop_map/tmpl.yml"}, "testdata/loop_map/want.yml", false},
+		{"loop slice", args{velaFile: "testdata/loop_slice/step.yml", templateFile: "testdata/loop_slice/tmpl.yml"}, "testdata/loop_slice/want.yml", false},
+		{"platform vars", args{velaFile: "testdata/with_vars_plat/step.yml", templateFile: "testdata/with_vars_plat/tmpl.yml"}, "testdata/with_vars_plat/want.yml", false},
+		{"invalid template", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/invalid_template.yml"}, "", true},
+		{"invalid variable", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/invalid_variables.yml"}, "", true},
+		{"invalid yml", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/invalid.yml"}, "", true},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sFile, err := ioutil.ReadFile(tt.args.velaFile)
+			if err != nil {
+				t.Error(err)
+			}
+			b := &yaml.Build{}
+			err = goyaml.Unmarshal(sFile, b)
+			if err != nil {
+				t.Error(err)
+			}
+			b.Steps[0].Environment = raw.StringSliceMap{
+				"VELA_REPO_FULL_NAME": "octocat/hello-world",
+			}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
+			tmpl, err := ioutil.ReadFile(tt.args.templateFile)
+			if err != nil {
+				t.Error(err)
+			}
 
-func TestNative_Render_Multiline(t *testing.T) {
-	// setup types
-	sFile, _ := ioutil.ReadFile("testdata/multiline/step.yml")
-	b := &yaml.Build{}
-	_ = goyaml.Unmarshal(sFile, b)
+			got, err := Render(string(tmpl), b.Steps[0])
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Render() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
 
-	wFile, _ := ioutil.ReadFile("testdata/multiline/want.yml")
-	w := &yaml.Build{}
-	_ = goyaml.Unmarshal(wFile, w)
+			if tt.wantErr != true {
+				wFile, err := ioutil.ReadFile(tt.wantFile)
+				if err != nil {
+					t.Error(err)
+				}
+				w := &yaml.Build{}
+				err = goyaml.Unmarshal(wFile, w)
+				if err != nil {
+					t.Error(err)
+				}
+				want := w.Steps
 
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/multiline/tmpl.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
-	}
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_Conditional_Match(t *testing.T) {
-	// setup types
-	sFile, _ := ioutil.ReadFile("testdata/conditional/step.yml")
-	b := &yaml.Build{}
-	_ = goyaml.Unmarshal(sFile, b)
-
-	wFile, _ := ioutil.ReadFile("testdata/conditional/want.yml")
-	w := &yaml.Build{}
-	_ = goyaml.Unmarshal(wFile, w)
-
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/conditional/tmpl.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
-	}
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_Loop_Map(t *testing.T) {
-	// setup types
-	sFile, _ := ioutil.ReadFile("testdata/loop_map/step.yml")
-	b := &yaml.Build{}
-	_ = goyaml.Unmarshal(sFile, b)
-
-	wFile, _ := ioutil.ReadFile("testdata/loop_map/want.yml")
-	w := &yaml.Build{}
-	_ = goyaml.Unmarshal(wFile, w)
-
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/loop_map/tmpl.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
-	}
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_Loop_Slice(t *testing.T) {
-	// setup types
-	sFile, _ := ioutil.ReadFile("testdata/loop_slice/step.yml")
-	b := &yaml.Build{}
-	_ = goyaml.Unmarshal(sFile, b)
-
-	wFile, _ := ioutil.ReadFile("testdata/loop_slice/want.yml")
-	w := &yaml.Build{}
-	_ = goyaml.Unmarshal(wFile, w)
-
-	want := w.Steps
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/loop_slice/tmpl.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
-	}
-
-	got, err := Render(string(tmpl), b.Steps[0])
-	if err != nil {
-		t.Errorf("Render returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_InvalidTemplate(t *testing.T) {
-	// setup types
-	want := yaml.StepSlice{}
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/invalid_template.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
-	}
-
-	got, err := Render(string(tmpl), &yaml.Step{})
-
-	if err == nil {
-		t.Errorf("Render should have returned err")
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_InvalidVariables(t *testing.T) {
-	// setup types
-	want := yaml.StepSlice{}
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/invalid_variables.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
-	}
-
-	got, err := Render(string(tmpl), &yaml.Step{})
-
-	if err == nil {
-		t.Errorf("Render should have returned err")
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
-	}
-}
-
-func TestNative_Render_InvalidYml(t *testing.T) {
-	// setup types
-	want := yaml.StepSlice{}
-
-	// run test
-	tmpl, err := ioutil.ReadFile("testdata/invalid.yml")
-	if err != nil {
-		t.Errorf("Reading file returned err: %v", err)
-	}
-
-	got, err := Render(string(tmpl), &yaml.Step{})
-
-	if err == nil {
-		t.Errorf("Render should have returned err")
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Render is %v, want %v", got, want)
+				if diff := cmp.Diff(want, got); diff != "" {
+					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
+				}
+			}
+		})
 	}
 }

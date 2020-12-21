@@ -17,10 +17,15 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	buffer := new(bytes.Buffer)
 	config := new(types.Build)
 
+	velaFuncs := funcHandler{envs: convertPlatformVars(s.Environment)}
+	templateFuncMap := map[string]interface{}{
+		"vela": velaFuncs.returnPlatformVar,
+	}
+
 	// parse the template with Masterminds/sprig functions
 	//
 	// https://pkg.go.dev/github.com/Masterminds/sprig?tab=doc#TxtFuncMap
-	t, err := template.New(s.Name).Funcs(sprig.TxtFuncMap()).Parse(tmpl)
+	t, err := template.New(s.Name).Funcs(sprig.TxtFuncMap()).Funcs(templateFuncMap).Parse(tmpl)
 	if err != nil {
 		return types.StepSlice{}, fmt.Errorf("unable to parse template %s: %v", s.Template.Name, err)
 	}
