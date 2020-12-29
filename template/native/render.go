@@ -21,11 +21,18 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	templateFuncMap := map[string]interface{}{
 		"vela": velaFuncs.returnPlatformVar,
 	}
+	// modify Masterminds/sprig functions
+	// to remove OS functions
+	//
+	// https://masterminds.github.io/sprig/os.html
+	sf := sprig.TxtFuncMap()
+	delete(sf, "env")
+	delete(sf, "expandenv")
 
 	// parse the template with Masterminds/sprig functions
 	//
 	// https://pkg.go.dev/github.com/Masterminds/sprig?tab=doc#TxtFuncMap
-	t, err := template.New(s.Name).Funcs(sprig.TxtFuncMap()).Funcs(templateFuncMap).Parse(tmpl)
+	t, err := template.New(s.Name).Funcs(sf).Funcs(templateFuncMap).Parse(tmpl)
 	if err != nil {
 		return types.StepSlice{}, fmt.Errorf("unable to parse template %s: %v", s.Template.Name, err)
 	}
