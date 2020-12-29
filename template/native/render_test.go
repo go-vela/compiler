@@ -6,6 +6,7 @@ package native
 
 import (
 	"io/ioutil"
+	"reflect"
 	"testing"
 
 	"github.com/go-vela/types/raw"
