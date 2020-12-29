@@ -6,6 +6,7 @@ package native
 
 import (
 	"io/ioutil"
+	"reflect"
 	"testing"
 
 	"github.com/go-vela/types/raw"
@@ -80,5 +81,45 @@ func TestNative_Render(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestNative_Render_DisallowedFunc_Env(t *testing.T) {
+	// setup types
+	want := yaml.StepSlice{}
+
+	// run test
+	tmpl, err := ioutil.ReadFile("testdata/disallowed/tmpl_env.yml")
+	if err != nil {
+		t.Errorf("Reading file returned err: %v", err)
+	}
+
+	got, err := Render(string(tmpl), &yaml.Step{})
+	if err == nil {
+		t.Errorf("Render should have returned err")
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Render is %v, want %v", got, want)
+	}
+}
+
+func TestNative_Render_DisallowedFunc_ExpandEnv(t *testing.T) {
+	// setup types
+	want := yaml.StepSlice{}
+
+	// run test
+	tmpl, err := ioutil.ReadFile("testdata/disallowed/tmpl_expandenv.yml")
+	if err != nil {
+		t.Errorf("Reading file returned err: %v", err)
+	}
+
+	got, err := Render(string(tmpl), &yaml.Step{})
+	if err == nil {
+		t.Errorf("Render should have returned err")
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Render is %v, want %v", got, want)
 	}
 }
