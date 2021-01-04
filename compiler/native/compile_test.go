@@ -429,6 +429,17 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 		Metadata: pipeline.Metadata{
 			Template: false,
 		},
+		Services: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "service___0_postgres",
+				Detach:      true,
+				Environment: environment(nil, m, nil, nil),
+				Image:       "postgres:latest",
+				Name:        "postgres",
+				Number:      1,
+				Pull:        "not_present",
+			},
+		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:          "step___0_init",

@@ -14,6 +14,8 @@ import (
 	"strings"
 	"time"
 
+	yml "github.com/goccy/go-yaml"
+
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
 	"github.com/go-vela/types/yaml"
@@ -32,15 +34,15 @@ type ModifyRequest struct {
 // Compile produces an executable pipeline from a yaml configuration.
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	// parse the object into a yaml configuration
-	p, err := c.Parse(v)
+	p, raw, err := c.Parse(v)
 	if err != nil {
 		return nil, err
 	}
 
 	// validate the yaml configuration
-	err = c.Validate(p)
+	err = p.Validate(raw)
 	if err != nil {
-		return nil, fmt.Errorf("invalid pipeline: %w", err)
+		return nil, err
 	}
 
 	// create map of templates for easy lookup
@@ -94,12 +96,17 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			raw, err = yml.Marshal(p)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		// validate the yaml configuration
-		err = c.Validate(p)
+		err = p.Validate(raw)
 		if err != nil {
-			return nil, fmt.Errorf("invalid pipeline: %w", err)
+			return nil, err
 		}
 
 		// inject the environment variables into the stages
@@ -148,12 +155,17 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		raw, err = yml.Marshal(p)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// validate the yaml configuration
-	err = c.Validate(p)
+	err = p.Validate(raw)
 	if err != nil {
-		return nil, fmt.Errorf("invalid pipeline: %w", err)
+		return nil, err
 	}
 
 	// inject the environment variables into the steps

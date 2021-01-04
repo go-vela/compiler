@@ -70,7 +70,7 @@ func TestStarlark_Render(t *testing.T) {
 				want := w.Steps
 
 				if diff := cmp.Diff(want, got); diff != "" {
-					t.Errorf("ExpandSteps() mismatch (-want +got):\n%s", diff)
+					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
 				}
 			}
 		})

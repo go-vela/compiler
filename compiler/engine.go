@@ -23,11 +23,7 @@ type Engine interface {
 
 	// Parse defines a function that converts
 	// an object to a yaml configuration.
-	Parse(interface{}) (*yaml.Build, error)
-
-	// Validate defines a function that verifies
-	// the yaml configuration is accurate.
-	Validate(*yaml.Build) error
+	Parse(interface{}) (*yaml.Build, []byte, error)
 
 	// Clone Compiler Interface Functions
 

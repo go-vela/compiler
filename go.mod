@@ -2,6 +2,8 @@ module github.com/go-vela/compiler
 
 go 1.15
 
+replace github.com/go-vela/types => /Users/z001nr1/github/go-vela/types
+
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect

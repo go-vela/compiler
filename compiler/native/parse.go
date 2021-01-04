@@ -16,7 +16,7 @@ import (
 )
 
 // Parse converts an object to a yaml configuration.
-func (c *client) Parse(v interface{}) (*types.Build, error) {
+func (c *client) Parse(v interface{}) (*types.Build, []byte, error) {
 	switch v := v.(type) {
 	case []byte:
 		return ParseBytes(v)
@@ -35,35 +35,35 @@ func (c *client) Parse(v interface{}) (*types.Build, error) {
 		// parse string as yaml configuration
 		return ParseString(v)
 	default:
-		return nil, fmt.Errorf("unable to parse yaml: unrecognized type %T", v)
+		return nil, nil, fmt.Errorf("unable to parse yaml: unrecognized type %T", v)
 	}
 }
 
 // ParseBytes converts a byte slice to a yaml configuration.
-func ParseBytes(b []byte) (*types.Build, error) {
+func ParseBytes(b []byte) (*types.Build, []byte, error) {
 	config := new(types.Build)
 
 	// unmarshal the bytes into the yaml configuration
 	err := yaml.Unmarshal(b, config)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, yaml.FormatError(err, true, true))
-		return nil, fmt.Errorf("unable to unmarshal yaml: %v", err)
+		return nil, nil, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
-	return config, nil
+	return config, b, nil
 }
 
 // ParseFile converts an os.File into a yaml configuration.
-func ParseFile(f *os.File) (*types.Build, error) {
+func ParseFile(f *os.File) (*types.Build, []byte, error) {
 	return ParseReader(f)
 }
 
 // ParsePath converts a file path into a yaml configuration.
-func ParsePath(p string) (*types.Build, error) {
+func ParsePath(p string) (*types.Build, []byte, error) {
 	// open the file for reading
 	f, err := os.Open(p)
 	if err != nil {
-		return nil, fmt.Errorf("unable to open yaml file %s: %v", p, err)
+		return nil, nil, fmt.Errorf("unable to open yaml file %s: %v", p, err)
 	}
 
 	defer f.Close()
@@ -72,17 +72,17 @@ func ParsePath(p string) (*types.Build, error) {
 }
 
 // ParseReader converts an io.Reader into a yaml configuration.
-func ParseReader(r io.Reader) (*types.Build, error) {
+func ParseReader(r io.Reader) (*types.Build, []byte, error) {
 	// read all the bytes from the reader
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
-		return nil, fmt.Errorf("unable to read bytes for yaml: %v", err)
+		return nil, nil, fmt.Errorf("unable to read bytes for yaml: %v", err)
 	}
 
 	return ParseBytes(b)
 }
 
 // ParseString converts a string into a yaml configuration.
-func ParseString(s string) (*types.Build, error) {
+func ParseString(s string) (*types.Build, []byte, error) {
 	return ParseBytes([]byte(s))
 }
