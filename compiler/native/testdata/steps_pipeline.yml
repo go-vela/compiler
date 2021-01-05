@@ -4,11 +4,6 @@ version: "1"
 metadata:
   template: false
 
-services:
-  - name: postgres
-    image: postgres:latest   
-      
-
 steps:
   - name: install
     commands:

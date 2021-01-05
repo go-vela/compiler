@@ -8,15 +8,10 @@ import (
 	"io/ioutil"
 	"testing"
 
-<<<<<<< HEAD
 	goyaml "github.com/goccy/go-yaml"
-=======
-	"github.com/go-vela/types/raw"
 	"github.com/google/go-cmp/cmp"
 
-	goyaml "gopkg.in/yaml.v2"
->>>>>>> a6c5697491607180dd0ad0b8c0399661040c5cac
-
+	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 )
 
