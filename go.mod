@@ -28,7 +28,7 @@ require (
 	go.starlark.net v0.0.0-20201014215153-dff0ae5b4820
 	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee // indirect
 	golang.org/x/net v0.0.0-20201010224723-4f7140c49acb // indirect
-	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
+	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
 	golang.org/x/sys v0.0.0-20201013081832-0aaa2718063a // indirect
 	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/apimachinery v0.19.3
