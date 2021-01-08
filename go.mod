@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
-	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/Masterminds/sprig/v3 v3.2.0
 	github.com/buildkite/yaml v0.0.0-20181016232759-0caa5f0796e3
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.2
