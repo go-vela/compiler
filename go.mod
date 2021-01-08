@@ -23,7 +23,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/sirupsen/logrus v1.7.0
 	github.com/ugorji/go v1.1.11 // indirect
-	github.com/urfave/cli/v2 v2.2.0
+	github.com/urfave/cli/v2 v2.3.0
 	go.starlark.net v0.0.0-20201014215153-dff0ae5b4820
 	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee // indirect
 	golang.org/x/oauth2 v0.0.0-20201208152858-08078c50e5b5
