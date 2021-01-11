@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	goyaml "github.com/goccy/go-yaml"
+	yml "github.com/goccy/go-yaml"
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/go-vela/types/raw"
@@ -45,7 +45,7 @@ func TestNative_Render(t *testing.T) {
 				t.Error(err)
 			}
 			b := &yaml.Build{}
-			err = goyaml.Unmarshal(sFile, b)
+			err = yml.Unmarshal(sFile, b)
 			if err != nil {
 				t.Error(err)
 			}
@@ -70,7 +70,7 @@ func TestNative_Render(t *testing.T) {
 					t.Error(err)
 				}
 				w := &yaml.Build{}
-				err = goyaml.Unmarshal(wFile, w)
+				err = yml.Unmarshal(wFile, w)
 				if err != nil {
 					t.Error(err)
 				}
