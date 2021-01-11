@@ -46,7 +46,6 @@ func ParseBytes(b []byte) (*types.Build, []byte, error) {
 	// unmarshal the bytes into the yaml configuration
 	err := yaml.Unmarshal(b, config)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, yaml.FormatError(err, true, true))
 		return nil, nil, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
