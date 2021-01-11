@@ -7,7 +7,7 @@ import (
 
 	types "github.com/go-vela/types/yaml"
 
-	"github.com/Masterminds/sprig"
+	"github.com/Masterminds/sprig/v3"
 
 	"github.com/goccy/go-yaml"
 )

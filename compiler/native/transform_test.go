@@ -59,10 +59,11 @@ func TestNative_TransformStages(t *testing.T) {
 				Name: "install deps",
 				Steps: yaml.StepSlice{
 					&yaml.Step{
-						Commands: []string{"./gradlew downloadDependencies"},
-						Image:    "openjdk:latest",
-						Name:     "install",
-						Pull:     "always",
+						Commands:    []string{"./gradlew downloadDependencies"},
+						Environment: environment(nil, nil, nil, nil),
+						Image:       "openjdk:latest",
+						Name:        "install",
+						Pull:        "always",
 					},
 				},
 			},
@@ -71,10 +72,11 @@ func TestNative_TransformStages(t *testing.T) {
 				Needs: []string{"install"},
 				Steps: yaml.StepSlice{
 					&yaml.Step{
-						Commands: []string{"./gradlew check"},
-						Image:    "openjdk:latest",
-						Name:     "test",
-						Pull:     "always",
+						Commands:    []string{"./gradlew check"},
+						Environment: environment(nil, nil, nil, nil),
+						Image:       "openjdk:latest",
+						Name:        "test",
+						Pull:        "always",
 						Ruleset: yaml.Ruleset{
 							If: yaml.Rules{
 								Event: []string{"push"},
@@ -119,13 +121,14 @@ func TestNative_TransformStages(t *testing.T) {
 				Name: "install deps",
 				Steps: pipeline.ContainerSlice{
 					&pipeline.Container{
-						ID:        "__0_install deps_install",
-						Directory: "/vela/src/foo//",
-						Commands:  []string{"./gradlew downloadDependencies"},
-						Image:     "openjdk:latest",
-						Name:      "install",
-						Number:    1,
-						Pull:      "always",
+						ID:          "__0_install deps_install",
+						Commands:    []string{"./gradlew downloadDependencies"},
+						Directory:   "/vela",
+						Environment: environment(nil, nil, nil, nil),
+						Image:       "openjdk:latest",
+						Name:        "install",
+						Number:      1,
+						Pull:        "always",
 					},
 				},
 			},
@@ -214,16 +217,18 @@ func TestNative_TransformSteps(t *testing.T) {
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{
-				Commands: []string{"./gradlew downloadDependencies"},
-				Image:    "openjdk:latest",
-				Name:     "install deps",
-				Pull:     "always",
+				Commands:    []string{"./gradlew downloadDependencies"},
+				Environment: environment(nil, nil, nil, nil),
+				Image:       "openjdk:latest",
+				Name:        "install deps",
+				Pull:        "always",
 			},
 			&yaml.Step{
-				Commands: []string{"./gradlew check"},
-				Image:    "openjdk:latest",
-				Name:     "test",
-				Pull:     "always",
+				Commands:    []string{"./gradlew check"},
+				Environment: environment(nil, nil, nil, nil),
+				Image:       "openjdk:latest",
+				Name:        "test",
+				Pull:        "always",
 				Ruleset: yaml.Ruleset{
 					If: yaml.Rules{
 						Event: []string{"push"},
@@ -263,13 +268,14 @@ func TestNative_TransformSteps(t *testing.T) {
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:        "step___0_install deps",
-				Directory: "/vela/src/foo//",
-				Commands:  []string{"./gradlew downloadDependencies"},
-				Image:     "openjdk:latest",
-				Name:      "install deps",
-				Number:    1,
-				Pull:      "always",
+				ID:          "step___0_install deps",
+				Commands:    []string{"./gradlew downloadDependencies"},
+				Directory:   "/vela",
+				Environment: environment(nil, nil, nil, nil),
+				Image:       "openjdk:latest",
+				Name:        "install deps",
+				Number:      1,
+				Pull:        "always",
 			},
 		},
 		Secrets: pipeline.SecretSlice{

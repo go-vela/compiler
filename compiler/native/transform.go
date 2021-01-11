@@ -26,6 +26,8 @@ const (
 	serviceID = "service_%s_%s_%d_%s"
 	// default ID for secrets in a pipeline.
 	// format: `secret_<org name>_<repo name>_<build number>_<secret name>`
+	//
+	// nolint: gosec // ignore gosec keying off of secret as no credentials are hardcoded
 	secretID = "secret_%s_%s_%d_%s"
 )
 
@@ -59,7 +61,7 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 			step.ID = pattern
 
 			// set the workspace directory
-			step.Directory = fmt.Sprintf("/vela/src/%s/%s/%s", c.metadata.Source.Host, org, name)
+			step.Directory = step.Environment["VELA_WORKSPACE"]
 		}
 	}
 
@@ -118,7 +120,7 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 		step.ID = pattern
 
 		// set the workspace directory
-		step.Directory = fmt.Sprintf("/vela/src/%s/%s/%s", c.metadata.Source.Host, org, name)
+		step.Directory = step.Environment["VELA_WORKSPACE"]
 	}
 
 	// set the unique ID for each service in the executable pipeline
