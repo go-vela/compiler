@@ -79,6 +79,7 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
+			Clone:    true,
 			Template: false,
 		},
 		Stages: pipeline.StageSlice{
@@ -427,6 +428,7 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
+			Clone:    true,
 			Template: false,
 		},
 		Steps: pipeline.ContainerSlice{
@@ -616,6 +618,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
+			Clone:    true,
 			Template: false,
 		},
 		Stages: pipeline.StageSlice{
@@ -839,6 +842,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
+			Clone:    true,
 			Template: false,
 		},
 		Steps: pipeline.ContainerSlice{
@@ -1011,6 +1015,7 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
+			Clone:    true,
 			Template: false,
 		},
 		Steps: pipeline.ContainerSlice{

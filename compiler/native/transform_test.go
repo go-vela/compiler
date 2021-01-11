@@ -102,6 +102,9 @@ func TestNative_TransformStages(t *testing.T) {
 	want := &pipeline.Build{
 		ID:      "__0",
 		Version: "v1",
+		Metadata: pipeline.Metadata{
+			Clone: true,
+		},
 		Services: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:     "service___0_postgres backend",
@@ -252,6 +255,9 @@ func TestNative_TransformSteps(t *testing.T) {
 	want := &pipeline.Build{
 		ID:      "__0",
 		Version: "v1",
+		Metadata: pipeline.Metadata{
+			Clone: true,
+		},
 		Services: pipeline.ContainerSlice{
 			&pipeline.Container{
 				ID:     "service___0_postgres backend",
