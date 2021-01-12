@@ -7,13 +7,14 @@ package native
 import (
 	"flag"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
