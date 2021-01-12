@@ -129,6 +129,26 @@ func TestNative_WithComment(t *testing.T) {
 	}
 }
 
+func TestNative_WithLocal(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+
+	local := true
+	want, _ := New(c)
+	want.local = true
+
+	// run test
+	got, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	if !reflect.DeepEqual(got.WithLocal(local), want) {
+		t.Errorf("WithLocal is %v, want %v", got, want)
+	}
+}
+
 func TestNative_WithMetadata(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
