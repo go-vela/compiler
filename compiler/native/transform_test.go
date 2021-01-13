@@ -99,84 +99,158 @@ func TestNative_TransformStages(t *testing.T) {
 		},
 	}
 
-	want := &pipeline.Build{
-		ID:      "__0",
-		Version: "v1",
-		Metadata: pipeline.Metadata{
-			Clone: true,
-		},
-		Services: pipeline.ContainerSlice{
-			&pipeline.Container{
-				ID:     "service___0_postgres backend",
-				Ports:  []string{"5432:5432"},
-				Name:   "postgres backend",
-				Image:  "postgres:latest",
-				Number: 1,
-				Detach: true,
-			},
-		},
-		Worker: pipeline.Worker{
-			Flavor:   "16cpu8gb",
-			Platform: "gcp",
-		},
-		Stages: pipeline.StageSlice{
-			&pipeline.Stage{
-				Name: "install deps",
-				Steps: pipeline.ContainerSlice{
+	// setup tests
+	tests := []struct {
+		failure  bool
+		local    bool
+		pipeline *yaml.Build
+		want     *pipeline.Build
+	}{
+		{
+			failure:  false,
+			local:    false,
+			pipeline: p,
+			want: &pipeline.Build{
+				ID:      "__0",
+				Version: "v1",
+				Metadata: pipeline.Metadata{
+					Clone: true,
+				},
+				Services: pipeline.ContainerSlice{
 					&pipeline.Container{
-						ID:          "__0_install deps_install",
-						Commands:    []string{"./gradlew downloadDependencies"},
-						Directory:   "/vela",
-						Environment: environment(nil, nil, nil, nil),
-						Image:       "openjdk:latest",
-						Name:        "install",
-						Number:      1,
-						Pull:        "always",
+						ID:     "service___0_postgres backend",
+						Ports:  []string{"5432:5432"},
+						Name:   "postgres backend",
+						Image:  "postgres:latest",
+						Number: 1,
+						Detach: true,
+					},
+				},
+				Worker: pipeline.Worker{
+					Flavor:   "16cpu8gb",
+					Platform: "gcp",
+				},
+				Stages: pipeline.StageSlice{
+					&pipeline.Stage{
+						Name: "install deps",
+						Steps: pipeline.ContainerSlice{
+							&pipeline.Container{
+								ID:          "__0_install deps_install",
+								Commands:    []string{"./gradlew downloadDependencies"},
+								Directory:   "/vela",
+								Environment: environment(nil, nil, nil, nil),
+								Image:       "openjdk:latest",
+								Name:        "install",
+								Number:      1,
+								Pull:        "always",
+							},
+						},
+					},
+				},
+				Secrets: pipeline.SecretSlice{
+					&pipeline.Secret{
+						Name: "foobar",
+						Origin: &pipeline.Container{
+							ID:     "secret___0_vault",
+							Name:   "vault",
+							Image:  "vault:latest",
+							Pull:   "always",
+							Number: 1,
+						},
 					},
 				},
 			},
 		},
-		Secrets: pipeline.SecretSlice{
-			&pipeline.Secret{
-				Name: "foobar",
-				Origin: &pipeline.Container{
-					ID:     "secret___0_vault",
-					Name:   "vault",
-					Image:  "vault:latest",
-					Pull:   "always",
-					Number: 1,
+		{
+			failure:  false,
+			local:    true,
+			pipeline: p,
+			want: &pipeline.Build{
+				ID:      "localOrg_localRepo_1",
+				Version: "v1",
+				Metadata: pipeline.Metadata{
+					Clone: true,
+				},
+				Services: pipeline.ContainerSlice{
+					&pipeline.Container{
+						ID:     "service_localOrg_localRepo_1_postgres backend",
+						Ports:  []string{"5432:5432"},
+						Name:   "postgres backend",
+						Image:  "postgres:latest",
+						Number: 1,
+						Detach: true,
+					},
+				},
+				Worker: pipeline.Worker{
+					Flavor:   "16cpu8gb",
+					Platform: "gcp",
+				},
+				Stages: pipeline.StageSlice{
+					&pipeline.Stage{
+						Name: "install deps",
+						Steps: pipeline.ContainerSlice{
+							&pipeline.Container{
+								ID:          "localOrg_localRepo_1_install deps_install",
+								Commands:    []string{"./gradlew downloadDependencies"},
+								Directory:   "/vela",
+								Environment: environment(nil, nil, nil, nil),
+								Image:       "openjdk:latest",
+								Name:        "install",
+								Number:      1,
+								Pull:        "always",
+							},
+						},
+					},
+				},
+				Secrets: pipeline.SecretSlice{
+					&pipeline.Secret{
+						Name: "foobar",
+						Origin: &pipeline.Container{
+							ID:     "secret_localOrg_localRepo_1_vault",
+							Name:   "vault",
+							Image:  "vault:latest",
+							Pull:   "always",
+							Number: 1,
+						},
+					},
 				},
 			},
 		},
 	}
 
-	// run test
-	compiler, err := New(c)
-	if err != nil {
-		t.Errorf("Creating compiler returned err: %v", err)
-	}
+	// run tests
+	for _, test := range tests {
+		compiler, err := New(c)
+		if err != nil {
+			t.Errorf("unable to create new compiler: %v", err)
+		}
 
-	compiler.WithMetadata(m)
+		// set the metadata field for the test
+		compiler.WithMetadata(m)
 
-	got, err := compiler.TransformStages(new(pipeline.RuleData), p)
-	if err != nil {
-		t.Errorf("TransformStages returned err: %v", err)
-	}
+		// set the local field for the test
+		compiler.WithLocal(test.local)
 
-	// WARNING: hack to compare stages
-	//
-	// Channel values can only be compared for equality.
-	// Two channel values are considered equal if they
-	// originated from the same make call meaning they
-	// refer to the same channel value in memory.
-	for i, stage := range got.Stages {
-		tmp := want.Stages
+		got, err := compiler.TransformStages(new(pipeline.RuleData), test.pipeline)
+		if err != nil {
+			t.Errorf("TransformStages returned err: %v", err)
+		}
 
-		tmp[i].Done = stage.Done
-	}
+		// WARNING: hack to compare stages
+		//
+		// Channel values can only be compared for equality.
+		// Two channel values are considered equal if they
+		// originated from the same make call meaning they
+		// refer to the same channel value in memory.
+		for i, stage := range got.Stages {
+			tmp := test.want.Stages
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("TransformStages is %v, want %v", got, want)
+			tmp[i].Done = stage.Done
+		}
+
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("TransformStages is %v, want %v", got, test.want)
+		}
 	}
 }
 
@@ -252,66 +326,135 @@ func TestNative_TransformSteps(t *testing.T) {
 		},
 	}
 
-	want := &pipeline.Build{
-		ID:      "__0",
-		Version: "v1",
-		Metadata: pipeline.Metadata{
-			Clone: true,
-		},
-		Services: pipeline.ContainerSlice{
-			&pipeline.Container{
-				ID:     "service___0_postgres backend",
-				Ports:  []string{"5432:5432"},
-				Name:   "postgres backend",
-				Image:  "postgres:latest",
-				Number: 1,
-				Detach: true,
+	// setup tests
+	tests := []struct {
+		failure  bool
+		local    bool
+		pipeline *yaml.Build
+		want     *pipeline.Build
+	}{
+		{
+			failure:  false,
+			local:    false,
+			pipeline: p,
+			want: &pipeline.Build{
+				ID:      "__0",
+				Version: "v1",
+				Metadata: pipeline.Metadata{
+					Clone: true,
+				},
+				Services: pipeline.ContainerSlice{
+					&pipeline.Container{
+						ID:     "service___0_postgres backend",
+						Ports:  []string{"5432:5432"},
+						Name:   "postgres backend",
+						Image:  "postgres:latest",
+						Number: 1,
+						Detach: true,
+					},
+				},
+				Worker: pipeline.Worker{
+					Flavor:   "16cpu8gb",
+					Platform: "gcp",
+				},
+				Steps: pipeline.ContainerSlice{
+					&pipeline.Container{
+						ID:          "step___0_install deps",
+						Commands:    []string{"./gradlew downloadDependencies"},
+						Directory:   "/vela",
+						Environment: environment(nil, nil, nil, nil),
+						Image:       "openjdk:latest",
+						Name:        "install deps",
+						Number:      1,
+						Pull:        "always",
+					},
+				},
+				Secrets: pipeline.SecretSlice{
+					&pipeline.Secret{
+						Name: "foobar",
+						Origin: &pipeline.Container{
+							ID:     "secret___0_vault",
+							Name:   "vault",
+							Image:  "vault:latest",
+							Pull:   "always",
+							Number: 1,
+						},
+					},
+				},
 			},
 		},
-		Worker: pipeline.Worker{
-			Flavor:   "16cpu8gb",
-			Platform: "gcp",
-		},
-		Steps: pipeline.ContainerSlice{
-			&pipeline.Container{
-				ID:          "step___0_install deps",
-				Commands:    []string{"./gradlew downloadDependencies"},
-				Directory:   "/vela",
-				Environment: environment(nil, nil, nil, nil),
-				Image:       "openjdk:latest",
-				Name:        "install deps",
-				Number:      1,
-				Pull:        "always",
-			},
-		},
-		Secrets: pipeline.SecretSlice{
-			&pipeline.Secret{
-				Name: "foobar",
-				Origin: &pipeline.Container{
-					ID:     "secret___0_vault",
-					Name:   "vault",
-					Image:  "vault:latest",
-					Pull:   "always",
-					Number: 1,
+		{
+			failure:  false,
+			local:    true,
+			pipeline: p,
+			want: &pipeline.Build{
+				ID:      "localOrg_localRepo_1",
+				Version: "v1",
+				Metadata: pipeline.Metadata{
+					Clone: true,
+				},
+				Services: pipeline.ContainerSlice{
+					&pipeline.Container{
+						ID:     "service_localOrg_localRepo_1_postgres backend",
+						Ports:  []string{"5432:5432"},
+						Name:   "postgres backend",
+						Image:  "postgres:latest",
+						Number: 1,
+						Detach: true,
+					},
+				},
+				Worker: pipeline.Worker{
+					Flavor:   "16cpu8gb",
+					Platform: "gcp",
+				},
+				Steps: pipeline.ContainerSlice{
+					&pipeline.Container{
+						ID:          "step_localOrg_localRepo_1_install deps",
+						Commands:    []string{"./gradlew downloadDependencies"},
+						Directory:   "/vela",
+						Environment: environment(nil, nil, nil, nil),
+						Image:       "openjdk:latest",
+						Name:        "install deps",
+						Number:      1,
+						Pull:        "always",
+					},
+				},
+				Secrets: pipeline.SecretSlice{
+					&pipeline.Secret{
+						Name: "foobar",
+						Origin: &pipeline.Container{
+							ID:     "secret_localOrg_localRepo_1_vault",
+							Name:   "vault",
+							Image:  "vault:latest",
+							Pull:   "always",
+							Number: 1,
+						},
+					},
 				},
 			},
 		},
 	}
 
-	// run test
-	compiler, err := New(c)
-	if err != nil {
-		t.Errorf("Creating compiler returned err: %v", err)
-	}
+	// run tests
+	for _, test := range tests {
+		compiler, err := New(c)
+		if err != nil {
+			t.Errorf("unable to create new compiler: %v", err)
+		}
 
-	compiler.WithMetadata(m)
+		// set the metadata field for the test
+		compiler.WithMetadata(m)
 
-	got, err := compiler.TransformSteps(new(pipeline.RuleData), p)
-	if err != nil {
-		t.Errorf("TransformSteps returned err: %v", err)
-	}
+		// set the local field for the test
+		compiler.WithLocal(test.local)
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("TransformSteps is %v, want %v", got, want)
+		got, err := compiler.TransformSteps(new(pipeline.RuleData), test.pipeline)
+		if err != nil {
+			t.Errorf("TransformSteps returned err: %v", err)
+		}
+
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("TransformSteps is %v, want %v", got, test.want)
+		}
 	}
 }

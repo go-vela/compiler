@@ -84,7 +84,7 @@ func TestNative_CloneStage(t *testing.T) {
 	for _, test := range tests {
 		compiler, err := New(c)
 		if err != nil {
-			t.Errorf("Unable to create new compiler: %v", err)
+			t.Errorf("unable to create new compiler: %v", err)
 		}
 
 		// set the local field for the test

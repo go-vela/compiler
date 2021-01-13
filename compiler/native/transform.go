@@ -38,6 +38,16 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 	name := c.repo.GetName()
 	number := c.build.GetNumber()
 
+	// check if the compiler is setup for a local pipeline
+	if c.local {
+		// set a default for the org
+		org = "localOrg"
+		// set a default for the repo
+		name = "localRepo"
+		// set a default for the number
+		number = 1
+	}
+
 	// create new executable pipeline
 	pipeline := &pipeline.Build{
 		Version:  p.Version,
@@ -97,6 +107,16 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 	org := c.repo.GetOrg()
 	name := c.repo.GetName()
 	number := c.build.GetNumber()
+
+	// check if the compiler is setup for a local pipeline
+	if c.local {
+		// set a default for the org
+		org = "localOrg"
+		// set a default for the repo
+		name = "localRepo"
+		// set a default for the number
+		number = 1
+	}
 
 	// create new executable pipeline
 	pipeline := &pipeline.Build{
