@@ -20,6 +20,12 @@ const (
 
 // CloneStage injects the clone stage process into a yaml configuration.
 func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
+	// check if the compiler is setup for a local pipeline
+	if c.local {
+		// skip injecting the clone process
+		return p, nil
+	}
+
 	stages := yaml.StageSlice{}
 
 	// create new clone stage
@@ -50,6 +56,12 @@ func (c *client) CloneStage(p *yaml.Build) (*yaml.Build, error) {
 
 // CloneStep injects the clone step process into a yaml configuration.
 func (c *client) CloneStep(p *yaml.Build) (*yaml.Build, error) {
+	// check if the compiler is setup for a local pipeline
+	if c.local {
+		// skip injecting the clone process
+		return p, nil
+	}
+
 	steps := yaml.StepSlice{}
 
 	// create new clone step
