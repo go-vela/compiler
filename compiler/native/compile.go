@@ -72,10 +72,13 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	}
 
 	if len(p.Stages) > 0 {
-		// inject the clone stage
-		p, err = c.CloneStage(p)
-		if err != nil {
-			return nil, err
+		// check if the pipeline disabled the clone
+		if p.Metadata.Clone == nil || *p.Metadata.Clone {
+			// inject the clone stage
+			p, err = c.CloneStage(p)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		// inject the init stage
@@ -131,10 +134,13 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return c.TransformStages(r, p)
 	}
 
-	// inject the clone step
-	p, err = c.CloneStep(p)
-	if err != nil {
-		return nil, err
+	// check if the pipeline disabled the clone
+	if p.Metadata.Clone == nil || *p.Metadata.Clone {
+		// inject the clone step
+		p, err = c.CloneStep(p)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// inject the init step
