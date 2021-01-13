@@ -107,6 +107,9 @@ type Engine interface {
 	// WithFiles defines a function that sets
 	// the changeset files in the Engine.
 	WithFiles([]string) Engine
+	// WithLocal defines a function that sets
+	// the compiler local field in the Engine.
+	WithLocal(bool) Engine
 	// WithMetadata defines a function that sets
 	// the compiler Metadata type in the Engine.
 	WithMetadata(*types.Metadata) Engine

@@ -34,6 +34,7 @@ type client struct {
 	build    *library.Build
 	comment  string
 	files    []string
+	local    bool
 	metadata *types.Metadata
 	repo     *library.Repo
 	user     *library.User
@@ -42,7 +43,7 @@ type client struct {
 // New returns a Pipeline implementation that integrates with the supported registries.
 func New(ctx *cli.Context) (*client, error) {
 	logrus.Debug("Creating registry clients from CLI configuration")
-	c := client{}
+	c := new(client)
 
 	if ctx.String("modification-addr") != "" {
 		c.ModificationService = ModificationConfig{
@@ -71,7 +72,7 @@ func New(ctx *cli.Context) (*client, error) {
 		c.PrivateGithub = privGithub
 	}
 
-	return &c, nil
+	return c, nil
 }
 
 // setupGithub is a helper function to setup the
@@ -111,6 +112,13 @@ func (c *client) WithFiles(f []string) compiler.Engine {
 	if f != nil {
 		c.files = f
 	}
+
+	return c
+}
+
+// WithLocal sets the compiler metadata type in the Engine.
+func (c *client) WithLocal(local bool) compiler.Engine {
+	c.local = local
 
 	return c
 }
