@@ -14,6 +14,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
+
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
 
@@ -1095,6 +1097,190 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Compile is %v, want %v", got, want)
+	}
+}
+
+func TestNative_Compile_Clone(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-token", "", "doc")
+	c := cli.NewContext(nil, set, nil)
+
+	m := &types.Metadata{
+		Database: &types.Database{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Queue: &types.Queue{
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
+		},
+		Source: &types.Source{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Vela: &types.Vela{
+			Address:    "foo",
+			WebAddress: "foo",
+		},
+	}
+
+	fooEnv := environment(nil, m, nil, nil)
+	fooEnv["PARAMETER_REGISTRY"] = "foo"
+
+	cloneEnv := environment(nil, m, nil, nil)
+	cloneEnv["PARAMETER_DEPTH"] = "5"
+
+	wantFalse := &pipeline.Build{
+		Version: "1",
+		ID:      "__0",
+		Metadata: pipeline.Metadata{
+			Clone:    false,
+			Template: false,
+		},
+		Steps: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "step___0_init",
+				Directory:   "/vela/src/foo//",
+				Environment: environment(nil, m, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_foo",
+				Directory:   "/vela/src/foo//",
+				Environment: fooEnv,
+				Image:       "alpine",
+				Name:        "foo",
+				Number:      2,
+				Pull:        "always",
+			},
+		},
+	}
+
+	wantTrue := &pipeline.Build{
+		Version: "1",
+		ID:      "__0",
+		Metadata: pipeline.Metadata{
+			Clone:    true,
+			Template: false,
+		},
+		Steps: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "step___0_init",
+				Directory:   "/vela/src/foo//",
+				Environment: environment(nil, m, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_clone",
+				Directory:   "/vela/src/foo//",
+				Environment: environment(nil, m, nil, nil),
+				Image:       "target/vela-git:v0.4.0",
+				Name:        "clone",
+				Number:      2,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_foo",
+				Directory:   "/vela/src/foo//",
+				Environment: fooEnv,
+				Image:       "alpine",
+				Name:        "foo",
+				Number:      3,
+				Pull:        "always",
+			},
+		},
+	}
+
+	wantReplace := &pipeline.Build{
+		Version: "1",
+		ID:      "__0",
+		Metadata: pipeline.Metadata{
+			Clone:    false,
+			Template: false,
+		},
+		Steps: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "step___0_init",
+				Directory:   "/vela/src/foo//",
+				Environment: environment(nil, m, nil, nil),
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_clone",
+				Directory:   "/vela/src/foo//",
+				Environment: cloneEnv,
+				Image:       "target/vela-git:v0.4.0",
+				Name:        "clone",
+				Number:      2,
+				Pull:        "always",
+			},
+			&pipeline.Container{
+				ID:          "step___0_foo",
+				Directory:   "/vela/src/foo//",
+				Environment: fooEnv,
+				Image:       "alpine",
+				Name:        "foo",
+				Number:      3,
+				Pull:        "always",
+			},
+		},
+	}
+
+	type args struct {
+		file string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *pipeline.Build
+		wantErr bool
+	}{
+		{"false", args{
+			file: "testdata/clone_false.yml",
+		}, wantFalse, false},
+		{"true", args{
+			file: "testdata/clone_true.yml",
+		}, wantTrue, false},
+		{"replace", args{
+			file: "testdata/clone_replace.yml",
+		}, wantReplace, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// run test
+			yaml, err := ioutil.ReadFile(tt.args.file)
+			if err != nil {
+				t.Errorf("Reading yaml file return err: %v", err)
+			}
+
+			compiler, err := New(c)
+			if err != nil {
+				t.Errorf("Creating compiler returned err: %v", err)
+			}
+
+			compiler.WithMetadata(m)
+
+			got, err := compiler.Compile(yaml)
+			if err != nil {
+				t.Errorf("Compile returned err: %v", err)
+			}
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("Compile() mismatch (-want +got):\n%s", diff)
+			}
+		})
 	}
 }
 
