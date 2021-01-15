@@ -20,7 +20,7 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.6.8
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
-	github.com/kr/pretty v0.2.0
+	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.6.1 // indirect
