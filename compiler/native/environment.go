@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-vela/types"
+	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
 )
@@ -182,7 +183,8 @@ func appendMap(originalMap, otherMap map[string]string) map[string]string {
 
 // helper function that creates the standard set of environment variables for a pipeline.
 func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *library.User) map[string]string {
-	workspace := "/vela"
+	// set default workspace
+	workspace := constants.WorkspaceDefault
 	notImplemented := "TODO"
 	channel := notImplemented
 
@@ -214,7 +216,7 @@ func environment(b *library.Build, m *types.Metadata, r *library.Repo, u *librar
 		env["VELA_QUEUE"] = m.Queue.Driver
 		env["VELA_SOURCE"] = m.Source.Driver
 		channel = m.Queue.Channel
-		workspace = fmt.Sprintf("/vela/src/%s/%s/%s", m.Source.Host, r.GetOrg(), r.GetName())
+		workspace = fmt.Sprintf("%s/%s/%s/%s", workspace, m.Source.Host, r.GetOrg(), r.GetName())
 	}
 
 	env["VELA_WORKSPACE"] = workspace
