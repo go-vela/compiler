@@ -137,7 +137,7 @@ func TestNative_TransformStages(t *testing.T) {
 							&pipeline.Container{
 								ID:          "__0_install deps_install",
 								Commands:    []string{"./gradlew downloadDependencies"},
-								Directory:   "/vela",
+								Directory:   "/vela/src",
 								Environment: environment(nil, nil, nil, nil),
 								Image:       "openjdk:latest",
 								Name:        "install",
@@ -192,7 +192,7 @@ func TestNative_TransformStages(t *testing.T) {
 							&pipeline.Container{
 								ID:          "localOrg_localRepo_1_install deps_install",
 								Commands:    []string{"./gradlew downloadDependencies"},
-								Directory:   "/vela",
+								Directory:   "/vela/src",
 								Environment: environment(nil, nil, nil, nil),
 								Image:       "openjdk:latest",
 								Name:        "install",
@@ -361,7 +361,7 @@ func TestNative_TransformSteps(t *testing.T) {
 					&pipeline.Container{
 						ID:          "step___0_install deps",
 						Commands:    []string{"./gradlew downloadDependencies"},
-						Directory:   "/vela",
+						Directory:   "/vela/src",
 						Environment: environment(nil, nil, nil, nil),
 						Image:       "openjdk:latest",
 						Name:        "install deps",
@@ -411,7 +411,7 @@ func TestNative_TransformSteps(t *testing.T) {
 					&pipeline.Container{
 						ID:          "step_localOrg_localRepo_1_install deps",
 						Commands:    []string{"./gradlew downloadDependencies"},
-						Directory:   "/vela",
+						Directory:   "/vela/src",
 						Environment: environment(nil, nil, nil, nil),
 						Image:       "openjdk:latest",
 						Name:        "install deps",
