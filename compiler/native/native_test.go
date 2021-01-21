@@ -66,6 +66,57 @@ func TestNative_New_PrivateGithub(t *testing.T) {
 	}
 }
 
+func TestNative_DuplicateRetainSettings(t *testing.T) {
+	// setup types
+	url := "http://foo.example.com"
+	token := "someToken"
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-url", url, "doc")
+	set.String("github-token", token, "doc")
+	c := cli.NewContext(nil, set, nil)
+	public, _ := github.New("", "")
+	private, _ := github.New(url, token)
+	want := &client{
+		Github:        public,
+		PrivateGithub: private,
+	}
+
+	// run test
+	got, err := New(c)
+
+	if err != nil {
+		t.Errorf("New returned err: %v", err)
+	}
+
+	if !reflect.DeepEqual(got.Duplicate(), want) {
+		t.Errorf("New is %v, want %v", got, want)
+	}
+}
+
+func TestNative_DuplicateStripBuild(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+
+	id := int64(1)
+	b := &library.Build{ID: &id}
+
+	want, _ := New(c)
+
+	// run test
+	got, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	// modify engine with WithBuild and then call Duplicate
+	// to get a copy of the Engine without build attached.
+	if !reflect.DeepEqual(got.WithBuild(b).Duplicate(), want) {
+		t.Errorf("WithBuild is %v, want %v", got, want)
+	}
+}
+
 func TestNative_WithBuild(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)

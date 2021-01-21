@@ -21,6 +21,10 @@ type Engine interface {
 	// Parse internally to convert the object to a yaml configuration.
 	Compile(interface{}) (*pipeline.Build, error)
 
+	// Duplicate defines a function that
+	// creates a clone of the Engine.
+	Duplicate() Engine
+
 	// Parse defines a function that converts
 	// an object to a yaml configuration.
 	Parse(interface{}) (*yaml.Build, []byte, error)
