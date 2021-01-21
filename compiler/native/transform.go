@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	// default org for pipeline
+	// default org for pipeline.
 	localOrg = "localOrg"
-	// default repo for pipeline
+	// default repo for pipeline.
 	localRepo = "localRepo"
-	// default build number for pipeline
+	// default build number for pipeline.
 	localBuild = 1
 	// default ID for pipeline.
 	// format: `<org>_<repo>_<build number>`
