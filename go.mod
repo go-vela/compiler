@@ -2,8 +2,6 @@ module github.com/go-vela/compiler
 
 go 1.15
 
-replace github.com/goccy/go-yaml => github.com/go-vela/go-yaml v1.8.5-0.20210119172014-31f8c1792cea
-
 require (
 	github.com/Masterminds/sprig/v3 v3.2.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
