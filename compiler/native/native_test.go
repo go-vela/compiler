@@ -115,7 +115,6 @@ func TestNative_DuplicateStripBuild(t *testing.T) {
 	if !reflect.DeepEqual(got.WithBuild(b).Duplicate(), want) {
 		t.Errorf("WithBuild is %v, want %v", got, want)
 	}
-
 }
 
 func TestNative_WithBuild(t *testing.T) {
