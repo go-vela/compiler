@@ -17,7 +17,7 @@ const (
 	// default repo for pipeline
 	localRepo = "localRepo"
 	// default build number for pipeline
-	localBuild = 0
+	localBuild = 1
 	// default ID for pipeline.
 	// format: `<org>_<repo>_<build number>`
 	pipelineID = "%s_%s_%d"
