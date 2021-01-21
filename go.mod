@@ -2,15 +2,13 @@ module github.com/go-vela/compiler
 
 go 1.15
 
-replace github.com/goccy/go-yaml => github.com/go-vela/go-yaml v1.8.5-0.20210119172014-31f8c1792cea
-
 require (
 	github.com/Masterminds/sprig/v3 v3.2.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.2
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-vela/types v0.7.0-rc2
-	github.com/goccy/go-yaml v1.8.4
+	github.com/goccy/go-yaml v1.8.5
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.4
