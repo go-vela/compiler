@@ -89,6 +89,18 @@ func setupPrivateGithub(addr, token string) (registry.Service, error) {
 	return github.New(addr, token)
 }
 
+// Duplicate creates a clone of the Engine.
+func (c *client) Duplicate() compiler.Engine {
+	cc := new(client)
+
+	// copy the essential fields from the existing client
+	cc.Github = c.Github
+	cc.PrivateGithub = c.PrivateGithub
+	cc.ModificationService = c.ModificationService
+
+	return cc
+}
+
 // WithBuild sets the library build type in the Engine.
 func (c *client) WithBuild(b *library.Build) compiler.Engine {
 	if b != nil {
