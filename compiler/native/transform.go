@@ -12,6 +12,12 @@ import (
 )
 
 const (
+	// default org for pipeline.
+	localOrg = "localOrg"
+	// default repo for pipeline.
+	localRepo = "localRepo"
+	// default build number for pipeline.
+	localBuild = 1
 	// default ID for pipeline.
 	// format: `<org>_<repo>_<build number>`
 	pipelineID = "%s_%s_%d"
@@ -40,12 +46,23 @@ func (c *client) TransformStages(r *pipeline.RuleData, p *yaml.Build) (*pipeline
 
 	// check if the compiler is setup for a local pipeline
 	if c.local {
-		// set a default for the org
-		org = "localOrg"
-		// set a default for the repo
-		name = "localRepo"
-		// set a default for the number
-		number = 1
+		// check if the org provided is empty
+		if len(org) == 0 {
+			// set a default for the org
+			org = localOrg
+		}
+
+		// check if the repo provided is empty
+		if len(name) == 0 {
+			// set a default for the repo
+			name = localRepo
+		}
+
+		// check if the number provided is empty
+		if number == 0 {
+			// set a default for the number
+			number = localBuild
+		}
 	}
 
 	// create new executable pipeline
@@ -110,12 +127,23 @@ func (c *client) TransformSteps(r *pipeline.RuleData, p *yaml.Build) (*pipeline.
 
 	// check if the compiler is setup for a local pipeline
 	if c.local {
-		// set a default for the org
-		org = "localOrg"
-		// set a default for the repo
-		name = "localRepo"
-		// set a default for the number
-		number = 1
+		// check if the org provided is empty
+		if len(org) == 0 {
+			// set a default for the org
+			org = localOrg
+		}
+
+		// check if the repo provided is empty
+		if len(name) == 0 {
+			// set a default for the repo
+			name = localRepo
+		}
+
+		// check if the number provided is empty
+		if number == 0 {
+			// set a default for the number
+			number = localBuild
+		}
 	}
 
 	// create new executable pipeline
