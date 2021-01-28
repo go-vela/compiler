@@ -6,6 +6,7 @@ package native
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/go-vela/types"
@@ -53,6 +54,17 @@ func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
 	// gather set of default environment variables
 	defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
 
+	// check if the compiler is setup for a local pipeline
+	if c.local {
+		// capture all environment variables from the local environment
+		for _, e := range os.Environ() {
+			// split the environment variable on = into a key value pair
+			parts := strings.SplitN(e, "=", 2)
+
+			env[parts[0]] = parts[1]
+		}
+	}
+
 	// inject the declared environment
 	// variables to the build step
 	for k, v := range s.Environment {
@@ -99,6 +111,17 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 		// gather set of default environment variables
 		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
 
+		// check if the compiler is setup for a local pipeline
+		if c.local {
+			// capture all environment variables from the local environment
+			for _, e := range os.Environ() {
+				// split the environment variable on = into a key value pair
+				parts := strings.SplitN(e, "=", 2)
+
+				env[parts[0]] = parts[1]
+			}
+		}
+
 		// inject the declared environment
 		// variables to the build service
 		for k, v := range service.Environment {
@@ -134,6 +157,17 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 		env := make(map[string]string)
 		// gather set of default environment variables
 		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
+
+		// check if the compiler is setup for a local pipeline
+		if c.local {
+			// capture all environment variables from the local environment
+			for _, e := range os.Environ() {
+				// split the environment variable on = into a key value pair
+				parts := strings.SplitN(e, "=", 2)
+
+				env[parts[0]] = parts[1]
+			}
+		}
 
 		// inject the declared environment
 		// variables to the build secret
