@@ -1403,6 +1403,11 @@ func Test_client_modifyConfig(t *testing.T) {
 				Environment: nil,
 				Name:        "docker",
 				Pull:        "always",
+				Parameters: map[string]interface{}{
+					"init_options": map[string]interface{}{
+						"get_plugins": "true",
+					},
+				},
 			},
 		},
 	}
@@ -1430,6 +1435,11 @@ func Test_client_modifyConfig(t *testing.T) {
 				Environment: nil,
 				Name:        "docker",
 				Pull:        "always",
+				Parameters: map[string]interface{}{
+					"init_options": map[string]interface{}{
+						"get_plugins": "true",
+					},
+				},
 			},
 			&yaml.Step{
 				Image:       "alpine",
@@ -1548,8 +1558,8 @@ func Test_client_modifyConfig(t *testing.T) {
 				return
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("modifyConfig() got = %v, want %v", got, tt.want)
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("modifyConfig() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}
