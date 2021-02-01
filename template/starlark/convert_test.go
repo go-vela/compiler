@@ -60,7 +60,6 @@ func TestStarlark_Render_convertTemplateVars(t *testing.T) {
 		},
 		{
 			name: "test for a user passed map",
-			// nolint // ignore line length
 			args: map[string]interface{}{"commands": map[string]string{"test": "go test ./..."}},
 			want: mapWant,
 		}}
