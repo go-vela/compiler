@@ -17,6 +17,8 @@ import (
 
 // ExpandStages injects the template for each
 // templated step in every stage in a yaml configuration.
+//
+// nolint: lll // ignore long line length due to variable names
 func (c *client) ExpandStages(s yaml.StageSlice, tmpls map[string]*yaml.Template) (yaml.StageSlice, error) {
 	// iterate through all stages
 	for _, stage := range s {
@@ -34,6 +36,8 @@ func (c *client) ExpandStages(s yaml.StageSlice, tmpls map[string]*yaml.Template
 
 // ExpandSteps injects the template for each
 // templated step in a yaml configuration.
+//
+// nolint: lll // ignore long line length due to variable names
 func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) (yaml.StepSlice, error) {
 	steps := yaml.StepSlice{}
 
