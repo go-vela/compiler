@@ -104,6 +104,8 @@ github.com/go-vela/types v0.7.0-rc3 h1:47vQFWitVF7DcHKH7/bI1eFaTdLfOrWqhoTogIiZh
 github.com/go-vela/types v0.7.0-rc3/go.mod h1:N6YU6eSm/hxAgIdaZtHyKSquNZm2nqK0fFwwPdDWDS0=
 github.com/goccy/go-yaml v1.8.5 h1:f1UH5GVhLZE6ElNBAgCtF3ZUOuJ62dNOo3Y5dOJqTV4=
 github.com/goccy/go-yaml v1.8.5/go.mod h1:U/jl18uSupI5rdI2jmuCswEA2htH9eXfferR3KfscvA=
+github.com/goccy/go-yaml v1.8.8 h1:MGfRB1GeSn/hWXYWS2Pt67iC2GJNnebdIro01ddyucA=
+github.com/goccy/go-yaml v1.8.8/go.mod h1:U/jl18uSupI5rdI2jmuCswEA2htH9eXfferR3KfscvA=
 github.com/gogo/protobuf v1.2.2-0.20190723190241-65acae22fc9d/go.mod h1:SlYgWuQ5SjCEi6WLHjHCa1yvBfUnHcTbrrZtXPKa29o=
 github.com/gogo/protobuf v1.3.1 h1:DqDEcV5aeaTmdFBePNpYsp3FlcVH/2ISVVM9Qf8PSls=
 github.com/gogo/protobuf v1.3.1/go.mod h1:SlYgWuQ5SjCEi6WLHjHCa1yvBfUnHcTbrrZtXPKa29o=
