@@ -29,7 +29,8 @@ var (
 )
 
 // Render combines the template with the step in the yaml pipeline.
-// nolint // ignore function line length
+//
+// nolint: funlen // ignore function length due to comments
 func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	config := new(types.Build)
 
@@ -37,6 +38,8 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	// arbitrarily limiting the steps of the thread to 5000 to help prevent infinite loops
 	// may need to further investigate spawning a separate POSIX process if user input is problematic
 	// see https://github.com/google/starlark-go/issues/160#issuecomment-466794230 for further details
+	//
+	// nolint: gomnd // ignore magic number
 	thread.SetMaxExecutionSteps(5000)
 	globals, err := starlark.ExecFile(thread, s.Template.Name, tmpl, nil)
 	if err != nil {

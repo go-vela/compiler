@@ -49,7 +49,9 @@ func (c *client) ScriptSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 
 		// set the environment variables for the step
 		step.Environment["VELA_BUILD_SCRIPT"] = script
+		// nolint: goconst // ignore making this a constant for now
 		step.Environment["HOME"] = "/root"
+		// nolint: goconst // ignore making this a constant for now
 		step.Environment["SHELL"] = "/bin/sh"
 	}
 
@@ -57,7 +59,7 @@ func (c *client) ScriptSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 }
 
 // generateScriptPosix is a helper function that generates a build script
-// for a linux container using the given commands
+// for a linux container using the given commands.
 func generateScriptPosix(commands []string) string {
 	var buf bytes.Buffer
 

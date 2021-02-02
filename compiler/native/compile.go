@@ -21,11 +21,9 @@ import (
 	"github.com/go-vela/types/yaml"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-retryablehttp"
-
-	uyaml "github.com/goccy/go-yaml"
 )
 
-// ModifyRequest contains the payload passed to the modification endpoint
+// ModifyRequest contains the payload passed to the modification endpoint.
 type ModifyRequest struct {
 	Pipeline string `json:"pipeline,omitempty"`
 	Build    int    `json:"build,omitempty"`
@@ -34,6 +32,8 @@ type ModifyRequest struct {
 }
 
 // Compile produces an executable pipeline from a yaml configuration.
+//
+// nolint: funlen // ignore function length due to comments
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	// parse the object into a yaml configuration
 	p, raw, err := c.Parse(v)
@@ -212,7 +212,7 @@ func errorHandler(resp *http.Response, err error, attempts int) (*http.Response,
 // nolint:lll // parameter struct references push line limit
 func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, repo *library.Repo) (*yaml.Build, error) {
 	// create request to send to endpoint
-	data, err := uyaml.Marshal(build)
+	data, err := yml.Marshal(build)
 	if err != nil {
 		return nil, err
 	}

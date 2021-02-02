@@ -797,5 +797,5 @@ func TestNative_ParseString_Metadata(t *testing.T) {
 type FailReader struct{}
 
 func (FailReader) Read(p []byte) (n int, err error) {
-	return 0, errors.New("This is a reader that fails when you try to read.")
+	return 0, errors.New("this is a reader that fails when you try to read")
 }

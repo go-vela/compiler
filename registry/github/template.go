@@ -31,6 +31,8 @@ func (c *client) Template(u *library.User, s *registry.Source) ([]byte, error) {
 	}
 
 	// send API call to capture the templated pipeline configuration
+	//
+	// nolint: lll // ignore long line length due to variable names
 	data, _, resp, err := cli.Repositories.GetContents(context.Background(), s.Org, s.Repo, s.Name, opts)
 	if err != nil {
 		if resp.StatusCode != http.StatusNotFound {
@@ -48,5 +50,5 @@ func (c *client) Template(u *library.User, s *registry.Source) ([]byte, error) {
 		return []byte(strData), nil
 	}
 
-	return nil, fmt.Errorf("No valid template found at %s/%s/%s", s.Org, s.Repo, s.Name)
+	return nil, fmt.Errorf("no valid template found at %s/%s/%s", s.Org, s.Repo, s.Name)
 }

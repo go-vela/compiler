@@ -30,8 +30,10 @@ var (
 // will return the comparable Starlark type.
 //
 // This code is under copyright (full attribution in NOTICE) and is from:
+//
 // https://github.com/wonderix/shalm/blob/899b8f7787883d40619eefcc39bd12f42a09b5e7/pkg/shalm/convert.go#L14-L85
-// nolint /// @lll ignore line length of the link
+//
+// nolint: gocyclo,funlen,lll // ignore above line length and function length due to comments
 func toStarlark(value interface{}) (starlark.Value, error) {
 	logrus.Tracef("converting %v to starlark type", value)
 
@@ -88,6 +90,7 @@ func toStarlark(value interface{}) (starlark.Value, error) {
 
 		return val, nil
 	case reflect.Map:
+		// nolint: gomnd // ignore magic number
 		d := starlark.NewDict(16)
 
 		for _, key := range v.MapKeys() {
@@ -141,12 +144,14 @@ func toStarlark(value interface{}) (starlark.Value, error) {
 // for the specific type.
 //
 // This code is under copyright (full attribution in NOTICE) and is from:
+//
 // https://github.com/drone/drone-cli/blob/master/drone/starlark/starlark.go#L214-L274
 //
 // Note: we are using logrus log unchecked errors that the original implementation ignored.
 // if/when we try to return values it breaks the recursion. Panics were swapped to error
 // returns from implementation.
-// nolint // ignore function line length
+//
+// nolint: gocyclo,funlen // ignore cyclomatic complexity and function length
 func writeJSON(out *bytes.Buffer, v starlark.Value) error {
 	logrus.Tracef("converting %v to JSON", v)
 
