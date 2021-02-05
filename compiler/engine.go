@@ -27,7 +27,7 @@ type Engine interface {
 
 	// Parse defines a function that converts
 	// an object to a yaml configuration.
-	Parse(interface{}) (*yaml.Build, []byte, error)
+	Parse(interface{}) (*yaml.Build, error)
 
 	// Clone Compiler Interface Functions
 

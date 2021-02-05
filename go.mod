@@ -4,10 +4,11 @@ go 1.15
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.0
+	github.com/buildkite/yaml v0.0.0-20181016232759-0caa5f0796e3
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.2
 	github.com/gin-gonic/gin v1.6.3
-	github.com/go-vela/types v0.7.0
+	github.com/go-vela/types v0.7.1-0.20210204153653-939416ae12ed
 	github.com/goccy/go-yaml v1.8.8
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
@@ -30,7 +31,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013
 	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
 	golang.org/x/text v0.3.4 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/apimachinery v0.17.3
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )

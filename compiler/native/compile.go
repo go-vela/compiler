@@ -36,13 +36,13 @@ type ModifyRequest struct {
 // nolint: funlen // ignore function length due to comments
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	// parse the object into a yaml configuration
-	p, raw, err := c.Parse(v)
+	p, err := c.Parse(v)
 	if err != nil {
 		return nil, err
 	}
 
 	// validate the yaml configuration
-	err = p.Validate(raw)
+	err = c.Validate(p)
 	if err != nil {
 		return nil, err
 	}
@@ -101,15 +101,10 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 			if err != nil {
 				return nil, err
 			}
-
-			raw, err = yml.Marshal(p)
-			if err != nil {
-				return nil, err
-			}
 		}
 
 		// validate the yaml configuration
-		err = p.Validate(raw)
+		err = c.Validate(p)
 		if err != nil {
 			return nil, err
 		}
@@ -163,15 +158,10 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		raw, err = yml.Marshal(p)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	// validate the yaml configuration
-	err = p.Validate(raw)
+	err = c.Validate(p)
 	if err != nil {
 		return nil, err
 	}

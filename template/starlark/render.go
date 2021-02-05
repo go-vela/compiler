@@ -10,8 +10,8 @@ import (
 	"fmt"
 
 	types "github.com/go-vela/types/yaml"
-	"github.com/goccy/go-yaml"
 	"go.starlark.net/starlark"
+	yaml "gopkg.in/yaml.v2"
 )
 
 var (
