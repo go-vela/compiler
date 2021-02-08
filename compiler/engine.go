@@ -29,6 +29,10 @@ type Engine interface {
 	// an object to a yaml configuration.
 	Parse(interface{}) (*yaml.Build, error)
 
+	// Validate defines a function that verifies
+	// the yaml configuration is accurate.
+	Validate(*yaml.Build) error
+
 	// Clone Compiler Interface Functions
 
 	// CloneStage defines a function that injects the
