@@ -9,7 +9,7 @@ require (
 	github.com/drone/envsubst v1.0.2
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-vela/types v0.7.1-0.20210204153653-939416ae12ed
-	github.com/goccy/go-yaml v1.8.8
+	github.com/goccy/go-yaml v1.8.8 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.4
