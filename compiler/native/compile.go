@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	yml "github.com/goccy/go-yaml"
+	yml "github.com/buildkite/yaml"
 
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
@@ -29,6 +29,11 @@ type ModifyRequest struct {
 	Build    int    `json:"build,omitempty"`
 	Repo     string `json:"repo,omitempty"`
 	User     string `json:"user,omitempty"`
+}
+
+// ModifyResponse contains the payload returned by the modification endpoint.
+type ModifyResponse struct {
+	Pipeline string `json:"pipeline,omitempty"`
 }
 
 // Compile produces an executable pipeline from a yaml configuration.
@@ -260,14 +265,21 @@ func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, re
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read payload")
+		return nil, fmt.Errorf("failed to read payload: %w", err)
+	}
+
+	response := new(ModifyResponse)
+	// unmarshal the response into the ModifyResponse struct
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal JSON modification payload: %w", err)
 	}
 
 	newBuild := new(yaml.Build)
 	// unmarshal the response into the yaml.Build struct
-	err = json.Unmarshal(body, newBuild)
+	err = yml.Unmarshal([]byte(response.Pipeline), &newBuild)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal modification payload")
+		return nil, fmt.Errorf("failed to unmarshal YAML modification payload: %w", err)
 	}
 
 	return newBuild, nil

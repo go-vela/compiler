@@ -24,6 +24,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli/v2"
+
+	yml "github.com/buildkite/yaml"
 )
 
 func TestNative_Compile_StagesPipeline(t *testing.T) {
@@ -1346,6 +1348,20 @@ func TestNative_Compile_StepsandStages(t *testing.T) {
 	}
 }
 
+// convertResponse converts the build to the ModifyResponse
+func convertResponse(build *yaml.Build) (*ModifyResponse, error) {
+	data, err := yml.Marshal(build)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ModifyResponse{
+		Pipeline: string(data),
+	}
+
+	return response, nil
+}
+
 func Test_client_modifyConfig(t *testing.T) {
 	// setup context
 	gin.SetMode(gin.TestMode)
@@ -1404,7 +1420,7 @@ func Test_client_modifyConfig(t *testing.T) {
 				Name:        "docker",
 				Pull:        "always",
 				Parameters: map[string]interface{}{
-					"init_options": map[string]interface{}{
+					"init_options": map[interface{}]interface{}{
 						"get_plugins": "true",
 					},
 				},
@@ -1436,7 +1452,7 @@ func Test_client_modifyConfig(t *testing.T) {
 				Name:        "docker",
 				Pull:        "always",
 				Parameters: map[string]interface{}{
-					"init_options": map[string]interface{}{
+					"init_options": map[interface{}]interface{}{
 						"get_plugins": "true",
 					},
 				},
@@ -1453,13 +1469,21 @@ func Test_client_modifyConfig(t *testing.T) {
 
 	engine.POST("/config/unmodified", func(c *gin.Context) {
 		c.Header("Content-Type", "application/json")
-		c.JSON(http.StatusOK, want)
+		response, err := convertResponse(want)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusOK, response)
 	})
 
 	engine.POST("/config/timeout", func(c *gin.Context) {
 		time.Sleep(3 * time.Second)
 		c.Header("Content-Type", "application/json")
-		c.JSON(http.StatusOK, want)
+		response, err := convertResponse(want)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusOK, response)
 	})
 
 	engine.POST("/config/modified", func(c *gin.Context) {
@@ -1475,16 +1499,25 @@ func Test_client_modifyConfig(t *testing.T) {
 			Commands:    []string{"echo hello from modification"},
 		})
 		output.Steps = steps
-		c.JSON(http.StatusOK, output)
+		response, err := convertResponse(want)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+
+		c.JSON(http.StatusOK, response)
 	})
 
 	engine.POST("/config/empty", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
 
-	engine.POST("/config/unathorized", func(c *gin.Context) {
+	engine.POST("/config/unauthorized", func(c *gin.Context) {
 		c.Header("Content-Type", "application/json")
-		c.JSON(http.StatusForbidden, want)
+		response, err := convertResponse(want)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusForbidden, response)
 	})
 
 	s := httptest.NewServer(engine)
@@ -1524,11 +1557,11 @@ func Test_client_modifyConfig(t *testing.T) {
 			repo:         &library.Repo{Name: &name},
 			endpoint:     "bad",
 		}, nil, true},
-		{"unathorized endpoint", args{
+		{"unauthorized endpoint", args{
 			build:        want,
 			libraryBuild: &library.Build{Number: &number, Author: &author},
 			repo:         &library.Repo{Name: &name},
-			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/unathorized"),
+			endpoint:     fmt.Sprintf("%s/%s", s.URL, "config/unauthorized"),
 		}, nil, true},
 		{"timeout endpoint", args{
 			build:        want,
