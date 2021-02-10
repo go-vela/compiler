@@ -1348,7 +1348,7 @@ func TestNative_Compile_StepsandStages(t *testing.T) {
 	}
 }
 
-// convertResponse converts the build to the ModifyResponse
+// convertResponse converts the build to the ModifyResponse.
 func convertResponse(build *yaml.Build) (*ModifyResponse, error) {
 	data, err := yml.Marshal(build)
 	if err != nil {
