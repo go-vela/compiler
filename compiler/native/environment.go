@@ -111,17 +111,6 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 		// gather set of default environment variables
 		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
 
-		// check if the compiler is setup for a local pipeline
-		if c.local {
-			// capture all environment variables from the local environment
-			for _, e := range os.Environ() {
-				// split the environment variable on = into a key value pair
-				parts := strings.SplitN(e, "=", 2)
-
-				env[parts[0]] = parts[1]
-			}
-		}
-
 		// inject the declared environment
 		// variables to the build service
 		for k, v := range service.Environment {
