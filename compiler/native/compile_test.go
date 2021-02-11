@@ -1472,6 +1472,7 @@ func Test_client_modifyConfig(t *testing.T) {
 		response, err := convertResponse(want)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		c.JSON(http.StatusOK, response)
 	})
@@ -1482,6 +1483,7 @@ func Test_client_modifyConfig(t *testing.T) {
 		response, err := convertResponse(want)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		c.JSON(http.StatusOK, response)
 	})
@@ -1502,8 +1504,8 @@ func Test_client_modifyConfig(t *testing.T) {
 		response, err := convertResponse(want)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
-
 		c.JSON(http.StatusOK, response)
 	})
 
@@ -1516,6 +1518,7 @@ func Test_client_modifyConfig(t *testing.T) {
 		response, err := convertResponse(want)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 		}
 		c.JSON(http.StatusForbidden, response)
 	})
