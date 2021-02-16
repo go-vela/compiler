@@ -25,9 +25,15 @@ func (c *client) Template(u *library.User, s *registry.Source) ([]byte, error) {
 		cli = c.newClientToken(u.GetToken())
 	}
 
-	// set the reference for the options to capture the templated pipeline configuration
-	opts := &github.RepositoryContentGetOptions{
-		Ref: s.Ref,
+	// create the options to pass
+	opts := &github.RepositoryContentGetOptions{}
+
+	// set the reference for the options to capture the templated pipeline
+	// configuration. if no ref is set, it will pull from the default
+	// branch on the targeted repo, see:
+	// https://docs.github.com/en/rest/reference/repos#get-repository-content--parameters
+	if len(s.Ref) > 0 {
+		opts.Ref = s.Ref
 	}
 
 	// send API call to capture the templated pipeline configuration

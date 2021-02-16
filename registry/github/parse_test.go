@@ -26,7 +26,7 @@ func TestGithub_Parse(t *testing.T) {
 		Org:  "github",
 		Repo: "octocat",
 		Name: "template.yml",
-		Ref:  "main",
+		Ref:  "",
 	}
 
 	// run test
@@ -36,9 +36,8 @@ func TestGithub_Parse(t *testing.T) {
 	}
 
 	path := "github.example.com/github/octocat/template.yml"
-	defaultBranch := ""
 
-	got, err := c.Parse(path, defaultBranch)
+	got, err := c.Parse(path)
 	if err != nil {
 		t.Errorf("Parse returned err: %v", err)
 	}
@@ -48,7 +47,7 @@ func TestGithub_Parse(t *testing.T) {
 	}
 }
 
-func TestGithub_ParseWithDefaultBranch(t *testing.T) {
+func TestGithub_ParseWithBranch(t *testing.T) {
 	// setup mock server
 	s := httptest.NewServer(http.NotFoundHandler())
 	defer s.Close()
@@ -59,7 +58,7 @@ func TestGithub_ParseWithDefaultBranch(t *testing.T) {
 		Org:  "github",
 		Repo: "octocat",
 		Name: "template.yml",
-		Ref:  "master",
+		Ref:  "dev",
 	}
 
 	// run test
@@ -68,10 +67,9 @@ func TestGithub_ParseWithDefaultBranch(t *testing.T) {
 		t.Errorf("Creating client returned err: %v", err)
 	}
 
-	path := "github.example.com/github/octocat/template.yml"
-	defaultBranch := "master"
+	path := "github.example.com/github/octocat/template.yml@dev"
 
-	got, err := c.Parse(path, defaultBranch)
+	got, err := c.Parse(path)
 	if err != nil {
 		t.Errorf("Parse returned err: %v", err)
 	}
@@ -101,9 +99,8 @@ func TestGithub_Parse_Custom(t *testing.T) {
 	}
 
 	path := "github.example.com/github/octocat/path/to/template.yml@test"
-	defaultBranch := ""
 
-	got, err := c.Parse(path, defaultBranch)
+	got, err := c.Parse(path)
 	if err != nil {
 		t.Errorf("Parse returned err: %v", err)
 	}
@@ -139,9 +136,8 @@ func TestGithub_Parse_Full(t *testing.T) {
 	}
 
 	path := fmt.Sprintf("%s/%s", s.URL, "github/octocat/template.yml@test")
-	defaultBranch := ""
 
-	got, err := c.Parse(path, defaultBranch)
+	got, err := c.Parse(path)
 	if err != nil {
 		t.Errorf("Parse returned err: %v", err)
 	}
@@ -162,7 +158,7 @@ func TestGithub_Parse_Invalid(t *testing.T) {
 		t.Errorf("Creating client returned err: %v", err)
 	}
 
-	got, err := c.Parse("!@#$%^&*()", "")
+	got, err := c.Parse("!@#$%^&*()")
 	if err == nil {
 		t.Errorf("Parse should have returned err")
 	}
@@ -188,7 +184,7 @@ func TestGithub_Parse_Hostname(t *testing.T) {
 		Org:  "github",
 		Repo: "octocat",
 		Name: "template.yml",
-		Ref:  "main",
+		Ref:  "",
 	}
 
 	// run test
@@ -198,9 +194,8 @@ func TestGithub_Parse_Hostname(t *testing.T) {
 	}
 
 	path := fmt.Sprintf("%s/%s", u.Hostname(), "github/octocat/template.yml")
-	defaultBranch := ""
 
-	got, err := c.Parse(path, defaultBranch)
+	got, err := c.Parse(path)
 	if err != nil {
 		t.Errorf("Parse returned err: %v", err)
 	}
@@ -226,7 +221,7 @@ func TestGithub_Parse_Path(t *testing.T) {
 		Org:  "github",
 		Repo: "octocat",
 		Name: "path/to/template.yml",
-		Ref:  "main",
+		Ref:  "",
 	}
 
 	// run test
@@ -236,9 +231,8 @@ func TestGithub_Parse_Path(t *testing.T) {
 	}
 
 	path := fmt.Sprintf("%s/%s", s.URL, "github/octocat/path/to/template.yml")
-	defaultBranch := ""
 
-	got, err := c.Parse(path, defaultBranch)
+	got, err := c.Parse(path)
 	if err != nil {
 		t.Errorf("Parse returned err: %v", err)
 	}
