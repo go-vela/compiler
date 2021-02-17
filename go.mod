@@ -3,7 +3,7 @@ module github.com/go-vela/compiler
 go 1.15
 
 require (
-	github.com/Masterminds/sprig/v3 v3.2.0
+	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/buildkite/yaml v0.0.0-20181016232759-0caa5f0796e3
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.2
