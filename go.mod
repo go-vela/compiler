@@ -9,7 +9,7 @@ require (
 	github.com/drone/envsubst v1.0.2
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
-	github.com/go-vela/types v0.7.2
+	github.com/go-vela/types v0.7.3
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.4
@@ -22,7 +22,7 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
-	github.com/sirupsen/logrus v1.7.0
+	github.com/sirupsen/logrus v1.8.0
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/ugorji/go v1.1.11 // indirect
 	github.com/urfave/cli/v2 v2.3.0
