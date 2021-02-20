@@ -7,9 +7,10 @@ require (
 	github.com/buildkite/yaml v0.0.0-20181016232759-0caa5f0796e3
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.2
+	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
-	github.com/go-vela/types v0.7.3
+	github.com/go-vela/types v0.1.4
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.4
@@ -21,6 +22,8 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.6.8
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
+	github.com/kr/pretty v0.2.0 // indirect
+	github.com/lib/pq v1.9.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/sirupsen/logrus v1.8.0
 	github.com/stretchr/testify v1.6.1 // indirect
@@ -32,6 +35,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013
 	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
 	golang.org/x/text v0.3.4 // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 	k8s.io/apimachinery v0.17.3
