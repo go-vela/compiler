@@ -233,7 +233,7 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 			},
 			&yaml.Stage{
 				Name:  "test",
-				Needs: raw.StringSlice{"install"},
+				Needs: raw.StringSlice{"install", "clone"},
 				Steps: yaml.StepSlice{
 					&yaml.Step{
 						Commands: []string{"./gradlew check"},
@@ -249,7 +249,7 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 			},
 			&yaml.Stage{
 				Name:  "build",
-				Needs: raw.StringSlice{"install"},
+				Needs: raw.StringSlice{"install", "clone"},
 				Steps: yaml.StepSlice{
 					&yaml.Step{
 						Commands: []string{"./gradlew build"},
@@ -265,7 +265,7 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 			},
 			&yaml.Stage{
 				Name:  "publish",
-				Needs: raw.StringSlice{"build"},
+				Needs: raw.StringSlice{"build", "clone"},
 				Steps: yaml.StepSlice{
 					&yaml.Step{
 						Image: "plugins/docker:18.09",
@@ -498,7 +498,7 @@ func TestNative_Parse_Stages(t *testing.T) {
 			},
 			&yaml.Stage{
 				Name:  "test",
-				Needs: []string{"install"},
+				Needs: []string{"install", "clone"},
 				Steps: yaml.StepSlice{
 					&yaml.Step{
 						Commands: []string{"./gradlew check"},
@@ -514,7 +514,7 @@ func TestNative_Parse_Stages(t *testing.T) {
 			},
 			&yaml.Stage{
 				Name:  "build",
-				Needs: []string{"install"},
+				Needs: []string{"install", "clone"},
 				Steps: yaml.StepSlice{
 					&yaml.Step{
 						Commands: []string{"./gradlew build"},
