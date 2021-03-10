@@ -12,7 +12,7 @@ require (
 	github.com/go-vela/types v0.7.4
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
-	github.com/google/go-cmp v0.5.4
+	github.com/google/go-cmp v0.5.5
 	github.com/google/go-github/v24 v24.0.1
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/google/uuid v1.1.4 // indirect
