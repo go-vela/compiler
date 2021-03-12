@@ -26,7 +26,7 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/ugorji/go v1.1.11 // indirect
 	github.com/urfave/cli/v2 v2.3.0
-	go.starlark.net v0.0.0-20201014215153-dff0ae5b4820
+	go.starlark.net v0.0.0-20210305151048-6a590ae7f4eb
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
 	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
