@@ -13,7 +13,7 @@ require (
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.5
-	github.com/google/go-github/v33 v33.0.0
+	github.com/google/go-github/v34 v34.0.0
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/google/uuid v1.1.4 // indirect
 	github.com/goware/urlx v0.3.1
