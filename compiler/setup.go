@@ -50,7 +50,7 @@ type Setup struct {
 func (s *Setup) Native() (Engine, error) {
 	logrus.Trace("creating native compiler client from setup")
 
-	return nil, fmt.Errorf("unsupported compiler driver: %s", constants.DriverGithub)
+	return nil, fmt.Errorf("unsupported compiler driver: %s", constants.DriverNative)
 }
 
 // Validate verifies the necessary fields for the
