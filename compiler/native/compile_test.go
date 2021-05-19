@@ -734,6 +734,13 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Type:   "repo",
 				Origin: &pipeline.Container{},
 			},
+			&pipeline.Secret{
+				Name:   "foo_password",
+				Key:    "org/repo/foo/password",
+				Engine: "vault",
+				Type:   "repo",
+				Origin: &pipeline.Container{},
+			},
 		},
 	}
 
@@ -936,6 +943,13 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Type:   "repo",
 				Origin: &pipeline.Container{},
 			},
+			&pipeline.Secret{
+				Name:   "foo_password",
+				Key:    "org/repo/foo/password",
+				Engine: "vault",
+				Type:   "repo",
+				Origin: &pipeline.Container{},
+			},
 		},
 	}
 
@@ -957,8 +971,8 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		t.Errorf("Compile returned err: %v", err)
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Compile is %v, want %v", got, want)
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("Compile() mismatch (-want +got):\n%s", diff)
 	}
 }
 

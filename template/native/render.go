@@ -34,12 +34,14 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, err
 	// https://pkg.go.dev/github.com/Masterminds/sprig?tab=doc#TxtFuncMap
 	t, err := template.New(s.Name).Funcs(sf).Funcs(templateFuncMap).Parse(tmpl)
 	if err != nil {
+		// nolint: lll // ignore long line length due to return arguments
 		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to parse template %s: %v", s.Template.Name, err)
 	}
 
 	// apply the variables to the parsed template
 	err = t.Execute(buffer, s.Template.Variables)
 	if err != nil {
+		// nolint: lll // ignore long line length due to return arguments
 		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to execute template %s: %v", s.Template.Name, err)
 	}
 
