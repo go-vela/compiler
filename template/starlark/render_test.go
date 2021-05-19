@@ -51,7 +51,7 @@ func TestStarlark_Render(t *testing.T) {
 				t.Error(err)
 			}
 
-			got, err := Render(string(tmpl), b.Steps[0])
+			got, _, err := Render(string(tmpl), b.Steps[0])
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Render() error = %v, wantErr %v", err, tt.wantErr)
 				return

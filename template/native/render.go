@@ -13,7 +13,7 @@ import (
 )
 
 // Render combines the template with the step in the yaml pipeline.
-func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
+func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, error) {
 	buffer := new(bytes.Buffer)
 	config := new(types.Build)
 
@@ -34,19 +34,19 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 	// https://pkg.go.dev/github.com/Masterminds/sprig?tab=doc#TxtFuncMap
 	t, err := template.New(s.Name).Funcs(sf).Funcs(templateFuncMap).Parse(tmpl)
 	if err != nil {
-		return types.StepSlice{}, fmt.Errorf("unable to parse template %s: %v", s.Template.Name, err)
+		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to parse template %s: %v", s.Template.Name, err)
 	}
 
 	// apply the variables to the parsed template
 	err = t.Execute(buffer, s.Template.Variables)
 	if err != nil {
-		return types.StepSlice{}, fmt.Errorf("unable to execute template %s: %v", s.Template.Name, err)
+		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to execute template %s: %v", s.Template.Name, err)
 	}
 
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buffer.Bytes(), config)
 	if err != nil {
-		return types.StepSlice{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
+		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
 	// ensure all templated steps have template prefix
@@ -54,5 +54,5 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, error) {
 		config.Steps[index].Name = fmt.Sprintf("%s_%s", s.Name, newStep.Name)
 	}
 
-	return config.Steps, nil
+	return config.Steps, config.Secrets, nil
 }

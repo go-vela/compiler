@@ -95,7 +95,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		}
 
 		// inject the templates into the stages
-		p.Stages, err = c.ExpandStages(p.Stages, tmpls)
+		p.Stages, p.Secrets, err = c.ExpandStages(p, tmpls)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +152,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	}
 
 	// inject the templates into the steps
-	p.Steps, err = c.ExpandSteps(p.Steps, tmpls)
+	p.Steps, p.Secrets, err = c.ExpandSteps(p, tmpls)
 	if err != nil {
 		return nil, err
 	}

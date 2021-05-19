@@ -114,7 +114,7 @@ func TestNative_ExpandStages(t *testing.T) {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	got, err := compiler.ExpandStages(stages, tmpls)
+	got, _, err := compiler.ExpandStages(&yaml.Build{Stages: stages}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandStages returned err: %v", err)
 	}
@@ -209,7 +209,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	got, err := compiler.ExpandSteps(steps, tmpls)
+	got, _, err := compiler.ExpandSteps(&yaml.Build{Steps: steps}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandSteps returned err: %v", err)
 	}
@@ -277,7 +277,7 @@ func TestNative_ExpandStepsStarlark(t *testing.T) {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	got, err := compiler.ExpandSteps(steps, tmpls)
+	got, _, err := compiler.ExpandSteps(&yaml.Build{Steps: steps}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandSteps returned err: %v", err)
 	}

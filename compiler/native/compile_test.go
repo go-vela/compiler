@@ -240,8 +240,8 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 		tmp[i].Done = stage.Done
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Compile is %v, want %v", got, want)
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("Compile() mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -767,8 +767,8 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 		tmp[i].Done = stage.Done
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Compile is %v, want %v", got, want)
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("Compile() mismatch (-want +got):\n%s", diff)
 	}
 }
 
