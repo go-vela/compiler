@@ -58,7 +58,7 @@ func TestNative_Render(t *testing.T) {
 				t.Error(err)
 			}
 
-			steps, secrets, err := Render(string(tmpl), b.Steps[0])
+			steps, secrets, services, err := Render(string(tmpl), b.Steps[0])
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Render() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -76,11 +76,15 @@ func TestNative_Render(t *testing.T) {
 				}
 				wantSteps := w.Steps
 				wantSecrets := w.Secrets
+				wantServices := w.Services
 
 				if diff := cmp.Diff(wantSteps, steps); diff != "" {
 					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
 				}
 				if diff := cmp.Diff(wantSecrets, secrets); diff != "" {
+					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
+				}
+				if diff := cmp.Diff(wantServices, services); diff != "" {
 					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
 				}
 			}
