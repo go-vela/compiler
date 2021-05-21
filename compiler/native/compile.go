@@ -72,12 +72,6 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
-	// inject the environment variables into the secrets
-	p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
-	if err != nil {
-		return nil, err
-	}
-
 	if len(p.Stages) > 0 {
 		// check if the pipeline disabled the clone
 		if p.Metadata.Clone == nil || *p.Metadata.Clone {
@@ -95,7 +89,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		}
 
 		// inject the templates into the stages
-		p.Stages, err = c.ExpandStages(p.Stages, tmpls)
+		p.Stages, p.Secrets, err = c.ExpandStages(p, tmpls)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +146,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	}
 
 	// inject the templates into the steps
-	p.Steps, err = c.ExpandSteps(p.Steps, tmpls)
+	p.Steps, p.Secrets, err = c.ExpandSteps(p, tmpls)
 	if err != nil {
 		return nil, err
 	}
@@ -167,6 +161,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 
 	// validate the yaml configuration
 	err = c.Validate(p)
+	if err != nil {
+		return nil, err
+	}
+
+	// inject the environment variables into the secrets
+	p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
 	if err != nil {
 		return nil, err
 	}

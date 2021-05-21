@@ -19,30 +19,32 @@ import (
 // templated step in every stage in a yaml configuration.
 //
 // nolint: lll // ignore long line length due to variable names
-func (c *client) ExpandStages(s yaml.StageSlice, tmpls map[string]*yaml.Template) (yaml.StageSlice, error) {
+func (c *client) ExpandStages(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StageSlice, yaml.SecretSlice, error) {
 	// iterate through all stages
-	for _, stage := range s {
+	for _, stage := range s.Stages {
 		// inject the templates into the steps for the stage
-		steps, err := c.ExpandSteps(stage.Steps, tmpls)
+		steps, secrets, err := c.ExpandSteps(&yaml.Build{Steps: stage.Steps, Secrets: s.Secrets}, tmpls)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		stage.Steps = steps
+		s.Secrets = secrets
 	}
 
-	return s, nil
+	return s.Stages, s.Secrets, nil
 }
 
 // ExpandSteps injects the template for each
 // templated step in a yaml configuration.
 //
 // nolint: lll // ignore long line length due to variable names
-func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) (yaml.StepSlice, error) {
+func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StepSlice, yaml.SecretSlice, error) {
 	steps := yaml.StepSlice{}
+	secrets := s.Secrets
 
 	// iterate through each step
-	for _, step := range s {
+	for _, step := range s.Steps {
 		bytes := []byte{}
 
 		// lookup step template name
@@ -56,7 +58,7 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 		// inject environment information for template
 		step, err := c.EnvironmentStep(step)
 		if err != nil {
-			return yaml.StepSlice{}, err
+			return yaml.StepSlice{}, yaml.SecretSlice{}, err
 		}
 
 		// skip processing template if the type isn't github
@@ -68,14 +70,14 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 		// parse source from template
 		src, err := c.Github.Parse(tmpl.Source)
 		if err != nil {
-			return yaml.StepSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
+			return yaml.StepSlice{}, yaml.SecretSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
 		}
 
 		// pull from public github when the host isn't provided or is set to github.com
 		if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
 			bytes, err = c.Github.Template(nil, src)
 			if err != nil {
-				return yaml.StepSlice{}, err
+				return yaml.StepSlice{}, yaml.SecretSlice{}, err
 			}
 		}
 
@@ -83,35 +85,53 @@ func (c *client) ExpandSteps(s yaml.StepSlice, tmpls map[string]*yaml.Template) 
 		if len(src.Host) > 0 {
 			bytes, err = c.PrivateGithub.Template(c.user, src)
 			if err != nil {
-				return yaml.StepSlice{}, err
+				return yaml.StepSlice{}, yaml.SecretSlice{}, err
 			}
 		}
 
 		var tmplSteps yaml.StepSlice
+		var tmplSecrets yaml.SecretSlice
 
 		// TODO: provide friendlier error messages with file type mismatches
 		switch tmpl.Format {
 		case "go", "golang", "":
 			// render template for steps
-			tmplSteps, err = native.Render(string(bytes), step)
+			tmplSteps, tmplSecrets, err = native.Render(string(bytes), step)
 			if err != nil {
-				return yaml.StepSlice{}, err
+				return yaml.StepSlice{}, yaml.SecretSlice{}, err
 			}
 		case "starlark":
 			// render template for steps
-			tmplSteps, err = starlark.Render(string(bytes), step)
+			tmplSteps, tmplSecrets, err = starlark.Render(string(bytes), step)
 			if err != nil {
-				return yaml.StepSlice{}, err
+				return yaml.StepSlice{}, yaml.SecretSlice{}, err
 			}
 		default:
-			return yaml.StepSlice{}, fmt.Errorf("format of %s is unsupported", tmpl.Format)
+			return yaml.StepSlice{}, yaml.SecretSlice{}, fmt.Errorf("format of %s is unsupported", tmpl.Format)
+		}
+
+		// loop over secrets within template
+		for _, secret := range tmplSecrets {
+			found := false
+			// loop over secrets within base configuration
+			for _, sec := range secrets {
+				// check if the template secret and base secret name match
+				if sec.Name == secret.Name {
+					found = true
+				}
+			}
+
+			// only append template secret if it does not exist within base configuration
+			if !found {
+				secrets = append(secrets, secret)
+			}
 		}
 
 		// add templated steps
 		steps = append(steps, tmplSteps...)
 	}
 
-	return steps, nil
+	return steps, secrets, nil
 }
 
 // helper function that creates a map of templates from a yaml configuration.

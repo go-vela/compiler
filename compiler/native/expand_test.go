@@ -70,7 +70,7 @@ func TestNative_ExpandStages(t *testing.T) {
 		},
 	}
 
-	want := yaml.StageSlice{
+	wantStages := yaml.StageSlice{
 		&yaml.Stage{
 			Name: "foo",
 			Steps: yaml.StepSlice{
@@ -108,19 +108,40 @@ func TestNative_ExpandStages(t *testing.T) {
 		},
 	}
 
+	wantSecrets := yaml.SecretSlice{
+		&yaml.Secret{
+			Name:   "docker_username",
+			Key:    "org/repo/foo/bar",
+			Engine: "native",
+			Type:   "repo",
+			Origin: yaml.Origin{},
+		},
+		&yaml.Secret{
+			Name:   "foo_password",
+			Key:    "org/repo/foo/password",
+			Engine: "vault",
+			Type:   "repo",
+			Origin: yaml.Origin{},
+		},
+	}
+
 	// run test
 	compiler, err := New(c)
 	if err != nil {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	got, err := compiler.ExpandStages(stages, tmpls)
+	stages, secrets, err := compiler.ExpandStages(&yaml.Build{Stages: stages}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandStages returned err: %v", err)
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("ExpandStages is %v, want %v", got, want)
+	if diff := cmp.Diff(stages, wantStages); diff != "" {
+		t.Errorf("ExpandStages() mismatch (-want +got):\n%s", diff)
+	}
+
+	if diff := cmp.Diff(secrets, wantSecrets); diff != "" {
+		t.Errorf("ExpandStages() mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -170,7 +191,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 		},
 	}
 
-	want := yaml.StepSlice{
+	wantSteps := yaml.StepSlice{
 		&yaml.Step{
 			Commands: []string{"./gradlew downloadDependencies"},
 			Environment: raw.StringSliceMap{
@@ -203,19 +224,40 @@ func TestNative_ExpandSteps(t *testing.T) {
 		},
 	}
 
+	wantSecrets := yaml.SecretSlice{
+		&yaml.Secret{
+			Name:   "docker_username",
+			Key:    "org/repo/foo/bar",
+			Engine: "native",
+			Type:   "repo",
+			Origin: yaml.Origin{},
+		},
+		&yaml.Secret{
+			Name:   "foo_password",
+			Key:    "org/repo/foo/password",
+			Engine: "vault",
+			Type:   "repo",
+			Origin: yaml.Origin{},
+		},
+	}
+
 	// run test
 	compiler, err := New(c)
 	if err != nil {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	got, err := compiler.ExpandSteps(steps, tmpls)
+	steps, secrets, err := compiler.ExpandSteps(&yaml.Build{Steps: steps}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandSteps returned err: %v", err)
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("ExpandSteps is %v, want %v", got, want)
+	if diff := cmp.Diff(steps, wantSteps); diff != "" {
+		t.Errorf("ExpandSteps() mismatch (-want +got):\n%s", diff)
+	}
+
+	if diff := cmp.Diff(secrets, wantSecrets); diff != "" {
+		t.Errorf("ExpandSteps() mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -262,7 +304,7 @@ func TestNative_ExpandStepsStarlark(t *testing.T) {
 		},
 	}
 
-	want := yaml.StepSlice{
+	wantSteps := yaml.StepSlice{
 		&yaml.Step{
 			Commands: []string{"go build", "go test"},
 			Image:    "golang:latest",
@@ -271,18 +313,24 @@ func TestNative_ExpandStepsStarlark(t *testing.T) {
 		},
 	}
 
+	wantSecrets := yaml.SecretSlice{}
+
 	// run test
 	compiler, err := New(c)
 	if err != nil {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	got, err := compiler.ExpandSteps(steps, tmpls)
+	steps, secrets, err := compiler.ExpandSteps(&yaml.Build{Steps: steps, Secrets: yaml.SecretSlice{}}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandSteps returned err: %v", err)
 	}
 
-	if diff := cmp.Diff(want, got); diff != "" {
+	if diff := cmp.Diff(steps, wantSteps); diff != "" {
+		t.Errorf("ExpandSteps() mismatch (-want +got):\n%s", diff)
+	}
+
+	if diff := cmp.Diff(secrets, wantSecrets); diff != "" {
 		t.Errorf("ExpandSteps() mismatch (-want +got):\n%s", diff)
 	}
 }
