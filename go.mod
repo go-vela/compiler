@@ -7,7 +7,7 @@ require (
 	github.com/buildkite/yaml v0.0.0-20181016232759-0caa5f0796e3
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.2
-	github.com/gin-gonic/gin v1.7.1
+	github.com/gin-gonic/gin v1.7.2
 	github.com/go-vela/types v0.7.4
 	github.com/google/go-cmp v0.5.5
 	github.com/google/go-github/v35 v35.2.0
