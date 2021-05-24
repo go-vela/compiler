@@ -40,6 +40,7 @@ func (c *client) ExpandStages(s *yaml.Build, tmpls map[string]*yaml.Template) (y
 // templated step in a yaml configuration.
 //
 // nolint: lll // ignore long line length due to variable names
+// nolint: funlen // ignore function length due to logic
 func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StepSlice, yaml.SecretSlice, yaml.ServiceSlice, error) {
 	steps := yaml.StepSlice{}
 	secrets := s.Secrets

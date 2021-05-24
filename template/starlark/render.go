@@ -31,6 +31,7 @@ var (
 // Render combines the template with the step in the yaml pipeline.
 //
 // nolint: funlen // ignore function length due to comments
+// nolint: lll // ignore long line length due to return args
 func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
 	config := new(types.Build)
 
@@ -117,6 +118,7 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, typ
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buf.Bytes(), config)
 	if err != nil {
+		// nolint: lll // ignore long line length due to return args
 		return types.StepSlice{}, types.SecretSlice{}, types.ServiceSlice{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 

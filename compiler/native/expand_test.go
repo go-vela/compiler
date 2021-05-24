@@ -127,9 +127,9 @@ func TestNative_ExpandStages(t *testing.T) {
 
 	wantServices := yaml.ServiceSlice{
 		&yaml.Service{
-			Image:       "postgres:12",
-			Name:        "postgres",
-			Pull:        "not_present",
+			Image: "postgres:12",
+			Name:  "postgres",
+			Pull:  "not_present",
 		},
 	}
 
@@ -255,9 +255,9 @@ func TestNative_ExpandSteps(t *testing.T) {
 
 	wantServices := yaml.ServiceSlice{
 		&yaml.Service{
-			Image:       "postgres:12",
-			Name:        "postgres",
-			Pull:        "not_present",
+			Image: "postgres:12",
+			Name:  "postgres",
+			Pull:  "not_present",
 		},
 	}
 
