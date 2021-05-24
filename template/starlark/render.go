@@ -30,8 +30,7 @@ var (
 
 // Render combines the template with the step in the yaml pipeline.
 //
-// nolint: funlen // ignore function length due to comments
-// nolint: lll // ignore long line length due to return args
+// nolint: funlen,lll // ignore function length due to comments
 func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
 	config := new(types.Build)
 
