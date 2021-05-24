@@ -742,6 +742,16 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Origin: &pipeline.Container{},
 			},
 		},
+		Services: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:     "service___0_postgres",
+				Detach: true,
+				Image:  "postgres:12",
+				Name:   "postgres",
+				Number: 1,
+				Pull:   "not_present",
+			},
+		},
 	}
 
 	// run test
@@ -949,6 +959,17 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Engine: "vault",
 				Type:   "repo",
 				Origin: &pipeline.Container{},
+			},
+		},
+		Services: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "service___0_postgres",
+				Detach:      true,
+				Environment: environment(nil, m, nil, nil),
+				Image:       "postgres:12",
+				Name:        "postgres",
+				Number:      1,
+				Pull:        "not_present",
 			},
 		},
 	}

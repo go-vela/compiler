@@ -13,7 +13,8 @@ import (
 )
 
 // Render combines the template with the step in the yaml pipeline.
-func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, error) {
+// nolint: lll // ignore long line length due to return args
+func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
 	buffer := new(bytes.Buffer)
 	config := new(types.Build)
 
@@ -35,20 +36,21 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, err
 	t, err := template.New(s.Name).Funcs(sf).Funcs(templateFuncMap).Parse(tmpl)
 	if err != nil {
 		// nolint: lll // ignore long line length due to return arguments
-		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to parse template %s: %v", s.Template.Name, err)
+		return types.StepSlice{}, types.SecretSlice{}, types.ServiceSlice{}, fmt.Errorf("unable to parse template %s: %v", s.Template.Name, err)
 	}
 
 	// apply the variables to the parsed template
 	err = t.Execute(buffer, s.Template.Variables)
 	if err != nil {
 		// nolint: lll // ignore long line length due to return arguments
-		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to execute template %s: %v", s.Template.Name, err)
+		return types.StepSlice{}, types.SecretSlice{}, types.ServiceSlice{}, fmt.Errorf("unable to execute template %s: %v", s.Template.Name, err)
 	}
 
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buffer.Bytes(), config)
 	if err != nil {
-		return types.StepSlice{}, types.SecretSlice{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
+		// nolint: lll // ignore long line length due to return args
+		return types.StepSlice{}, types.SecretSlice{}, types.ServiceSlice{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
 	// ensure all templated steps have template prefix
@@ -56,5 +58,5 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, err
 		config.Steps[index].Name = fmt.Sprintf("%s_%s", s.Name, newStep.Name)
 	}
 
-	return config.Steps, config.Secrets, nil
+	return config.Steps, config.Secrets, config.Services, nil
 }
