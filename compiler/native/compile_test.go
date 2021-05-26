@@ -744,12 +744,13 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 		},
 		Services: pipeline.ContainerSlice{
 			&pipeline.Container{
-				ID:     "service___0_postgres",
-				Detach: true,
-				Image:  "postgres:12",
-				Name:   "postgres",
-				Number: 1,
-				Pull:   "not_present",
+				ID:          "service___0_postgres",
+				Detach:      true,
+				Image:       "postgres:12",
+				Name:        "postgres",
+				Number:      1,
+				Pull:        "not_present",
+				Environment: environment(nil, m, nil, nil),
 			},
 		},
 	}
