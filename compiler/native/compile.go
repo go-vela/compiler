@@ -72,6 +72,12 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
+	// inject the environment variables into the secrets
+	p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
+	if err != nil {
+		return nil, err
+	}
+
 	if len(p.Stages) > 0 {
 		// check if the pipeline disabled the clone
 		if p.Metadata.Clone == nil || *p.Metadata.Clone {
