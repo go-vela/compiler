@@ -66,18 +66,6 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		Target:  c.build.GetDeploy(),
 	}
 
-	// inject the environment variables into the services
-	p.Services, err = c.EnvironmentServices(p.Services)
-	if err != nil {
-		return nil, err
-	}
-
-	// inject the environment variables into the secrets
-	p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
-	if err != nil {
-		return nil, err
-	}
-
 	if len(p.Stages) > 0 {
 		// check if the pipeline disabled the clone
 		if p.Metadata.Clone == nil || *p.Metadata.Clone {
@@ -110,6 +98,18 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 
 		// validate the yaml configuration
 		err = c.Validate(p)
+		if err != nil {
+			return nil, err
+		}
+
+		// inject the environment variables into the services
+		p.Services, err = c.EnvironmentServices(p.Services)
+		if err != nil {
+			return nil, err
+		}
+
+		// inject the environment variables into the secrets
+		p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
 		if err != nil {
 			return nil, err
 		}
