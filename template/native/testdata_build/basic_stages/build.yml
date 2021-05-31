@@ -3,7 +3,7 @@ version: "1"
 {{$stageList := list "foo" "bar" "star" -}}
 
 stages:
-{{range $stage := $stageList -}}
+  {{range $stage := $stageList -}}
   {{ $stage }}:
     steps:
       - name: {{ $stage }}

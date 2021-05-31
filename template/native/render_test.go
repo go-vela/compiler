@@ -5,7 +5,6 @@
 package native
 
 import (
-	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -95,7 +94,7 @@ func TestNative_Render(t *testing.T) {
 
 func TestNative_RenderBuild(t *testing.T) {
 	type args struct {
-		velaFile     string
+		velaFile string
 	}
 	tests := []struct {
 		name     string
@@ -134,8 +133,6 @@ func TestNative_RenderBuild(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-
-				fmt.Println(got.Stages)
 
 				if diff := cmp.Diff(want, got); diff != "" {
 					t.Errorf("RenderBuild() mismatch (-want +got):\n%s", diff)

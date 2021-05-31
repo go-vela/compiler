@@ -92,6 +92,8 @@ func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
 		return nil, fmt.Errorf("unable to execute template: %w", err)
 	}
 
+	fmt.Println(buffer.String())
+
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buffer.Bytes(), config)
 	if err != nil {
