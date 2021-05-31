@@ -1,0 +1,24 @@
+version: "1"
+
+stages:
+  foo:
+    steps:
+      - name: foo
+        image: alpine
+        commands:
+          - echo hello from foo
+
+  bar:
+    steps:
+      - name: bar
+        image: alpine
+        commands:
+          - echo hello from bar
+
+  star:
+    steps:
+      - name: star
+        image: alpine
+        commands:
+          - echo hello from star
+

@@ -5,6 +5,7 @@
 package native
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -58,9 +59,9 @@ func TestNative_Render(t *testing.T) {
 				t.Error(err)
 			}
 
-			steps, secrets, services, err := Render(string(tmpl), b.Steps[0])
+			steps, secrets, services, err := RenderStep(string(tmpl), b.Steps[0])
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Render() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("RenderStep() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
@@ -79,13 +80,65 @@ func TestNative_Render(t *testing.T) {
 				wantServices := w.Services
 
 				if diff := cmp.Diff(wantSteps, steps); diff != "" {
-					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
+					t.Errorf("RenderStep() mismatch (-want +got):\n%s", diff)
 				}
 				if diff := cmp.Diff(wantSecrets, secrets); diff != "" {
-					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
+					t.Errorf("RenderStep() mismatch (-want +got):\n%s", diff)
 				}
 				if diff := cmp.Diff(wantServices, services); diff != "" {
-					t.Errorf("Render() mismatch (-want +got):\n%s", diff)
+					t.Errorf("RenderStep() mismatch (-want +got):\n%s", diff)
+				}
+			}
+		})
+	}
+}
+
+func TestNative_RenderBuild(t *testing.T) {
+	type args struct {
+		velaFile     string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantFile string
+		wantErr  bool
+	}{
+		{"steps", args{velaFile: "testdata_build/basic/build.yml"}, "testdata_build/basic/want.yml", false},
+		{"stages", args{velaFile: "testdata_build/basic_stages/build.yml"}, "testdata_build/basic_stages/want.yml", false},
+		//{"multiline", args{velaFile: "testdata/multiline/build.yml"}, "testdata/multiline/want.yml", false},
+		//{"conditional match", args{velaFile: "testdata/conditional/build.yml"}, "testdata/conditional/want.yml", false},
+		//{"loop map", args{velaFile: "testdata/loop_map/build.yml"}, "testdata/loop_map/want.yml", false},
+		//{"loop slice", args{velaFile: "testdata/loop_slice/build.yml"}, "testdata/loop_slice/want.yml", false},
+		//{"platform vars", args{velaFile: "testdata/with_vars_plat/build.yml"}, "testdata/with_vars_plat/want.yml", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sFile, err := ioutil.ReadFile(tt.args.velaFile)
+			if err != nil {
+				t.Error(err)
+			}
+
+			got, err := RenderBuild(string(sFile), map[string]string{"VELA_REPO_FULL_NAME": "octocat/hello-world"})
+			if (err != nil) != tt.wantErr {
+				t.Errorf("RenderBuild() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if tt.wantErr != true {
+				wFile, err := ioutil.ReadFile(tt.wantFile)
+				if err != nil {
+					t.Error(err)
+				}
+				want := &yaml.Build{}
+				err = goyaml.Unmarshal(wFile, want)
+				if err != nil {
+					t.Error(err)
+				}
+
+				fmt.Println(got.Stages)
+
+				if diff := cmp.Diff(want, got); diff != "" {
+					t.Errorf("RenderBuild() mismatch (-want +got):\n%s", diff)
 				}
 			}
 		})

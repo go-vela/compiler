@@ -12,9 +12,9 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// Render combines the template with the step in the yaml pipeline.
+// RenderStep combines the template with the step in the yaml pipeline.
 // nolint: lll // ignore long line length due to return args
-func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
+func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
 	buffer := new(bytes.Buffer)
 	config := new(types.Build)
 
@@ -59,4 +59,44 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, typ
 	}
 
 	return config.Steps, config.Secrets, config.Services, nil
+}
+
+// RenderBuild renders the templated build
+func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
+	buffer := new(bytes.Buffer)
+	config := new(types.Build)
+
+	velaFuncs := funcHandler{envs: convertPlatformVars(envs)}
+	templateFuncMap := map[string]interface{}{
+		"vela": velaFuncs.returnPlatformVar,
+	}
+	// modify Masterminds/sprig functions
+	// to remove OS functions
+	//
+	// https://masterminds.github.io/sprig/os.html
+	sf := sprig.TxtFuncMap()
+	delete(sf, "env")
+	delete(sf, "expandenv")
+
+	// parse the template with Masterminds/sprig functions
+	//
+	// https://pkg.go.dev/github.com/Masterminds/sprig?tab=doc#TxtFuncMap
+	t, err := template.New("build").Funcs(sf).Funcs(templateFuncMap).Parse(b)
+	if err != nil {
+		return nil, err
+	}
+
+	// execute the template
+	err = t.Execute(buffer, "")
+	if err != nil {
+		return nil, fmt.Errorf("unable to execute template: %w", err)
+	}
+
+	// unmarshal the template to the pipeline
+	err = yaml.Unmarshal(buffer.Bytes(), config)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal yaml: %w", err)
+	}
+
+	return config, nil
 }

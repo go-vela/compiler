@@ -15,6 +15,30 @@ import (
 	"github.com/buildkite/yaml"
 )
 
+// ParseRaw converts an object to a string
+func (c *client) ParseRaw(v interface{}) (string, error) {
+	switch v := v.(type) {
+	case []byte:
+		return string(v), nil
+	case *os.File:
+		return ParseFileRaw(v)
+	case io.Reader:
+		return ParseReaderRaw(v)
+	case string:
+		// check if string is path to file
+		_, err := os.Stat(v)
+		if err == nil {
+			// parse string as path to yaml configuration
+			return ParsePathRaw(v)
+		}
+
+		// parse string as yaml configuration
+		return v, nil
+	default:
+		return "", fmt.Errorf("unable to parse yaml: unrecognized type %T", v)
+	}
+}
+
 // Parse converts an object to a yaml configuration.
 func (c *client) Parse(v interface{}) (*types.Build, error) {
 	switch v := v.(type) {
@@ -57,6 +81,11 @@ func ParseFile(f *os.File) (*types.Build, error) {
 	return ParseReader(f)
 }
 
+// ParseFileRaw converts an os.File into a string
+func ParseFileRaw(f *os.File) (string, error) {
+	return ParseReaderRaw(f)
+}
+
 // ParsePath converts a file path into a yaml configuration.
 func ParsePath(p string) (*types.Build, error) {
 	// open the file for reading
@@ -70,6 +99,19 @@ func ParsePath(p string) (*types.Build, error) {
 	return ParseReader(f)
 }
 
+// ParsePathRaw converts a file path into a yaml configuration.
+func ParsePathRaw(p string) (string, error) {
+	// open the file for reading
+	f, err := os.Open(p)
+	if err != nil {
+		return "", fmt.Errorf("unable to open yaml file %s: %v", p, err)
+	}
+
+	defer f.Close()
+
+	return ParseReaderRaw(f)
+}
+
 // ParseReader converts an io.Reader into a yaml configuration.
 func ParseReader(r io.Reader) (*types.Build, error) {
 	// read all the bytes from the reader
@@ -79,6 +121,17 @@ func ParseReader(r io.Reader) (*types.Build, error) {
 	}
 
 	return ParseBytes(b)
+}
+
+// ParseReaderRaw converts an io.Reader into a yaml configuration.
+func ParseReaderRaw(r io.Reader) (string, error) {
+	// read all the bytes from the reader
+	b, err := ioutil.ReadAll(r)
+	if err != nil {
+		return "", fmt.Errorf("unable to read bytes for yaml: %v", err)
+	}
+
+	return string(b), nil
 }
 
 // ParseString converts a string into a yaml configuration.
