@@ -125,7 +125,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			}
 
 			// only append template secret if it does not exist within base configuration
-			if !found {
+			if !secret.Origin.Empty() || !found {
 				secrets = append(secrets, secret)
 			}
 		}
