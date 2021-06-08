@@ -9,7 +9,7 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 
-	yaml "gopkg.in/yaml.v2"
+	"github.com/buildkite/yaml"
 )
 
 // Render combines the template with the step in the yaml pipeline.

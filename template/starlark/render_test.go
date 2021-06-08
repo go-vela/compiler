@@ -11,7 +11,7 @@ import (
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 	"github.com/google/go-cmp/cmp"
-	goyaml "gopkg.in/yaml.v2"
+	goyaml "github.com/buildkite/yaml"
 )
 
 func TestStarlark_Render(t *testing.T) {

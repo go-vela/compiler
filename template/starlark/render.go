@@ -11,7 +11,7 @@ import (
 
 	types "github.com/go-vela/types/yaml"
 	"go.starlark.net/starlark"
-	yaml "gopkg.in/yaml.v2"
+	yaml "github.com/buildkite/yaml"
 )
 
 var (
