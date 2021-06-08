@@ -686,6 +686,24 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 						Directory:   "/vela/src/foo//",
 						Entrypoint:  []string{"/bin/sh", "-c"},
 						Environment: buildEnv,
+						Secrets: pipeline.StepSecretSlice{
+							{
+								Source: "username",
+								Target: "nuid_username",
+							},
+							{
+								Source: "password",
+								Target: "nuid_password",
+							},
+							{
+								Source: "clientid",
+								Target: "clientid",
+							},
+							{
+								Source: "client_secret",
+								Target: "client_secret",
+							},
+						},
 						Image:       "openjdk:latest",
 						Name:        "sample_build",
 						Number:      5,
@@ -914,6 +932,24 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
 				Entrypoint:  []string{"/bin/sh", "-c"},
 				Environment: buildEnv,
+				Secrets: pipeline.StepSecretSlice{
+					{
+						Source: "username",
+						Target: "nuid_username",
+					},
+					{
+						Source: "password",
+						Target: "nuid_password",
+					},
+					{
+						Source: "clientid",
+						Target: "clientid",
+					},
+					{
+						Source: "client_secret",
+						Target: "client_secret",
+					},
+				},
 				Image:       "openjdk:latest",
 				Name:        "sample_build",
 				Number:      5,

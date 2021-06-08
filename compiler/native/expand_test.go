@@ -102,6 +102,24 @@ func TestNative_ExpandStages(t *testing.T) {
 					},
 					Image: "openjdk:latest",
 					Name:  "sample_build",
+					Secrets: yaml.StepSecretSlice{
+						{
+							Source: "username",
+							Target: "nuid_username",
+						},
+						{
+							Source: "password",
+							Target: "nuid_password",
+						},
+						{
+							Source: "clientid",
+							Target: "clientid",
+						},
+						{
+							Source: "client_secret",
+							Target: "client_secret",
+						},
+					},
 					Pull:  "always",
 				},
 			},
@@ -232,6 +250,24 @@ func TestNative_ExpandSteps(t *testing.T) {
 			},
 			Image: "openjdk:latest",
 			Name:  "sample_build",
+			Secrets: yaml.StepSecretSlice{
+				{
+					Source: "username",
+					Target: "nuid_username",
+				},
+				{
+					Source: "password",
+					Target: "nuid_password",
+				},
+				{
+					Source: "clientid",
+					Target: "clientid",
+				},
+				{
+					Source: "client_secret",
+					Target: "client_secret",
+				},
+			},
 			Pull:  "always",
 		},
 	}
