@@ -116,9 +116,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 		// loop over secrets within template
 		for _, secret := range tmplSecrets {
 			found := false
-			if secret.Name == "" {
-				continue
-			}
+
 			// loop over secrets within base configuration
 			for _, sec := range secrets {
 				// check if the template secret and base secret name match

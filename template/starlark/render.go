@@ -9,9 +9,9 @@ import (
 	"errors"
 	"fmt"
 
+	yaml "github.com/buildkite/yaml"
 	types "github.com/go-vela/types/yaml"
 	"go.starlark.net/starlark"
-	yaml "github.com/buildkite/yaml"
 )
 
 var (

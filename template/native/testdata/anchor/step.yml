@@ -1,7 +1,18 @@
+<<: &test-secrets
+  secrets:
+    - source: sample_org
+      target: test_secret
+metadata:
+  template: true
 steps:
-  - name: sample
-    template:
-      name: golang
-      vars:
-        pull_policy: "pull: true"
+  - name: echo
+    image: alpine:latest
+    commands:
+      - echo ${TEST_SECRET}
+    <<: *test-secrets
 
+secrets:
+  - name: sample_org
+    key: JordanBrockopp/sample_org
+    engine: native
+    type: org

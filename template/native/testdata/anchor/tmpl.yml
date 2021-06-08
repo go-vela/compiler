@@ -1,56 +1,12 @@
+<<: &test-secrets
+  secrets:
+    - source: sample_org
+      target: test_secret
 metadata:
   template: true
-
-<<: &dev_secrets
-  secrets:
-    - source: username
-      target: nuid_username
-    - source: password
-      target: nuid_password
-    - source: clientid
-      target: clientid
-    - source: client_secret
-      target: client_secret
-
 steps:
-  - name: install
+  - name: echo
+    image: alpine:latest
     commands:
-      - ./gradlew downloadDependencies
-    environment: {{ .environment }}
-    image: {{ .image }}
-    {{ .pull_policy }}
-
-  - name: test
-    commands:
-      - ./gradlew check
-    environment: {{ .environment }}
-    image: {{ .image }}
-    {{ .pull_policy }}
-
-  - name: build
-    <<: *dev_secrets
-    commands:
-      - ./gradlew build
-    environment: {{ .environment }}
-    image: {{ .image }}
-    {{ .pull_policy }}
-
-secrets:
-  - name: docker_username
-    key: org/repo/foo/bar
-    engine: native
-    type: repo
-
-  - name: foo_password
-    key: org/repo/foo/password
-    engine: vault
-    type: repo
-
-  - name: bar_password
-    key: org/repo/bar/password
-    engine: vault
-    type: repo
-
-services:
-  - name: postgres
-    image: postgres:12
+      - echo ${TEST_SECRET}
+    <<: *test-secrets

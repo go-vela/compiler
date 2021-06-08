@@ -8,10 +8,10 @@ import (
 	"io/ioutil"
 	"testing"
 
+	goyaml "github.com/buildkite/yaml"
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 	"github.com/google/go-cmp/cmp"
-	goyaml "github.com/buildkite/yaml"
 )
 
 func TestStarlark_Render(t *testing.T) {

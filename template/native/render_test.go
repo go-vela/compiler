@@ -5,7 +5,6 @@
 package native
 
 import (
-	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -38,7 +37,7 @@ func TestNative_Render(t *testing.T) {
 		{"invalid yml", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/invalid.yml"}, "", true},
 		{"disallowed env func", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/disallowed/tmpl_env.yml"}, "", true},
 		{"disallowed expandenv func", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/disallowed/tmpl_expandenv.yml"}, "", true},
-		{"yaml anchor", args{velaFile: "testdata/anchor/step.yml", templateFile: "testdata/anchor/tmpl.yml"}, "", false},
+		{"yaml anchor", args{velaFile: "testdata/anchor/step.yml", templateFile: "testdata/anchor/tmpl.yml"}, "testdata/anchor/want.yml", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -59,8 +58,6 @@ func TestNative_Render(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-
-			fmt.Println(b.Steps[0])
 
 			steps, secrets, services, err := Render(string(tmpl), b.Steps[0])
 			if (err != nil) != tt.wantErr {

@@ -120,7 +120,7 @@ func TestNative_ExpandStages(t *testing.T) {
 							Target: "client_secret",
 						},
 					},
-					Pull:  "always",
+					Pull: "always",
 				},
 			},
 		},
@@ -268,7 +268,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 					Target: "client_secret",
 				},
 			},
-			Pull:  "always",
+			Pull: "always",
 		},
 	}
 
