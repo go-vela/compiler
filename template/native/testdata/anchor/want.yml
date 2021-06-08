@@ -1,6 +1,6 @@
 secrets:
   - name: sample_org
-    key: JordanBrockopp/sample_org
+    key: octobot/sample_org
     engine: native
     type: org
 
