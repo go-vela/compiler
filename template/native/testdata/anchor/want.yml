@@ -1,5 +1,3 @@
-version: "1"
-
 secrets:
   - name: sample_org
     key: JordanBrockopp/sample_org
@@ -13,9 +11,5 @@ steps:
       - source: sample_org
         target: test_secret
     image: alpine:latest
-    name: echo_echo
+    name: anchor_echo
     pull: not_present
-
-templates:
-  - name: foo
-    type: github

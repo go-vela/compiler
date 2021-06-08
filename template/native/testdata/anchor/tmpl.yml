@@ -10,3 +10,9 @@ steps:
     commands:
       - echo ${TEST_SECRET}
     <<: *test-secrets
+
+secrets:
+  - name: sample_org
+    key: JordanBrockopp/sample_org
+    engine: native
+    type: org
