@@ -45,7 +45,7 @@ func convertTemplateVars(m map[string]interface{}) (*starlark.Dict, error) {
 //
 // Explanation of type "starlark.StringDict":
 // https://pkg.go.dev/go.starlark.net/starlark#StringDict
-func convertPlatformVars(slice raw.StringSliceMap) (*starlark.Dict, error) {
+func convertPlatformVars(slice raw.StringSliceMap, name string) (*starlark.Dict, error) {
 	build := starlark.NewDict(0)
 	repo := starlark.NewDict(0)
 	user := starlark.NewDict(0)
@@ -65,6 +65,11 @@ func convertPlatformVars(slice raw.StringSliceMap) (*starlark.Dict, error) {
 		return nil, err
 	}
 	err = dict.SetKey(starlark.String("system"), system)
+	if err != nil {
+		return nil, err
+	}
+
+	err = system.SetKey(starlark.String("template_name"), starlark.String(name))
 	if err != nil {
 		return nil, err
 	}

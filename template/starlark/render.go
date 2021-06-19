@@ -65,7 +65,7 @@ func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, typ
 	}
 
 	// load the platform provided vars into a starlark type
-	velaVars, err := convertPlatformVars(s.Environment)
+	velaVars, err := convertPlatformVars(s.Environment, s.Name)
 	if err != nil {
 		return nil, nil, nil, err
 	}

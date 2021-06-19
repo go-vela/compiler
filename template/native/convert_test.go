@@ -9,34 +9,37 @@ import (
 
 func Test_convertPlatformVars(t *testing.T) {
 	tests := []struct {
-		name string
-		args raw.StringSliceMap
-		want raw.StringSliceMap
+		name         string
+		slice        raw.StringSliceMap
+		templateName string
+		want         raw.StringSliceMap
 	}{
 		{
 			name: "with all vela prefixed vars",
-			args: raw.StringSliceMap{
+			slice: raw.StringSliceMap{
 				"VELA_BUILD_AUTHOR":   "octocat",
 				"VELA_REPO_FULL_NAME": "go-vela/hello-world",
 				"VELA_USER_ADMIN":     "true",
 				"VELA_WORKSPACE":      "/vela/src/github.com/go-vela/hello-world",
 			},
-			want: raw.StringSliceMap{"build_author": "octocat", "repo_full_name": "go-vela/hello-world", "user_admin": "true", "workspace": "/vela/src/github.com/go-vela/hello-world"},
+			templateName: "foo",
+			want:         raw.StringSliceMap{"build_author": "octocat", "repo_full_name": "go-vela/hello-world", "user_admin": "true", "workspace": "/vela/src/github.com/go-vela/hello-world", "template_name": "foo"},
 		},
 		{
 			name: "with combination of vela and user vars",
-			args: raw.StringSliceMap{
+			slice: raw.StringSliceMap{
 				"VELA_BUILD_AUTHOR":   "octocat",
 				"VELA_REPO_FULL_NAME": "go-vela/hello-world",
 				"FOO_VAR1":            "test1",
 				"BAR_VAR1":            "test2",
 			},
-			want: raw.StringSliceMap{"build_author": "octocat", "repo_full_name": "go-vela/hello-world"},
+			templateName: "foo",
+			want:         raw.StringSliceMap{"build_author": "octocat", "repo_full_name": "go-vela/hello-world", "template_name": "foo"},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := convertPlatformVars(tt.args); !reflect.DeepEqual(got, tt.want) {
+			if got := convertPlatformVars(tt.slice, tt.templateName); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertPlatformVars() = %v, want %v", got, tt.want)
 			}
 		})
