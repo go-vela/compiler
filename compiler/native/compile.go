@@ -47,15 +47,11 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
-	fmt.Println("METADATA 1: ", p.Metadata.Clone)
-
 	// validate the yaml configuration
 	err = c.Validate(p)
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("METADATA 2: ", p.Metadata.Clone)
 
 	// create map of templates for easy lookup
 	tmpls := mapFromTemplates(p.Templates)
