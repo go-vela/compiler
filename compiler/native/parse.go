@@ -49,6 +49,8 @@ func ParseBytes(b []byte) (*types.Build, error) {
 		return nil, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
+	fmt.Println("METADATA 0: ", config.Metadata.Clone)
+
 	return config, nil
 }
 

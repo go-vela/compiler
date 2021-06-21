@@ -12,16 +12,17 @@ import (
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
+	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 )
 
 // EnvironmentStages injects environment variables
 // for each step in every stage in a yaml configuration.
-func (c *client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
+func (c *client) EnvironmentStages(s yaml.StageSlice, globalEnv raw.StringSliceMap) (yaml.StageSlice, error) {
 	// iterate through all stages
 	for _, stage := range s {
 		// inject the environment variables into the steps for the stage
-		steps, err := c.EnvironmentSteps(stage.Steps)
+		steps, err := c.EnvironmentSteps(stage.Steps, globalEnv)
 		if err != nil {
 			return nil, err
 		}
@@ -34,10 +35,10 @@ func (c *client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 
 // EnvironmentSteps injects environment variables
 // for each step in a yaml configuration.
-func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
+func (c *client) EnvironmentSteps(s yaml.StepSlice, globalEnv raw.StringSliceMap) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
-		_, err := c.EnvironmentStep(step)
+		_, err := c.EnvironmentStep(step, globalEnv)
 		if err != nil {
 			return nil, err
 		}
@@ -48,7 +49,7 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 
 // EnvironmentStep injects environment variables
 // a single step in a yaml configuration.
-func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
+func (c *client) EnvironmentStep(s *yaml.Step, globalEnv raw.StringSliceMap) (*yaml.Step, error) {
 	// make empty map of environment variables
 	env := make(map[string]string)
 	// gather set of default environment variables
@@ -96,6 +97,12 @@ func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
 		env[k] = library.ToString(v)
 	}
 
+	// inject the declared global environment
+	// WARNING: doing this activity last makes
+	// it so global always overwrites local
+	// environment to the step
+	env = appendMap(env, globalEnv)
+
 	// overwrite existing build step environment
 	s.Environment = env
 
@@ -104,7 +111,7 @@ func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
 
 // EnvironmentServices injects environment variables
 // for each service in a yaml configuration.
-func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, error) {
+func (c *client) EnvironmentServices(s yaml.ServiceSlice, globalEnv raw.StringSliceMap) (yaml.ServiceSlice, error) {
 	// iterate through all services
 	for _, service := range s {
 		// make empty map of environment variables
@@ -126,6 +133,12 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 			env[k] = v
 		}
 
+		// inject the declared global environment
+		// WARNING: doing this activity last makes
+		// it so global always overwrites local
+		// environment to the step
+		env = appendMap(env, globalEnv)
+
 		// overwrite existing build service environment
 		service.Environment = env
 	}
@@ -135,7 +148,7 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 
 // EnvironmentSecrets injects environment variables
 // for each secret plugin in a yaml configuration.
-func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error) {
+func (c *client) EnvironmentSecrets(s yaml.SecretSlice, globalEnv raw.StringSliceMap) (yaml.SecretSlice, error) {
 	// iterate through all secrets
 	for _, secret := range s {
 		// skip non plugin secrets
@@ -188,6 +201,12 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 			// as string environment variables
 			env[k] = library.ToString(v)
 		}
+
+		// inject the declared global environment
+		// WARNING: doing this activity last makes
+		// it so global always overwrites local
+		// environment to the step
+		env = appendMap(env, globalEnv)
 
 		// overwrite existing build secret environment
 		secret.Origin.Environment = env

@@ -11,6 +11,7 @@ import (
 	"github.com/go-vela/compiler/template/native"
 	"github.com/go-vela/compiler/template/starlark"
 
+	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 	"github.com/sirupsen/logrus"
 )
@@ -57,8 +58,17 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			continue
 		}
 
+		// Create some default global environment inject vars
+		// these are used below to overwrite to an empty
+		// map if they should not be injected into a container
+		envGlobalSteps := s.Environment
+
+		if !s.Metadata.HasEnvironment("steps") {
+			envGlobalSteps = make(raw.StringSliceMap)
+		}
+
 		// inject environment information for template
-		step, err := c.EnvironmentStep(step)
+		step, err := c.EnvironmentStep(step, envGlobalSteps)
 		if err != nil {
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 		}
