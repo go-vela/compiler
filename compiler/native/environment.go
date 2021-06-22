@@ -67,6 +67,10 @@ func (c *client) EnvironmentStep(s *yaml.Step, globalEnv raw.StringSliceMap) (*y
 		}
 	}
 
+	// inject the declared global environment
+	// WARNING: local env can override global
+	env = appendMap(env, globalEnv)
+
 	// inject the declared environment
 	// variables to the build step
 	for k, v := range s.Environment {
@@ -97,12 +101,6 @@ func (c *client) EnvironmentStep(s *yaml.Step, globalEnv raw.StringSliceMap) (*y
 		env[k] = library.ToString(v)
 	}
 
-	// inject the declared global environment
-	// WARNING: doing this activity last makes
-	// it so global always overwrites local
-	// environment to the step
-	env = appendMap(env, globalEnv)
-
 	// overwrite existing build step environment
 	s.Environment = env
 
@@ -119,6 +117,10 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice, globalEnv raw.StringSl
 		// gather set of default environment variables
 		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
 
+		// inject the declared global environment
+		// WARNING: local env can override global
+		env = appendMap(env, globalEnv)
+
 		// inject the declared environment
 		// variables to the build service
 		for k, v := range service.Environment {
@@ -132,12 +134,6 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice, globalEnv raw.StringSl
 		for k, v := range defaultEnv {
 			env[k] = v
 		}
-
-		// inject the declared global environment
-		// WARNING: doing this activity last makes
-		// it so global always overwrites local
-		// environment to the step
-		env = appendMap(env, globalEnv)
 
 		// overwrite existing build service environment
 		service.Environment = env
@@ -172,6 +168,10 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice, globalEnv raw.StringSlic
 			}
 		}
 
+		// inject the declared global environment
+		// WARNING: local env can override global
+		env = appendMap(env, globalEnv)
+
 		// inject the declared environment
 		// variables to the build secret
 		for k, v := range secret.Origin.Environment {
@@ -201,12 +201,6 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice, globalEnv raw.StringSlic
 			// as string environment variables
 			env[k] = library.ToString(v)
 		}
-
-		// inject the declared global environment
-		// WARNING: doing this activity last makes
-		// it so global always overwrites local
-		// environment to the step
-		env = appendMap(env, globalEnv)
 
 		// overwrite existing build secret environment
 		secret.Origin.Environment = env
