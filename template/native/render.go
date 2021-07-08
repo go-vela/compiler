@@ -9,7 +9,7 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 
-	yaml "gopkg.in/yaml.v2"
+	yaml "github.com/buildkite/yaml"
 )
 
 // RenderStep combines the template with the step in the yaml pipeline.
@@ -91,8 +91,6 @@ func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
 	if err != nil {
 		return nil, fmt.Errorf("unable to execute template: %w", err)
 	}
-
-	fmt.Println(buffer.String())
 
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buffer.Bytes(), config)

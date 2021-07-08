@@ -7,6 +7,8 @@ stages:
         image: alpine
         commands:
           - echo hello from foo
+        needs: [ "clone" ]
+        pull: not_present
 
   bar:
     steps:
@@ -14,6 +16,8 @@ stages:
         image: alpine
         commands:
           - echo hello from bar
+        needs: [ "clone" ]
+        pull: not_present
 
   star:
     steps:
@@ -21,4 +25,6 @@ stages:
         image: alpine
         commands:
           - echo hello from star
+        needs: [ "clone" ]
+        pull: not_present
 

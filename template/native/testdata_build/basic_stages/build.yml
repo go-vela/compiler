@@ -10,4 +10,4 @@ stages:
         image: alpine
         commands:
           - echo hello from {{ $stage }}
-{{ end }}
+  {{ end }}
