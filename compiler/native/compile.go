@@ -50,11 +50,8 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
-	//TODO: get this metadata from the client
-	repoScript := "go"
-
 	// TODO: provide friendlier error messages with file type mismatches
-	switch repoScript {
+	switch c.repo.GetPipelineType() {
 	case "go":
 		// TODO: check type of the pipeline before running render
 		// expand the base configuration
