@@ -53,14 +53,13 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	// TODO: provide friendlier error messages with file type mismatches
 	switch c.repo.GetPipelineType() {
 	case "go":
-		// TODO: check type of the pipeline before running render
+		fmt.Println("here wea")
 		// expand the base configuration
 		p, err = native.RenderBuild(raw, c.EnvironmentBuild())
 		if err != nil {
 			return nil, err
 		}
 	case "starlark":
-		// TODO: check type of the pipeline before running render
 		// expand the base configuration
 		p, err = starlark.RenderBuild(raw, c.EnvironmentBuild())
 		if err != nil {
