@@ -50,10 +50,8 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
-	// TODO: provide friendlier error messages with file type mismatches
 	switch c.repo.GetPipelineType() {
 	case "go":
-		fmt.Println("here wea")
 		// expand the base configuration
 		p, err = native.RenderBuild(raw, c.EnvironmentBuild())
 		if err != nil {
