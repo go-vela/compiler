@@ -15,7 +15,7 @@ import (
 	"github.com/go-vela/types/yaml"
 )
 
-func TestNative_Render(t *testing.T) {
+func TestNative_RenderStep(t *testing.T) {
 	type args struct {
 		velaFile     string
 		templateFile string
@@ -26,17 +26,17 @@ func TestNative_Render(t *testing.T) {
 		wantFile string
 		wantErr  bool
 	}{
-		{"basic", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/basic/tmpl.yml"}, "testdata/basic/want.yml", false},
-		{"multiline", args{velaFile: "testdata/multiline/step.yml", templateFile: "testdata/multiline/tmpl.yml"}, "testdata/multiline/want.yml", false},
-		{"conditional match", args{velaFile: "testdata/conditional/step.yml", templateFile: "testdata/conditional/tmpl.yml"}, "testdata/conditional/want.yml", false},
-		{"loop map", args{velaFile: "testdata/loop_map/step.yml", templateFile: "testdata/loop_map/tmpl.yml"}, "testdata/loop_map/want.yml", false},
-		{"loop slice", args{velaFile: "testdata/loop_slice/step.yml", templateFile: "testdata/loop_slice/tmpl.yml"}, "testdata/loop_slice/want.yml", false},
-		{"platform vars", args{velaFile: "testdata/with_vars_plat/step.yml", templateFile: "testdata/with_vars_plat/tmpl.yml"}, "testdata/with_vars_plat/want.yml", false},
-		{"invalid template", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/invalid_template.yml"}, "", true},
-		{"invalid variable", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/invalid_variables.yml"}, "", true},
-		{"invalid yml", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/invalid.yml"}, "", true},
-		{"disallowed env func", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/disallowed/tmpl_env.yml"}, "", true},
-		{"disallowed expandenv func", args{velaFile: "testdata/basic/step.yml", templateFile: "testdata/disallowed/tmpl_expandenv.yml"}, "", true},
+		{"basic", args{velaFile: "testdata/step/basic/step.yml", templateFile: "testdata/step/basic/tmpl.yml"}, "testdata/step/basic/want.yml", false},
+		{"multiline", args{velaFile: "testdata/step/multiline/step.yml", templateFile: "testdata/step/multiline/tmpl.yml"}, "testdata/step/multiline/want.yml", false},
+		{"conditional match", args{velaFile: "testdata/step/conditional/step.yml", templateFile: "testdata/step/conditional/tmpl.yml"}, "testdata/step/conditional/want.yml", false},
+		{"loop map", args{velaFile: "testdata/step/loop_map/step.yml", templateFile: "testdata/step/loop_map/tmpl.yml"}, "testdata/step/loop_map/want.yml", false},
+		{"loop slice", args{velaFile: "testdata/step/loop_slice/step.yml", templateFile: "testdata/step/loop_slice/tmpl.yml"}, "testdata/step/loop_slice/want.yml", false},
+		{"platform vars", args{velaFile: "testdata/step/with_vars_plat/step.yml", templateFile: "testdata/step/with_vars_plat/tmpl.yml"}, "testdata/step/with_vars_plat/want.yml", false},
+		{"invalid template", args{velaFile: "testdata/step/basic/step.yml", templateFile: "testdata/step/invalid_template.yml"}, "", true},
+		{"invalid variable", args{velaFile: "testdata/step/basic/step.yml", templateFile: "testdata/step/invalid_variables.yml"}, "", true},
+		{"invalid yml", args{velaFile: "testdata/step/basic/step.yml", templateFile: "testdata/step/invalid.yml"}, "", true},
+		{"disallowed env func", args{velaFile: "testdata/step/basic/step.yml", templateFile: "testdata/step/disallowed/tmpl_env.yml"}, "", true},
+		{"disallowed expandenv func", args{velaFile: "testdata/step/basic/step.yml", templateFile: "testdata/step/disallowed/tmpl_expandenv.yml"}, "", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -102,13 +102,9 @@ func TestNative_RenderBuild(t *testing.T) {
 		wantFile string
 		wantErr  bool
 	}{
-		{"steps", args{velaFile: "testdata_build/basic/build.yml"}, "testdata_build/basic/want.yml", false},
-		{"stages", args{velaFile: "testdata_build/basic_stages/build.yml"}, "testdata_build/basic_stages/want.yml", false},
-		//{"multiline", args{velaFile: "testdata/multiline/build.yml"}, "testdata/multiline/want.yml", false},
-		//{"conditional match", args{velaFile: "testdata/conditional/build.yml"}, "testdata/conditional/want.yml", false},
-		//{"loop map", args{velaFile: "testdata/loop_map/build.yml"}, "testdata/loop_map/want.yml", false},
-		//{"loop slice", args{velaFile: "testdata/loop_slice/build.yml"}, "testdata/loop_slice/want.yml", false},
-		//{"platform vars", args{velaFile: "testdata/with_vars_plat/build.yml"}, "testdata/with_vars_plat/want.yml", false},
+		{"steps", args{velaFile: "testdata/build/basic/build.yml"}, "testdata/build/basic/want.yml", false},
+		{"stages", args{velaFile: "testdata/build/basic_stages/build.yml"}, "testdata/build/basic_stages/want.yml", false},
+		{"conditional match", args{velaFile: "testdata/build/conditional/build.yml"}, "testdata/build/conditional/want.yml", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -117,7 +113,10 @@ func TestNative_RenderBuild(t *testing.T) {
 				t.Error(err)
 			}
 
-			got, err := RenderBuild(string(sFile), map[string]string{"VELA_REPO_FULL_NAME": "octocat/hello-world"})
+			got, err := RenderBuild(string(sFile), map[string]string{
+				"VELA_REPO_FULL_NAME": "octocat/hello-world",
+				"VELA_BUILD_BRANCH":   "master",
+			})
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RenderBuild() error = %v, wantErr %v", err, tt.wantErr)
 				return

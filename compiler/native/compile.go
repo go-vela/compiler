@@ -51,7 +51,7 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	}
 
 	//TODO: get this metadata from the client
-	repoScript := "templates"
+	repoScript := "go"
 
 	// TODO: provide friendlier error messages with file type mismatches
 	switch repoScript {
