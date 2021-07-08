@@ -31,7 +31,7 @@ var (
 // RenderStep combines the template with the step in the yaml pipeline.
 //
 // nolint: funlen,lll // ignore function length due to comments
-func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
+func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
 	config := new(types.Build)
 
 	thread := &starlark.Thread{Name: s.Name}
@@ -127,4 +127,17 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 	}
 
 	return config.Steps, config.Secrets, config.Services, nil
+}
+
+// RenderStep combines the template with the step in the yaml pipeline.
+// nolint: lll // ignore long line length due to return args
+func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
+	// TODO: Write this code
+	return nil, nil, nil, nil
+}
+
+// RenderBuild renders the templated build
+func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
+	// TODO: Write this code
+	return nil, nil
 }

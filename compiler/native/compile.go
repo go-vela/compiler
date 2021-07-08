@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/go-vela/compiler/template/native"
+	"github.com/go-vela/compiler/template/starlark"
 
 	yml "github.com/buildkite/yaml"
 
@@ -42,23 +43,38 @@ type ModifyResponse struct {
 //
 // nolint: funlen // ignore function length due to comments
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
-	config, err := c.ParseRaw(v)
+	p := new(yaml.Build)
+
+	raw, err := c.ParseRaw(v)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: check type of the pipeline before running render
-	// expand the base configuration
-	p, err := native.RenderBuild(config, c.EnvironmentBuild())
-	if err != nil {
-		return nil, err
-	}
+	//TODO: get this metadata from the client
+	repoScript := "templates"
 
-	// parse the object into a yaml configuration
-	//p, err := c.Parse(v)
-	//if err != nil {
-	//	return nil, err
-	//}
+	// TODO: provide friendlier error messages with file type mismatches
+	switch repoScript {
+	case "go":
+		// TODO: check type of the pipeline before running render
+		// expand the base configuration
+		p, err = native.RenderBuild(raw, c.EnvironmentBuild())
+		if err != nil {
+			return nil, err
+		}
+	case "starlark":
+		// TODO: check type of the pipeline before running render
+		// expand the base configuration
+		p, err = starlark.RenderBuild(raw, c.EnvironmentBuild())
+		if err != nil {
+			return nil, err
+		}
+	default:
+		p, err = c.Parse(raw)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	// validate the yaml configuration
 	err = c.Validate(p)

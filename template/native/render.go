@@ -12,6 +12,11 @@ import (
 	yaml "github.com/buildkite/yaml"
 )
 
+//TODO: remove this when done.
+func Render(template string, step *types.Step) (types.StepSlice, error) {
+	return nil, nil
+}
+
 // RenderStep combines the template with the step in the yaml pipeline.
 // nolint: lll // ignore long line length due to return args
 func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
