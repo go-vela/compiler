@@ -71,7 +71,7 @@ func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
 	buffer := new(bytes.Buffer)
 	config := new(types.Build)
 
-	velaFuncs := funcHandler{envs: convertPlatformVars(envs)}
+	velaFuncs := funcHandler{envs: convertPlatformVars(envs, "")}
 	templateFuncMap := map[string]interface{}{
 		"vela": velaFuncs.returnPlatformVar,
 	}

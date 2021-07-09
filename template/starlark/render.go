@@ -158,7 +158,7 @@ func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
 	}
 
 	// load the platform provided vars into a starlark type
-	velaVars, err := convertPlatformVars(envs)
+	velaVars, err := convertPlatformVars(envs, "")
 	if err != nil {
 		return nil, err
 	}
