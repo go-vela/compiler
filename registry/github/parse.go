@@ -33,6 +33,7 @@ func (c *client) Parse(path string) (*registry.Source, error) {
 	// this will handle multiple cases for the path:
 	// * <org>/<repo>/<filename>
 	// * <org>/<repo>/<path>/<to>/<filename>
+	// nolint: gomnd // ignore magic number
 	parts := strings.SplitN(u.Path, "/", 3)
 
 	// check for reference provided in filename:
@@ -40,7 +41,6 @@ func (c *client) Parse(path string) (*registry.Source, error) {
 	// * <org>/<repo>/<path>/<to>/<filename>@<reference>
 	if strings.Contains(parts[2], "@") {
 		// capture the filename and reference
-		// nolint: gomnd // ignore magic number
 		refParts := strings.Split(parts[2], "@")
 		// set the filename
 		parts[2] = refParts[0]

@@ -60,6 +60,7 @@ func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
 		// capture all environment variables from the local environment
 		for _, e := range os.Environ() {
 			// split the environment variable on = into a key value pair
+			// nolint: gomnd // ignore magic number
 			parts := strings.SplitN(e, "=", 2)
 
 			env[parts[0]] = parts[1]

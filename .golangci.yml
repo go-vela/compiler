@@ -31,10 +31,6 @@ linters-settings:
     lines: 100
     statements: 50
 
-  # https://github.com/golang/lint
-  golint:
-    min-confidence: 0
-
   # https://github.com/tommy-muehle/go-mnd
   gomnd:
     settings:
@@ -80,7 +76,7 @@ linters:
     - godot
     - gofmt
     - goimports
-    - golint
+    - revive
     - gomnd
     - goprintffuncname
     - gosec
@@ -88,7 +84,6 @@ linters:
     - govet # enabled by default
     - ineffassign # enabled by default
     - lll
-    - maligned
     - misspell
     - nakedret
     - nolintlint
