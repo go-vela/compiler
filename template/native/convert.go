@@ -9,7 +9,7 @@ import (
 // convertPlatformVars takes the platform injected variables
 // within the step environment block and modifies them to be returned
 // within the template.
-func convertPlatformVars(slice raw.StringSliceMap) raw.StringSliceMap {
+func convertPlatformVars(slice raw.StringSliceMap, name string) raw.StringSliceMap {
 	envs := make(map[string]string)
 	for key, value := range slice {
 		key = strings.ToLower(key)
@@ -17,6 +17,8 @@ func convertPlatformVars(slice raw.StringSliceMap) raw.StringSliceMap {
 			envs[strings.TrimPrefix(key, "vela_")] = value
 		}
 	}
+
+	envs["template_name"] = name
 
 	return envs
 }

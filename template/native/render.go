@@ -23,7 +23,7 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 	buffer := new(bytes.Buffer)
 	config := new(types.Build)
 
-	velaFuncs := funcHandler{envs: convertPlatformVars(s.Environment)}
+	velaFuncs := funcHandler{envs: convertPlatformVars(s.Environment, s.Name)}
 	templateFuncMap := map[string]interface{}{
 		"vela": velaFuncs.returnPlatformVar,
 	}
