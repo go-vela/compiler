@@ -19,6 +19,7 @@ import (
 
 	yml "github.com/buildkite/yaml"
 
+	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
 	"github.com/go-vela/types/yaml"
@@ -51,13 +52,13 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	}
 
 	switch c.repo.GetPipelineType() {
-	case "go":
+	case constants.PipelineTypeGo:
 		// expand the base configuration
 		p, err = native.RenderBuild(raw, c.EnvironmentBuild())
 		if err != nil {
 			return nil, err
 		}
-	case "starlark":
+	case constants.PipelineTypeStarlark:
 		// expand the base configuration
 		p, err = starlark.RenderBuild(raw, c.EnvironmentBuild())
 		if err != nil {
