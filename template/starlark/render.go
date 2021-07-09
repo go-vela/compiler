@@ -206,17 +206,8 @@ func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buf.Bytes(), config)
 	if err != nil {
-		// nolint: lll // ignore long line length due to return args
 		return nil, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
 	return config, nil
-}
-
-// TODO: DELETE THIS
-// Render combines the template with the step in the yaml pipeline.
-// nolint: lll // ignore long line length due to return args
-func Render(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
-	// TODO: Write this code
-	return nil, nil, nil, nil
 }

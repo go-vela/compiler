@@ -15,7 +15,7 @@ import (
 	"github.com/buildkite/yaml"
 )
 
-// ParseRaw converts an object to a string
+// ParseRaw converts an object to a string.
 func (c *client) ParseRaw(v interface{}) (string, error) {
 	switch v := v.(type) {
 	case []byte:
@@ -81,7 +81,7 @@ func ParseFile(f *os.File) (*types.Build, error) {
 	return ParseReader(f)
 }
 
-// ParseFileRaw converts an os.File into a string
+// ParseFileRaw converts an os.File into a string.
 func ParseFileRaw(f *os.File) (string, error) {
 	return ParseReaderRaw(f)
 }

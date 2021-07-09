@@ -66,7 +66,7 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 	return config.Steps, config.Secrets, config.Services, nil
 }
 
-// RenderBuild renders the templated build
+// RenderBuild renders the templated build.
 func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
 	buffer := new(bytes.Buffer)
 	config := new(types.Build)
