@@ -41,9 +41,9 @@ type ModifyResponse struct {
 
 // Compile produces an executable pipeline from a yaml configuration.
 //
-// nolint: funlen // ignore function length due to comments
+// nolint: gocyclo,funlen // ignore function length due to comments
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
-	p := new(yaml.Build)
+	var p *yaml.Build
 
 	raw, err := c.ParseRaw(v)
 	if err != nil {
