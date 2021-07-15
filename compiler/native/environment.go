@@ -51,7 +51,6 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice, globalEnv raw.StringSliceMap
 
 // EnvironmentStep injects environment variables
 // a single step in a yaml configuration.
-// nolint:lll // ignore function line length
 func (c *client) EnvironmentStep(s *yaml.Step, globalEnv raw.StringSliceMap) (*yaml.Step, error) {
 	// make empty map of environment variables
 	env := make(map[string]string)
