@@ -2,8 +2,6 @@ module github.com/go-vela/compiler
 
 go 1.15
 
-replace github.com/go-vela/types => /Users/Z001NR1/github/go-vela/types
-
 require (
 	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/buildkite/yaml v0.0.0-20181016232759-0caa5f0796e3
