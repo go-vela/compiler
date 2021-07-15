@@ -6,6 +6,7 @@ package native
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/go-vela/compiler/template/native"
@@ -63,15 +64,14 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 		}
 
-		// skip processing template if the type isn't github
-		if tmpl.Type != "github" {
-			logrus.Errorf("Unsupported template type: %v", tmpl.Type)
-			continue
-		}
-
 		switch tmpl.Type {
 		case "github":
-			bytes, err = c.fetchGithubTemplate(*tmpl)
+			bytes, err = c.fetchGithubTemplate(tmpl)
+		case "file":
+			bytes, err = c.fetchFileTemplate(tmpl)
+		default:
+			logrus.Errorf("Unsupported template type: %v", tmpl.Type)
+			continue
 		}
 		if err != nil {
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
@@ -138,7 +138,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 	return steps, secrets, services, nil
 }
 
-func (c *client) fetchGithubTemplate(tmpl yaml.Template) (bytes []byte, err error) {
+func (c *client) fetchGithubTemplate(tmpl *yaml.Template) (bytes []byte, err error) {
 	// parse source from template
 	src, err := c.Github.Parse(tmpl.Source)
 	if err != nil {
@@ -160,6 +160,11 @@ func (c *client) fetchGithubTemplate(tmpl yaml.Template) (bytes []byte, err erro
 			return
 		}
 	}
+	return
+}
+
+func (c *client) fetchFileTemplate(tmpl *yaml.Template) (bytes []byte, err error) {
+	bytes, err = os.ReadFile(tmpl.Source)
 	return
 }
 

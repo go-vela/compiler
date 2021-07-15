@@ -8,6 +8,7 @@ import (
 	"flag"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"reflect"
 	"testing"
 
@@ -670,9 +671,36 @@ func TestFetchFromGithub(t *testing.T) {
 
 	// run test
 	compiler, _ := New(c)
-	result, err := compiler.fetchGithubTemplate(tmpl)
+	result, err := compiler.fetchGithubTemplate(&tmpl)
 
 	assert.Nil(err)
 	assert.Equal(want, string(result))
+
+}
+
+func TestFetchFromFile(t *testing.T) {
+	assert := assert.New(t)
+
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-token", "", "doc")
+	c := cli.NewContext(nil, set, nil)
+
+	tmpl := yaml.Template{
+		Name:   "go",
+		Source: "testdata/template.yml",
+		Format: "native",
+		Type:   "file",
+	}
+
+	want, _ := os.ReadFile("testdata/template.yml")
+
+	// run test
+	compiler, _ := New(c)
+	result, err := compiler.fetchFileTemplate(&tmpl)
+
+	assert.Nil(err)
+	assert.Equal(string(want), string(result))
 
 }
