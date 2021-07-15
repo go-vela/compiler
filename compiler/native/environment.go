@@ -18,6 +18,7 @@ import (
 
 // EnvironmentStages injects environment variables
 // for each step in every stage in a yaml configuration.
+// nolint:lll // ignore function line length
 func (c *client) EnvironmentStages(s yaml.StageSlice, globalEnv raw.StringSliceMap) (yaml.StageSlice, error) {
 	// iterate through all stages
 	for _, stage := range s {
@@ -35,6 +36,7 @@ func (c *client) EnvironmentStages(s yaml.StageSlice, globalEnv raw.StringSliceM
 
 // EnvironmentSteps injects environment variables
 // for each step in a yaml configuration.
+// nolint:lll // ignore function line length
 func (c *client) EnvironmentSteps(s yaml.StepSlice, globalEnv raw.StringSliceMap) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
@@ -49,6 +51,7 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice, globalEnv raw.StringSliceMap
 
 // EnvironmentStep injects environment variables
 // a single step in a yaml configuration.
+// nolint:lll // ignore function line length
 func (c *client) EnvironmentStep(s *yaml.Step, globalEnv raw.StringSliceMap) (*yaml.Step, error) {
 	// make empty map of environment variables
 	env := make(map[string]string)
@@ -109,6 +112,7 @@ func (c *client) EnvironmentStep(s *yaml.Step, globalEnv raw.StringSliceMap) (*y
 
 // EnvironmentServices injects environment variables
 // for each service in a yaml configuration.
+// nolint:lll // ignore function line length
 func (c *client) EnvironmentServices(s yaml.ServiceSlice, globalEnv raw.StringSliceMap) (yaml.ServiceSlice, error) {
 	// iterate through all services
 	for _, service := range s {
@@ -144,6 +148,7 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice, globalEnv raw.StringSl
 
 // EnvironmentSecrets injects environment variables
 // for each secret plugin in a yaml configuration.
+// nolint:lll // ignore function line length
 func (c *client) EnvironmentSecrets(s yaml.SecretSlice, globalEnv raw.StringSliceMap) (yaml.SecretSlice, error) {
 	// iterate through all secrets
 	for _, secret := range s {
