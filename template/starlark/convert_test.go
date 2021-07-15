@@ -98,7 +98,11 @@ func TestStarlark_Render_velaEnvironmentData(t *testing.T) {
 		t.Error(err)
 	}
 
-	system := starlark.NewDict(1)
+	system := starlark.NewDict(2)
+	err = system.SetKey(starlark.String("template_name"), starlark.String("foo"))
+	if err != nil {
+		t.Error(err)
+	}
 	err = system.SetKey(starlark.String("workspace"), starlark.String("/vela/src/github.com/go-vela/hello-world"))
 	if err != nil {
 		t.Error(err)
@@ -123,25 +127,27 @@ func TestStarlark_Render_velaEnvironmentData(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		args    raw.StringSliceMap
-		want    *starlark.Dict
-		wantErr bool
+		name         string
+		slice        raw.StringSliceMap
+		templateName string
+		want         *starlark.Dict
+		wantErr      bool
 	}{
 		{
 			name: "with all vela prefixed var",
-			args: raw.StringSliceMap{
+			slice: raw.StringSliceMap{
 				"VELA_BUILD_AUTHOR":   "octocat",
 				"VELA_REPO_FULL_NAME": "go-vela/hello-world",
 				"VELA_USER_ADMIN":     "true",
 				"VELA_WORKSPACE":      "/vela/src/github.com/go-vela/hello-world",
 			},
-			want: withAllPre,
+			templateName: "foo",
+			want:         withAllPre,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := convertPlatformVars(tt.args)
+			got, err := convertPlatformVars(tt.slice, tt.templateName)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("convertPlatformVars() error = %v, wantErr %v", err, tt.wantErr)
 				return
