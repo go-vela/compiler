@@ -72,6 +72,13 @@ func validateStages(s yaml.StageSlice) error {
 			return fmt.Errorf("no name provided for stage")
 		}
 
+		// validate that a stage is not referencing itself in needs
+		for _, need := range stage.Needs {
+			if stage.Name == need {
+				return fmt.Errorf("stage %s references itself in 'needs' declaration", stage.Name)
+			}
+		}
+
 		for _, step := range stage.Steps {
 			if len(step.Name) == 0 {
 				return fmt.Errorf("no name provided for step for stage %s", stage.Name)

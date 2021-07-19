@@ -379,6 +379,42 @@ func TestNative_Validate_Stages_NoCommands(t *testing.T) {
 	}
 }
 
+func TestNative_Validate_Stages_NeedsSelfReference(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	c := cli.NewContext(nil, set, nil)
+
+	str := "foo"
+	p := &yaml.Build{
+		Version: "v1",
+		Stages: yaml.StageSlice{
+			&yaml.Stage{
+				Name:  str,
+				Needs: raw.StringSlice{str},
+				Steps: yaml.StepSlice{
+					&yaml.Step{
+						Commands: raw.StringSlice{"echo hello"},
+						Image:    "alpine",
+						Name:     str,
+						Pull:     "always",
+					},
+				},
+			},
+		},
+	}
+
+	// run test
+	compiler, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	err = compiler.Validate(p)
+	if err == nil {
+		t.Errorf("Validate should have returned err")
+	}
+}
+
 func TestNative_Validate_Steps(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
