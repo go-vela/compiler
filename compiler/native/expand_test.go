@@ -8,12 +8,14 @@ import (
 	"flag"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"reflect"
 	"testing"
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 	"github.com/google/go-cmp/cmp"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli/v2"
@@ -618,4 +620,87 @@ func TestNative_mapFromTemplates(t *testing.T) {
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("mapFromTemplates is %v, want %v", got, want)
 	}
+}
+
+func TestFetchFromGithub(t *testing.T) {
+	assert := assert.New(t)
+	// setup context
+	gin.SetMode(gin.TestMode)
+
+	resp := httptest.NewRecorder()
+	_, engine := gin.CreateTestContext(resp)
+
+	// setup mock server
+	engine.GET("/api/v3/repos/foo/bar/contents/:path", func(c *gin.Context) {
+		c.Header("Content-Type", "application/json")
+		c.Status(http.StatusOK)
+		c.File("testdata/template-starlark.json")
+	})
+
+	s := httptest.NewServer(engine)
+	defer s.Close()
+
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-url", s.URL, "doc")
+	set.String("github-token", "", "doc")
+	c := cli.NewContext(nil, set, nil)
+
+	tmpl := yaml.Template{
+		Name:   "go",
+		Source: "github.example.com/foo/bar/template.star",
+		Format: "starlark",
+		Type:   "github",
+	}
+
+	want := `def main(ctx):
+  return {
+    'version': '1',
+    'steps': [
+      {
+        'name': 'build',
+        'image': 'golang:latest',
+        'commands': [
+          'go build',
+          'go test',
+        ]
+      },
+    ],
+}`
+
+	// run test
+	compiler, _ := New(c)
+	result, err := compiler.fetchGithubTemplate(&tmpl)
+
+	assert.Nil(err)
+	assert.Equal(want, string(result))
+
+}
+
+func TestFetchFromFile(t *testing.T) {
+	assert := assert.New(t)
+
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-token", "", "doc")
+	c := cli.NewContext(nil, set, nil)
+
+	tmpl := yaml.Template{
+		Name:   "go",
+		Source: "testdata/template.yml",
+		Format: "native",
+		Type:   "file",
+	}
+
+	want, _ := os.ReadFile("testdata/template.yml")
+
+	// run test
+	compiler, _ := New(c)
+	result, err := compiler.fetchFileTemplate(&tmpl)
+
+	assert.Nil(err)
+	assert.Equal(string(want), string(result))
+
 }

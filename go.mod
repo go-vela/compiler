@@ -18,6 +18,7 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/sirupsen/logrus v1.8.1
+	github.com/stretchr/testify v1.6.1
 	github.com/ugorji/go v1.1.11 // indirect
 	github.com/urfave/cli/v2 v2.3.0
 	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a

@@ -6,6 +6,7 @@ package native
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/go-vela/compiler/template/native"
@@ -63,32 +64,17 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 		}
 
-		// skip processing template if the type isn't github
-		if tmpl.Type != "github" {
+		switch tmpl.Type {
+		case "github":
+			bytes, err = c.fetchGithubTemplate(tmpl)
+		case "file":
+			bytes, err = c.fetchFileTemplate(tmpl)
+		default:
 			logrus.Errorf("Unsupported template type: %v", tmpl.Type)
 			continue
 		}
-
-		// parse source from template
-		src, err := c.Github.Parse(tmpl.Source)
 		if err != nil {
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
-		}
-
-		// pull from public github when the host isn't provided or is set to github.com
-		if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
-			bytes, err = c.Github.Template(nil, src)
-			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
-			}
-		}
-
-		// pull from private github installation if the host is not empty
-		if len(src.Host) > 0 {
-			bytes, err = c.PrivateGithub.Template(c.user, src)
-			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
-			}
 		}
 
 		var tmplSteps yaml.StepSlice
@@ -150,6 +136,36 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 	}
 
 	return steps, secrets, services, nil
+}
+
+func (c *client) fetchGithubTemplate(tmpl *yaml.Template) (bytes []byte, err error) {
+	// parse source from template
+	src, err := c.Github.Parse(tmpl.Source)
+	if err != nil {
+		return
+	}
+
+	// pull from public github when the host isn't provided or is set to github.com
+	if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
+		bytes, err = c.Github.Template(nil, src)
+		if err != nil {
+			return
+		}
+	}
+
+	// pull from private github installation if the host is not empty
+	if len(src.Host) > 0 {
+		bytes, err = c.PrivateGithub.Template(c.user, src)
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
+func (c *client) fetchFileTemplate(tmpl *yaml.Template) (bytes []byte, err error) {
+	bytes, err = os.ReadFile(tmpl.Source)
+	return
 }
 
 // helper function that creates a map of templates from a yaml configuration.
