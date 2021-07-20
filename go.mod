@@ -11,7 +11,7 @@ require (
 	github.com/go-vela/sdk-go v0.8.1
 	github.com/go-vela/types v0.8.3-0.20210720180410-4c255a33079f
 	github.com/google/go-cmp v0.5.6
-	github.com/google/go-github/v36 v36.0.0
+	github.com/google/go-github/v37 v37.0.0
 	github.com/google/uuid v1.1.4 // indirect
 	github.com/goware/urlx v0.3.1
 	github.com/hashicorp/go-cleanhttp v0.5.2
@@ -23,4 +23,9 @@ require (
 	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
 	golang.org/x/oauth2 v0.0.0-20210622215436-a8dc77f794b6
 	k8s.io/apimachinery v0.21.2
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
+	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
+	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
+	k8s.io/apimachinery v0.21.3
 )
