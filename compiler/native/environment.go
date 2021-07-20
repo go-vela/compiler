@@ -60,6 +60,7 @@ func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
 		// capture all environment variables from the local environment
 		for _, e := range os.Environ() {
 			// split the environment variable on = into a key value pair
+			// nolint: gomnd // ignore magic number
 			parts := strings.SplitN(e, "=", 2)
 
 			env[parts[0]] = parts[1]
@@ -153,6 +154,7 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 			// capture all environment variables from the local environment
 			for _, e := range os.Environ() {
 				// split the environment variable on = into a key value pair
+				// nolint: gomnd // ignore magic number
 				parts := strings.SplitN(e, "=", 2)
 
 				env[parts[0]] = parts[1]
@@ -194,6 +196,35 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 	}
 
 	return s, nil
+}
+
+func (c *client) EnvironmentBuild() map[string]string {
+	// make empty map of environment variables
+	env := make(map[string]string)
+	// gather set of default environment variables
+	defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
+
+	// check if the compiler is setup for a local pipeline
+	if c.local {
+		// capture all environment variables from the local environment
+		for _, e := range os.Environ() {
+			// split the environment variable on = into a key value pair
+			// nolint: gomnd // ignore magic number
+			parts := strings.SplitN(e, "=", 2)
+
+			env[parts[0]] = parts[1]
+		}
+	}
+
+	// inject the default environment
+	// variables to the build secret
+	// we do this after injecting the declared environment
+	// to ensure the default env overrides any conflicts
+	for k, v := range defaultEnv {
+		env[k] = v
+	}
+
+	return env
 }
 
 // helper function to merge two maps together.

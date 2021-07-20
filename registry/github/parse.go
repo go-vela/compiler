@@ -28,14 +28,12 @@ func (c *client) Parse(path string) (*registry.Source, error) {
 		return nil, err
 	}
 
-	// trim `/` path prefix if provided
-	if strings.HasPrefix(u.Path, "/") {
-		u.Path = strings.TrimPrefix(u.Path, "/")
-	}
+	u.Path = strings.TrimPrefix(u.Path, "/")
 
 	// this will handle multiple cases for the path:
 	// * <org>/<repo>/<filename>
 	// * <org>/<repo>/<path>/<to>/<filename>
+	// nolint: gomnd // ignore magic number
 	parts := strings.SplitN(u.Path, "/", 3)
 
 	// check for reference provided in filename:
