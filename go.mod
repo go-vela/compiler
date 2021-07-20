@@ -9,7 +9,7 @@ require (
 	github.com/drone/envsubst v1.0.3
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-vela/sdk-go v0.8.1
-	github.com/go-vela/types v0.8.3-0.20210709135941-cea3e4e5d4a9
+	github.com/go-vela/types v0.8.3-0.20210720180410-4c255a33079f
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-github/v36 v36.0.0
 	github.com/google/uuid v1.1.4 // indirect
