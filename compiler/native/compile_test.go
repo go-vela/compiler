@@ -84,8 +84,9 @@ func TestNative_Compile_StagesPipeline(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    true,
-			Template: false,
+			Clone:       true,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Stages: pipeline.StageSlice{
 			&pipeline.Stage{
@@ -433,8 +434,9 @@ func TestNative_Compile_StepsPipeline(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    true,
-			Template: false,
+			Clone:       true,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
@@ -623,8 +625,9 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    true,
-			Template: false,
+			Clone:       true,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Stages: pipeline.StageSlice{
 			&pipeline.Stage{
@@ -865,8 +868,9 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    true,
-			Template: false,
+			Clone:       true,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
@@ -1056,8 +1060,9 @@ func TestNative_Compile_InvalidType(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    true,
-			Template: false,
+			Clone:       true,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
@@ -1176,8 +1181,9 @@ func TestNative_Compile_Clone(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    false,
-			Template: false,
+			Clone:       false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
@@ -1205,8 +1211,9 @@ func TestNative_Compile_Clone(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    true,
-			Template: false,
+			Clone:       true,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
@@ -1243,8 +1250,9 @@ func TestNative_Compile_Clone(t *testing.T) {
 		Version: "1",
 		ID:      "__0",
 		Metadata: pipeline.Metadata{
-			Clone:    false,
-			Template: false,
+			Clone:       false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: pipeline.ContainerSlice{
 			&pipeline.Container{
@@ -1506,8 +1514,6 @@ func TestNative_Compile_Pipeline_Type(t *testing.T) {
 			compiler.WithMetadata(m)
 			compiler.WithRepo(&library.Repo{PipelineType: &tt.args.pipelineType})
 
-			fmt.Println("here", compiler.repo.GetPipelineType())
-
 			got, err := compiler.Compile(yaml)
 			if err != nil {
 				t.Errorf("Compile returned err: %v", err)
@@ -1633,7 +1639,8 @@ func Test_client_modifyConfig(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{
@@ -1665,7 +1672,8 @@ func Test_client_modifyConfig(t *testing.T) {
 	want2 := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{

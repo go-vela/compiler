@@ -25,7 +25,8 @@ func TestNative_Parse_Metadata_Bytes(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -51,7 +52,8 @@ func TestNative_Parse_Metadata_File(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -95,7 +97,8 @@ func TestNative_Parse_Metadata_Path(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -116,7 +119,8 @@ func TestNative_Parse_Metadata_Reader(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -142,7 +146,8 @@ func TestNative_Parse_Metadata_String(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -212,7 +217,8 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Stages: yaml.StageSlice{
 			&yaml.Stage{
@@ -328,7 +334,8 @@ func TestNative_Parse_StepsPipeline(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{
@@ -608,7 +615,8 @@ func TestNative_ParseBytes_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -652,7 +660,8 @@ func TestNative_ParseFile_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -700,7 +709,8 @@ func TestNative_ParsePath_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -734,7 +744,8 @@ func TestNative_ParseReader_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -773,7 +784,8 @@ func TestNative_ParseString_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
