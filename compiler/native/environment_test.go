@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/go-vela/types/raw"
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
@@ -25,6 +26,10 @@ func TestNative_EnvironmentStages(t *testing.T) {
 
 	str := "foo"
 
+	e := raw.StringSliceMap{
+		"HELLO": "Hello, Global Message",
+	}
+
 	s := yaml.StageSlice{
 		&yaml.Stage{
 			Name: str,
@@ -38,12 +43,15 @@ func TestNative_EnvironmentStages(t *testing.T) {
 		},
 	}
 
+	env := environment(nil, nil, nil, nil)
+	env["HELLO"] = "Hello, Global Message"
+
 	want := yaml.StageSlice{
 		&yaml.Stage{
 			Name: str,
 			Steps: yaml.StepSlice{
 				&yaml.Step{
-					Environment: environment(nil, nil, nil, nil),
+					Environment: env,
 					Image:       "alpine",
 					Name:        str,
 					Pull:        "always",
@@ -58,13 +66,13 @@ func TestNative_EnvironmentStages(t *testing.T) {
 		t.Errorf("Unable to create new compiler: %v", err)
 	}
 
-	got, err := compiler.EnvironmentStages(s)
+	got, err := compiler.EnvironmentStages(s, e)
 	if err != nil {
 		t.Errorf("EnvironmentStages returned err: %v", err)
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("EnvironmentStages is %v, want %v", got, want)
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Errorf("EnvironmentStages mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -72,6 +80,10 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
+
+	e := raw.StringSliceMap{
+		"HELLO": "Hello, Global Message",
+	}
 
 	str := "foo"
 	s := yaml.StepSlice{
@@ -188,6 +200,7 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 				"VELA_USER_NAME":           "",
 				"VELA_VERSION":             "TODO",
 				"VELA_WORKSPACE":           "/vela/src",
+				"HELLO":                    "Hello, Global Message",
 			},
 		},
 	}
@@ -198,7 +211,7 @@ func TestNative_EnvironmentSteps(t *testing.T) {
 		t.Errorf("Unable to create new compiler: %v", err)
 	}
 
-	got, err := compiler.EnvironmentSteps(s)
+	got, err := compiler.EnvironmentSteps(s, e)
 	if err != nil {
 		t.Errorf("EnvironmentSteps returned err: %v", err)
 	}
@@ -212,6 +225,10 @@ func TestNative_EnvironmentServices(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
+
+	e := raw.StringSliceMap{
+		"HELLO": "Hello, Global Message",
+	}
 
 	str := "foo"
 	s := yaml.ServiceSlice{
@@ -328,6 +345,7 @@ func TestNative_EnvironmentServices(t *testing.T) {
 				"VELA_USER_NAME":           "",
 				"VELA_VERSION":             "TODO",
 				"VELA_WORKSPACE":           "/vela/src",
+				"HELLO":                    "Hello, Global Message",
 			},
 		},
 	}
@@ -338,7 +356,7 @@ func TestNative_EnvironmentServices(t *testing.T) {
 		t.Errorf("Unable to create new compiler: %v", err)
 	}
 
-	got, err := compiler.EnvironmentServices(s)
+	got, err := compiler.EnvironmentServices(s, e)
 	if err != nil {
 		t.Errorf("EnvironmentServices returned err: %v", err)
 	}
@@ -352,6 +370,10 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
 	c := cli.NewContext(nil, set, nil)
+
+	e := raw.StringSliceMap{
+		"HELLO": "Hello, Global Message",
+	}
 
 	str := "foo"
 	s := yaml.SecretSlice{
@@ -480,6 +502,7 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 					"VELA_USER_NAME":           "",
 					"VELA_VERSION":             "TODO",
 					"VELA_WORKSPACE":           "/vela/src",
+					"HELLO":                    "Hello, Global Message",
 				},
 			},
 		},
@@ -491,7 +514,7 @@ func TestNative_EnvironmentSecrets(t *testing.T) {
 		t.Errorf("Unable to create new compiler: %v", err)
 	}
 
-	got, err := compiler.EnvironmentSecrets(s)
+	got, err := compiler.EnvironmentSecrets(s, e)
 	if err != nil {
 		t.Errorf("EnvironmentSecrets returned err: %v", err)
 	}

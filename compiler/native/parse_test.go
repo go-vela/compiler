@@ -15,6 +15,7 @@ import (
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
+	"github.com/google/go-cmp/cmp"
 
 	"github.com/urfave/cli/v2"
 )
@@ -25,7 +26,9 @@ func TestNative_Parse_Metadata_Bytes(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -40,8 +43,8 @@ func TestNative_Parse_Metadata_Bytes(t *testing.T) {
 		t.Errorf("Parse returned err: %v", err)
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Parse is %v, want %v", got, want)
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -51,7 +54,9 @@ func TestNative_Parse_Metadata_File(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -95,7 +100,9 @@ func TestNative_Parse_Metadata_Path(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -116,7 +123,9 @@ func TestNative_Parse_Metadata_Reader(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -142,7 +151,9 @@ func TestNative_Parse_Metadata_String(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -212,7 +223,12 @@ func TestNative_Parse_StagesPipeline(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
+		},
+		Environment: map[string]string{
+			"HELLO": "Hello, Global Environment",
 		},
 		Stages: yaml.StageSlice{
 			&yaml.Stage{
@@ -328,7 +344,12 @@ func TestNative_Parse_StepsPipeline(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
+		},
+		Environment: map[string]string{
+			"HELLO": "Hello, Global Environment",
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{
@@ -409,8 +430,8 @@ func TestNative_Parse_StepsPipeline(t *testing.T) {
 		t.Errorf("Parse returned err: %v", err)
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Parse is %v, want %v", got, want)
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -608,7 +629,9 @@ func TestNative_ParseBytes_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -652,7 +675,9 @@ func TestNative_ParseFile_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -700,7 +725,9 @@ func TestNative_ParsePath_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -734,7 +761,9 @@ func TestNative_ParseReader_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
@@ -773,7 +802,9 @@ func TestNative_ParseString_Metadata(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Clone:       nil,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 	}
 
