@@ -811,3 +811,65 @@ type FailReader struct{}
 func (FailReader) Read(p []byte) (n int, err error) {
 	return 0, errors.New("this is a reader that fails when you try to read")
 }
+
+func Test_client_ParseRaw_File(t *testing.T) {
+	expected, err := ioutil.ReadFile("testdata/metadata.yml")
+	if err != nil {
+		t.Errorf("Reading file returned err: %v", err)
+	}
+	type args struct {
+		kind string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{"byte", args{kind: "file"}, string(expected), false},
+		{"file", args{kind: "file"}, string(expected), false},
+		{"io reader", args{kind: "ioreader"}, string(expected), false},
+		{"string", args{kind: "string"}, string(expected), false},
+		{"unexpected", args{kind: "foo"}, "", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var content interface{}
+			var err error
+			switch tt.args.kind {
+			case "byte":
+				content, err = ioutil.ReadFile("testdata/metadata.yml")
+				if err != nil {
+					t.Errorf("Reading file returned err: %v", err)
+				}
+			case "file":
+				content, err = os.Open("testdata/metadata.yml")
+				if err != nil {
+					t.Errorf("Reading file returned err: %v", err)
+				}
+			case "ioreader":
+				b, err := ioutil.ReadFile("testdata/metadata.yml")
+				if err != nil {
+					t.Errorf("ParseReader returned err: %v", err)
+				}
+
+				content, err = ParseReaderRaw(bytes.NewReader(b))
+				if err != nil {
+					t.Errorf("Reading file returned err: %v", err)
+				}
+			case "string":
+				content = tt.want
+			}
+
+			c := &client{}
+			got, err := c.ParseRaw(content)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseRaw() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ParseRaw() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
