@@ -11,9 +11,6 @@ import "github.com/go-vela/types/yaml"
 type Engine interface {
 	// Render defines a function that combines
 	// the template with the step.
-	Render(template string, step *yaml.Step) (yaml.StepSlice, error)
-	// Render defines a function that combines
-	// the template with the step.
 	RenderBuild(template string, step *yaml.Step) (yaml.StepSlice, error)
 	// Render defines a function that combines
 	// the template with the step.
