@@ -826,7 +826,7 @@ func Test_client_ParseRaw_File(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		{"byte", args{kind: "file"}, string(expected), false},
+		{"byte", args{kind: "byte"}, string(expected), false},
 		{"file", args{kind: "file"}, string(expected), false},
 		{"io reader", args{kind: "ioreader"}, string(expected), false},
 		{"string", args{kind: "string"}, string(expected), false},
@@ -853,7 +853,7 @@ func Test_client_ParseRaw_File(t *testing.T) {
 					t.Errorf("ParseReader returned err: %v", err)
 				}
 
-				content, err = ParseReaderRaw(bytes.NewReader(b))
+				content = bytes.NewReader(b)
 				if err != nil {
 					t.Errorf("Reading file returned err: %v", err)
 				}
