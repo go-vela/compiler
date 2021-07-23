@@ -830,6 +830,7 @@ func Test_client_ParseRaw_File(t *testing.T) {
 		{"file", args{kind: "file"}, string(expected), false},
 		{"io reader", args{kind: "ioreader"}, string(expected), false},
 		{"string", args{kind: "string"}, string(expected), false},
+		{"path", args{kind: "path"}, string(expected), false},
 		{"unexpected", args{kind: "foo"}, "", true},
 	}
 	for _, tt := range tests {
@@ -857,6 +858,8 @@ func Test_client_ParseRaw_File(t *testing.T) {
 				if err != nil {
 					t.Errorf("Reading file returned err: %v", err)
 				}
+			case "path":
+				content = "testdata/metadata.yml"
 			case "string":
 				content = tt.want
 			}
