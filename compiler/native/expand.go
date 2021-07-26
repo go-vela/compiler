@@ -41,11 +41,6 @@ func (c *client) ExpandStages(s *yaml.Build, tmpls map[string]*yaml.Template) (y
 //
 // nolint: lll,funlen // ignore long line length due to variable names
 func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StepSlice, yaml.SecretSlice, yaml.ServiceSlice, error) {
-
-	if len(tmpls) == 0 {
-		return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template definition in pipeline")
-	}
-
 	steps := yaml.StepSlice{}
 	secrets := s.Secrets
 	services := s.Services
@@ -54,12 +49,18 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 	for _, step := range s.Steps {
 		bytes := []byte{}
 
+		// skip if no template is provided for the step
+		if len(step.Template.Name) == 0 {
+			continue
+		}
+
 		// lookup step template name
 		tmpl, ok := tmpls[step.Template.Name]
 		if !ok {
 			// add existing step if no template
-			steps = append(steps, step)
-			continue
+			// steps = append(steps, step)
+			// continue
+			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template source in pipeline for step %s", step.Name)
 		}
 
 		// inject environment information for template
