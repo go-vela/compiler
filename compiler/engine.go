@@ -8,6 +8,7 @@ import (
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
+	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 )
 
@@ -50,16 +51,16 @@ type Engine interface {
 
 	// EnvironmentStages defines a function that injects the environment
 	// variables for each step in every stage into a yaml configuration.
-	EnvironmentStages(yaml.StageSlice) (yaml.StageSlice, error)
+	EnvironmentStages(yaml.StageSlice, raw.StringSliceMap) (yaml.StageSlice, error)
 	// EnvironmentSteps defines a function that injects the environment
 	// variables for each step into a yaml configuration.
-	EnvironmentSteps(yaml.StepSlice) (yaml.StepSlice, error)
+	EnvironmentSteps(yaml.StepSlice, raw.StringSliceMap) (yaml.StepSlice, error)
 	// EnvironmentStep defines a function that injects the environment
 	// variables for a single step into a yaml configuration.
-	EnvironmentStep(*yaml.Step) (*yaml.Step, error)
+	EnvironmentStep(*yaml.Step, raw.StringSliceMap) (*yaml.Step, error)
 	// EnvironmentServices defines a function that injects the environment
 	// variables for each service into a yaml configuration.
-	EnvironmentServices(yaml.ServiceSlice) (yaml.ServiceSlice, error)
+	EnvironmentServices(yaml.ServiceSlice, raw.StringSliceMap) (yaml.ServiceSlice, error)
 
 	// Expand Compiler Interface Functions
 

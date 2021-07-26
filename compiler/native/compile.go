@@ -22,6 +22,7 @@ import (
 	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
+	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-retryablehttp"
@@ -127,20 +128,37 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 			return nil, err
 		}
 
+		// Create some default global environment inject vars
+		// these are used below to overwrite to an empty
+		// map if they should not be injected into a container
+		envGlobalServices, envGlobalSecrets, envGlobalSteps := p.Environment, p.Environment, p.Environment
+
+		if !p.Metadata.HasEnvironment("services") {
+			envGlobalServices = make(raw.StringSliceMap)
+		}
+
+		if !p.Metadata.HasEnvironment("secrets") {
+			envGlobalSecrets = make(raw.StringSliceMap)
+		}
+
+		if !p.Metadata.HasEnvironment("steps") {
+			envGlobalSteps = make(raw.StringSliceMap)
+		}
+
 		// inject the environment variables into the services
-		p.Services, err = c.EnvironmentServices(p.Services)
+		p.Services, err = c.EnvironmentServices(p.Services, envGlobalServices)
 		if err != nil {
 			return nil, err
 		}
 
 		// inject the environment variables into the secrets
-		p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
+		p.Secrets, err = c.EnvironmentSecrets(p.Secrets, envGlobalSecrets)
 		if err != nil {
 			return nil, err
 		}
 
 		// inject the environment variables into the stages
-		p.Stages, err = c.EnvironmentStages(p.Stages)
+		p.Stages, err = c.EnvironmentStages(p.Stages, envGlobalSteps)
 		if err != nil {
 			return nil, err
 		}
@@ -196,20 +214,37 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 		return nil, err
 	}
 
+	// Create some default global environment inject vars
+	// these are used below to overwrite to an empty
+	// map if they should not be injected into a container
+	envGlobalServices, envGlobalSecrets, envGlobalSteps := p.Environment, p.Environment, p.Environment
+
+	if !p.Metadata.HasEnvironment("services") {
+		envGlobalServices = make(raw.StringSliceMap)
+	}
+
+	if !p.Metadata.HasEnvironment("secrets") {
+		envGlobalSecrets = make(raw.StringSliceMap)
+	}
+
+	if !p.Metadata.HasEnvironment("steps") {
+		envGlobalSteps = make(raw.StringSliceMap)
+	}
+
 	// inject the environment variables into the services
-	p.Services, err = c.EnvironmentServices(p.Services)
+	p.Services, err = c.EnvironmentServices(p.Services, envGlobalServices)
 	if err != nil {
 		return nil, err
 	}
 
 	// inject the environment variables into the secrets
-	p.Secrets, err = c.EnvironmentSecrets(p.Secrets)
+	p.Secrets, err = c.EnvironmentSecrets(p.Secrets, envGlobalSecrets)
 	if err != nil {
 		return nil, err
 	}
 
 	// inject the environment variables into the steps
-	p.Steps, err = c.EnvironmentSteps(p.Steps)
+	p.Steps, err = c.EnvironmentSteps(p.Steps, envGlobalSteps)
 	if err != nil {
 		return nil, err
 	}

@@ -12,16 +12,18 @@ import (
 	"github.com/go-vela/types"
 	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
+	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 )
 
 // EnvironmentStages injects environment variables
 // for each step in every stage in a yaml configuration.
-func (c *client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
+// nolint:lll // ignore function line length
+func (c *client) EnvironmentStages(s yaml.StageSlice, globalEnv raw.StringSliceMap) (yaml.StageSlice, error) {
 	// iterate through all stages
 	for _, stage := range s {
 		// inject the environment variables into the steps for the stage
-		steps, err := c.EnvironmentSteps(stage.Steps)
+		steps, err := c.EnvironmentSteps(stage.Steps, globalEnv)
 		if err != nil {
 			return nil, err
 		}
@@ -34,10 +36,11 @@ func (c *client) EnvironmentStages(s yaml.StageSlice) (yaml.StageSlice, error) {
 
 // EnvironmentSteps injects environment variables
 // for each step in a yaml configuration.
-func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
+// nolint:lll // ignore function line length
+func (c *client) EnvironmentSteps(s yaml.StepSlice, globalEnv raw.StringSliceMap) (yaml.StepSlice, error) {
 	// iterate through all steps
 	for _, step := range s {
-		_, err := c.EnvironmentStep(step)
+		_, err := c.EnvironmentStep(step, globalEnv)
 		if err != nil {
 			return nil, err
 		}
@@ -48,7 +51,7 @@ func (c *client) EnvironmentSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 
 // EnvironmentStep injects environment variables
 // a single step in a yaml configuration.
-func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
+func (c *client) EnvironmentStep(s *yaml.Step, globalEnv raw.StringSliceMap) (*yaml.Step, error) {
 	// make empty map of environment variables
 	env := make(map[string]string)
 	// gather set of default environment variables
@@ -66,6 +69,10 @@ func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
 			env[parts[0]] = parts[1]
 		}
 	}
+
+	// inject the declared global environment
+	// WARNING: local env can override global
+	env = appendMap(env, globalEnv)
 
 	// inject the declared environment
 	// variables to the build step
@@ -105,13 +112,18 @@ func (c *client) EnvironmentStep(s *yaml.Step) (*yaml.Step, error) {
 
 // EnvironmentServices injects environment variables
 // for each service in a yaml configuration.
-func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, error) {
+// nolint:lll // ignore function line length
+func (c *client) EnvironmentServices(s yaml.ServiceSlice, globalEnv raw.StringSliceMap) (yaml.ServiceSlice, error) {
 	// iterate through all services
 	for _, service := range s {
 		// make empty map of environment variables
 		env := make(map[string]string)
 		// gather set of default environment variables
 		defaultEnv := environment(c.build, c.metadata, c.repo, c.user)
+
+		// inject the declared global environment
+		// WARNING: local env can override global
+		env = appendMap(env, globalEnv)
 
 		// inject the declared environment
 		// variables to the build service
@@ -136,7 +148,8 @@ func (c *client) EnvironmentServices(s yaml.ServiceSlice) (yaml.ServiceSlice, er
 
 // EnvironmentSecrets injects environment variables
 // for each secret plugin in a yaml configuration.
-func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error) {
+// nolint:lll // ignore function line length
+func (c *client) EnvironmentSecrets(s yaml.SecretSlice, globalEnv raw.StringSliceMap) (yaml.SecretSlice, error) {
 	// iterate through all secrets
 	for _, secret := range s {
 		// skip non plugin secrets
@@ -160,6 +173,10 @@ func (c *client) EnvironmentSecrets(s yaml.SecretSlice) (yaml.SecretSlice, error
 				env[parts[0]] = parts[1]
 			}
 		}
+
+		// inject the declared global environment
+		// WARNING: local env can override global
+		env = appendMap(env, globalEnv)
 
 		// inject the declared environment
 		// variables to the build secret
