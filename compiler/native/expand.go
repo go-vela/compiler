@@ -51,15 +51,14 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 
 		// skip if no template is provided for the step
 		if len(step.Template.Name) == 0 {
+			// add existing step if no template
+			steps = append(steps, step)
 			continue
 		}
 
 		// lookup step template name
 		tmpl, ok := tmpls[step.Template.Name]
 		if !ok {
-			// add existing step if no template
-			// steps = append(steps, step)
-			// continue
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template source in pipeline for step %s", step.Name)
 		}
 
