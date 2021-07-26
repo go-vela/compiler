@@ -41,6 +41,11 @@ func (c *client) ExpandStages(s *yaml.Build, tmpls map[string]*yaml.Template) (y
 //
 // nolint: lll,funlen // ignore long line length due to variable names
 func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StepSlice, yaml.SecretSlice, yaml.ServiceSlice, error) {
+
+	if len(tmpls) == 0 {
+		return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template definition in pipeline")
+	}
+
 	steps := yaml.StepSlice{}
 	secrets := s.Secrets
 	services := s.Services
