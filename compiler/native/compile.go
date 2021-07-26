@@ -47,7 +47,7 @@ type ModifyResponse struct {
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	var p *yaml.Build
 
-	raw, err := c.ParseRaw(v)
+	parsedRaw, err := c.ParseRaw(v)
 	if err != nil {
 		return nil, err
 	}
@@ -55,18 +55,18 @@ func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
 	switch c.repo.GetPipelineType() {
 	case constants.PipelineTypeGo:
 		// expand the base configuration
-		p, err = native.RenderBuild(raw, c.EnvironmentBuild())
+		p, err = native.RenderBuild(parsedRaw, c.EnvironmentBuild())
 		if err != nil {
 			return nil, err
 		}
 	case constants.PipelineTypeStarlark:
 		// expand the base configuration
-		p, err = starlark.RenderBuild(raw, c.EnvironmentBuild())
+		p, err = starlark.RenderBuild(parsedRaw, c.EnvironmentBuild())
 		if err != nil {
 			return nil, err
 		}
 	default:
-		p, err = c.Parse(raw)
+		p, err = c.Parse(parsedRaw)
 		if err != nil {
 			return nil, err
 		}
