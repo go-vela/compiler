@@ -109,13 +109,13 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 		switch tmpl.Format {
 		case "go", "golang", "":
 			// render template for steps
-			tmplSteps, tmplSecrets, tmplServices, err = native.Render(string(bytes), step)
+			tmplSteps, tmplSecrets, tmplServices, err = native.RenderStep(string(bytes), step)
 			if err != nil {
 				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 			}
 		case "starlark":
 			// render template for steps
-			tmplSteps, tmplSecrets, tmplServices, err = starlark.Render(string(bytes), step)
+			tmplSteps, tmplSecrets, tmplServices, err = starlark.RenderStep(string(bytes), step)
 			if err != nil {
 				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 			}
