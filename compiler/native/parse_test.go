@@ -8,6 +8,8 @@ import (
 	"bytes"
 	"errors"
 	"flag"
+	"github.com/go-vela/types/constants"
+	"github.com/go-vela/types/library"
 	"io/ioutil"
 	"os"
 	"reflect"
@@ -829,6 +831,64 @@ type FailReader struct{}
 
 func (FailReader) Read(p []byte) (n int, err error) {
 	return 0, errors.New("this is a reader that fails when you try to read")
+}
+
+func Test_client_Parse(t *testing.T) {
+	// setup types
+	want := &yaml.Build{
+		Version: "1",
+		Metadata: yaml.Metadata{
+			Template:    false,
+			Clone:       nil,
+			Environment: nil,
+		},
+		Steps: yaml.StepSlice{
+			{
+				Name:  "foo",
+				Image: "alpine",
+				Pull:  "not_present",
+				Parameters: map[string]interface{}{
+					"registry": "foo",
+				},
+			},
+		},
+	}
+	type args struct {
+		pipelineType string
+		file         string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *yaml.Build
+		wantErr bool
+	}{
+		{"yaml", args{pipelineType: constants.PipelineTypeYAML, file: "testdata/pipeline_type_default.yml"}, want, false},
+		{"starlark", args{pipelineType: constants.PipelineTypeStarlark, file: "testdata/pipeline_type.star"}, want, false},
+		{"go", args{pipelineType: constants.PipelineTypeGo, file: "testdata/pipeline_type_go.yml"}, want, false},
+		{"empty", args{pipelineType: "", file: "testdata/pipeline_type_default.yml"}, want, false},
+		{"invalid", args{pipelineType: "foo", file: "testdata/pipeline_type_default.yml"}, nil, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			content, err := ioutil.ReadFile(tt.args.file)
+			if err != nil {
+				t.Errorf("Reading file returned err: %v", err)
+			}
+
+			c := &client{
+				repo: &library.Repo{PipelineType: &tt.args.pipelineType},
+			}
+			got, err := c.Parse(content)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
 }
 
 func Test_client_ParseRaw(t *testing.T) {

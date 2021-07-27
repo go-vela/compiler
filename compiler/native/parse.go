@@ -67,9 +67,7 @@ func (c *client) Parse(v interface{}) (*types.Build, error) {
 		if err != nil {
 			return nil, err
 		}
-	case constants.PipelineTypeYAML:
-		fallthrough
-	default:
+	case constants.PipelineTypeYAML, "":
 		switch v := v.(type) {
 		case []byte:
 			return ParseBytes(v)
@@ -90,6 +88,8 @@ func (c *client) Parse(v interface{}) (*types.Build, error) {
 		default:
 			return nil, fmt.Errorf("unable to parse yaml: unrecognized type %T", v)
 		}
+	default:
+		return nil, fmt.Errorf("unable to parse config: unrecognized pipeline_type of %s", c.repo.GetPipelineType())
 	}
 
 	return p, nil
