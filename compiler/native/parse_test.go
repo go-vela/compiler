@@ -8,12 +8,13 @@ import (
 	"bytes"
 	"errors"
 	"flag"
-	"github.com/go-vela/types/constants"
-	"github.com/go-vela/types/library"
 	"io/ioutil"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/go-vela/types/constants"
+	"github.com/go-vela/types/library"
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
