@@ -831,7 +831,7 @@ func (FailReader) Read(p []byte) (n int, err error) {
 	return 0, errors.New("this is a reader that fails when you try to read")
 }
 
-func Test_client_ParseRaw_File(t *testing.T) {
+func Test_client_ParseRaw(t *testing.T) {
 	expected, err := ioutil.ReadFile("testdata/metadata.yml")
 	if err != nil {
 		t.Errorf("Reading file returned err: %v", err)

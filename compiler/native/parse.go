@@ -10,6 +10,9 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/go-vela/compiler/template/native"
+	"github.com/go-vela/compiler/template/starlark"
+	"github.com/go-vela/types/constants"
 	types "github.com/go-vela/types/yaml"
 
 	"github.com/buildkite/yaml"
@@ -41,26 +44,55 @@ func (c *client) ParseRaw(v interface{}) (string, error) {
 
 // Parse converts an object to a yaml configuration.
 func (c *client) Parse(v interface{}) (*types.Build, error) {
-	switch v := v.(type) {
-	case []byte:
-		return ParseBytes(v)
-	case *os.File:
-		return ParseFile(v)
-	case io.Reader:
-		return ParseReader(v)
-	case string:
-		// check if string is path to file
-		_, err := os.Stat(v)
-		if err == nil {
-			// parse string as path to yaml configuration
-			return ParsePath(v)
-		}
+	var p *types.Build
 
-		// parse string as yaml configuration
-		return ParseString(v)
+	switch c.repo.GetPipelineType() {
+	case constants.PipelineTypeGo:
+		// expand the base configuration
+		parsedRaw, err := c.ParseRaw(v)
+		if err != nil {
+			return nil, err
+		}
+		p, err = native.RenderBuild(parsedRaw, c.EnvironmentBuild())
+		if err != nil {
+			return nil, err
+		}
+	case constants.PipelineTypeStarlark:
+		// expand the base configuration
+		parsedRaw, err := c.ParseRaw(v)
+		if err != nil {
+			return nil, err
+		}
+		p, err = starlark.RenderBuild(parsedRaw, c.EnvironmentBuild())
+		if err != nil {
+			return nil, err
+		}
+	case constants.PipelineTypeYAML:
+		fallthrough
 	default:
-		return nil, fmt.Errorf("unable to parse yaml: unrecognized type %T", v)
+		switch v := v.(type) {
+		case []byte:
+			return ParseBytes(v)
+		case *os.File:
+			return ParseFile(v)
+		case io.Reader:
+			return ParseReader(v)
+		case string:
+			// check if string is path to file
+			_, err := os.Stat(v)
+			if err == nil {
+				// parse string as path to yaml configuration
+				return ParsePath(v)
+			}
+
+			// parse string as yaml configuration
+			return ParseString(v)
+		default:
+			return nil, fmt.Errorf("unable to parse yaml: unrecognized type %T", v)
+		}
 	}
+
+	return p, nil
 }
 
 // ParseBytes converts a byte slice to a yaml configuration.

@@ -14,12 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-vela/compiler/template/native"
-	"github.com/go-vela/compiler/template/starlark"
-
 	yml "github.com/buildkite/yaml"
 
-	"github.com/go-vela/types/constants"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/pipeline"
 	"github.com/go-vela/types/raw"
@@ -45,31 +41,9 @@ type ModifyResponse struct {
 //
 // nolint: gocyclo,funlen // ignore function length due to comments
 func (c *client) Compile(v interface{}) (*pipeline.Build, error) {
-	var p *yaml.Build
-
-	parsedRaw, err := c.ParseRaw(v)
+	p, err := c.Parse(v)
 	if err != nil {
 		return nil, err
-	}
-
-	switch c.repo.GetPipelineType() {
-	case constants.PipelineTypeGo:
-		// expand the base configuration
-		p, err = native.RenderBuild(parsedRaw, c.EnvironmentBuild())
-		if err != nil {
-			return nil, err
-		}
-	case constants.PipelineTypeStarlark:
-		// expand the base configuration
-		p, err = starlark.RenderBuild(parsedRaw, c.EnvironmentBuild())
-		if err != nil {
-			return nil, err
-		}
-	default:
-		p, err = c.Parse(parsedRaw)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	// validate the yaml configuration
