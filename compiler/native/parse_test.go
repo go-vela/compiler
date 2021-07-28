@@ -868,6 +868,7 @@ func Test_client_Parse(t *testing.T) {
 		{"starlark", args{pipelineType: constants.PipelineTypeStarlark, file: "testdata/pipeline_type.star"}, want, false},
 		{"go", args{pipelineType: constants.PipelineTypeGo, file: "testdata/pipeline_type_go.yml"}, want, false},
 		{"empty", args{pipelineType: "", file: "testdata/pipeline_type_default.yml"}, want, false},
+		{"nil", args{pipelineType: "nil", file: "testdata/pipeline_type_default.yml"}, want, false},
 		{"invalid", args{pipelineType: "foo", file: "testdata/pipeline_type_default.yml"}, nil, true},
 	}
 	for _, tt := range tests {
@@ -877,9 +878,15 @@ func Test_client_Parse(t *testing.T) {
 				t.Errorf("Reading file returned err: %v", err)
 			}
 
-			c := &client{
-				repo: &library.Repo{PipelineType: &tt.args.pipelineType},
+			var c *client
+			if tt.args.pipelineType == "nil" {
+				c = &client{}
+			} else {
+				c = &client{
+					repo: &library.Repo{PipelineType: &tt.args.pipelineType},
+				}
 			}
+
 			got, err := c.Parse(content)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
