@@ -16,6 +16,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
+	"github.com/go-vela/sdk-go/vela"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
 
@@ -1350,6 +1351,201 @@ func TestNative_Compile_Clone(t *testing.T) {
 	}
 }
 
+func TestNative_Compile_Pipeline_Type(t *testing.T) {
+	// setup types
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-token", "", "doc")
+	c := cli.NewContext(nil, set, nil)
+
+	m := &types.Metadata{
+		Database: &types.Database{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Queue: &types.Queue{
+			Channel: "foo",
+			Driver:  "foo",
+			Host:    "foo",
+		},
+		Source: &types.Source{
+			Driver: "foo",
+			Host:   "foo",
+		},
+		Vela: &types.Vela{
+			Address:    "foo",
+			WebAddress: "foo",
+		},
+	}
+
+	defaultFooEnv := environment(nil, m, nil, nil)
+	defaultFooEnv["PARAMETER_REGISTRY"] = "foo"
+
+	defaultEnv := environment(nil, m, nil, nil)
+	wantDefault := &pipeline.Build{
+		Version: "1",
+		ID:      "__0",
+		Metadata: pipeline.Metadata{
+			Clone:    true,
+			Template: false,
+		},
+		Steps: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "step___0_init",
+				Directory:   "/vela/src/foo//",
+				Environment: defaultEnv,
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_clone",
+				Directory:   "/vela/src/foo//",
+				Environment: defaultEnv,
+				Image:       "target/vela-git:v0.4.0",
+				Name:        "clone",
+				Number:      2,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_foo",
+				Directory:   "/vela/src/foo//",
+				Environment: defaultFooEnv,
+				Image:       "alpine",
+				Name:        "foo",
+				Number:      3,
+				Pull:        "not_present",
+			},
+		},
+	}
+
+	goFooEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("go")}, nil)
+	goFooEnv["PARAMETER_REGISTRY"] = "foo"
+
+	defaultGoEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("go")}, nil)
+	wantGo := &pipeline.Build{
+		Version: "1",
+		ID:      "__0",
+		Metadata: pipeline.Metadata{
+			Clone:    true,
+			Template: false,
+		},
+		Steps: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "step___0_init",
+				Directory:   "/vela/src/foo//",
+				Environment: defaultGoEnv,
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_clone",
+				Directory:   "/vela/src/foo//",
+				Environment: defaultGoEnv,
+				Image:       "target/vela-git:v0.4.0",
+				Name:        "clone",
+				Number:      2,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_foo",
+				Directory:   "/vela/src/foo//",
+				Environment: goFooEnv,
+				Image:       "alpine",
+				Name:        "foo",
+				Number:      3,
+				Pull:        "not_present",
+			},
+		},
+	}
+
+	starlarkFooEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("starlark")}, nil)
+	starlarkFooEnv["PARAMETER_REGISTRY"] = "foo"
+
+	defaultStarlarkEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("starlark")}, nil)
+	wantStarlark := &pipeline.Build{
+		Version: "1",
+		ID:      "__0",
+		Metadata: pipeline.Metadata{
+			Clone:    true,
+			Template: false,
+		},
+		Steps: pipeline.ContainerSlice{
+			&pipeline.Container{
+				ID:          "step___0_init",
+				Directory:   "/vela/src/foo//",
+				Environment: defaultStarlarkEnv,
+				Image:       "#init",
+				Name:        "init",
+				Number:      1,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_clone",
+				Directory:   "/vela/src/foo//",
+				Environment: defaultStarlarkEnv,
+				Image:       "target/vela-git:v0.4.0",
+				Name:        "clone",
+				Number:      2,
+				Pull:        "not_present",
+			},
+			&pipeline.Container{
+				ID:          "step___0_foo",
+				Directory:   "/vela/src/foo//",
+				Environment: starlarkFooEnv,
+				Image:       "alpine",
+				Name:        "foo",
+				Number:      3,
+				Pull:        "not_present",
+			},
+		},
+	}
+
+	type args struct {
+		file         string
+		pipelineType string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *pipeline.Build
+		wantErr bool
+	}{
+		{"default", args{file: "testdata/pipeline_type_default.yml", pipelineType: ""}, wantDefault, false},
+		{"golang", args{file: "testdata/pipeline_type_go.yml", pipelineType: "go"}, wantGo, false},
+		{"starlark", args{file: "testdata/pipeline_type.star", pipelineType: "starlark"}, wantStarlark, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// run test
+			yaml, err := ioutil.ReadFile(tt.args.file)
+			if err != nil {
+				t.Errorf("Reading yaml file return err: %v", err)
+			}
+
+			compiler, err := New(c)
+			if err != nil {
+				t.Errorf("Creating compiler returned err: %v", err)
+			}
+
+			compiler.WithMetadata(m)
+			compiler.WithRepo(&library.Repo{PipelineType: &tt.args.pipelineType})
+
+			got, err := compiler.Compile(yaml)
+			if err != nil {
+				t.Errorf("Compile returned err: %v", err)
+			}
+
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("Compile() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
 func TestNative_Compile_NoStepsorStages(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
@@ -1463,7 +1659,8 @@ func Test_client_modifyConfig(t *testing.T) {
 	want := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{
@@ -1495,7 +1692,8 @@ func Test_client_modifyConfig(t *testing.T) {
 	want2 := &yaml.Build{
 		Version: "1",
 		Metadata: yaml.Metadata{
-			Template: false,
+			Template:    false,
+			Environment: []string{"steps", "services", "secrets"},
 		},
 		Steps: yaml.StepSlice{
 			&yaml.Step{

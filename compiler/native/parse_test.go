@@ -13,6 +13,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-vela/types/constants"
+	"github.com/go-vela/types/library"
+
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
 	"github.com/google/go-cmp/cmp"
@@ -829,4 +832,134 @@ type FailReader struct{}
 
 func (FailReader) Read(p []byte) (n int, err error) {
 	return 0, errors.New("this is a reader that fails when you try to read")
+}
+
+func Test_client_Parse(t *testing.T) {
+	// setup types
+	want := &yaml.Build{
+		Version: "1",
+		Metadata: yaml.Metadata{
+			Template:    false,
+			Clone:       nil,
+			Environment: nil,
+		},
+		Steps: yaml.StepSlice{
+			{
+				Name:  "foo",
+				Image: "alpine",
+				Pull:  "not_present",
+				Parameters: map[string]interface{}{
+					"registry": "foo",
+				},
+			},
+		},
+	}
+	type args struct {
+		pipelineType string
+		file         string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *yaml.Build
+		wantErr bool
+	}{
+		{"yaml", args{pipelineType: constants.PipelineTypeYAML, file: "testdata/pipeline_type_default.yml"}, want, false},
+		{"starlark", args{pipelineType: constants.PipelineTypeStarlark, file: "testdata/pipeline_type.star"}, want, false},
+		{"go", args{pipelineType: constants.PipelineTypeGo, file: "testdata/pipeline_type_go.yml"}, want, false},
+		{"empty", args{pipelineType: "", file: "testdata/pipeline_type_default.yml"}, want, false},
+		{"nil", args{pipelineType: "nil", file: "testdata/pipeline_type_default.yml"}, want, false},
+		{"invalid", args{pipelineType: "foo", file: "testdata/pipeline_type_default.yml"}, nil, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			content, err := ioutil.ReadFile(tt.args.file)
+			if err != nil {
+				t.Errorf("Reading file returned err: %v", err)
+			}
+
+			var c *client
+			if tt.args.pipelineType == "nil" {
+				c = &client{}
+			} else {
+				c = &client{
+					repo: &library.Repo{PipelineType: &tt.args.pipelineType},
+				}
+			}
+
+			got, err := c.Parse(content)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if diff := cmp.Diff(tt.want, got); diff != "" {
+				t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func Test_client_ParseRaw(t *testing.T) {
+	expected, err := ioutil.ReadFile("testdata/metadata.yml")
+	if err != nil {
+		t.Errorf("Reading file returned err: %v", err)
+	}
+	type args struct {
+		kind string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{"byte", args{kind: "byte"}, string(expected), false},
+		{"file", args{kind: "file"}, string(expected), false},
+		{"io reader", args{kind: "ioreader"}, string(expected), false},
+		{"string", args{kind: "string"}, string(expected), false},
+		{"path", args{kind: "path"}, string(expected), false},
+		{"unexpected", args{kind: "foo"}, "", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var content interface{}
+			var err error
+			switch tt.args.kind {
+			case "byte":
+				content, err = ioutil.ReadFile("testdata/metadata.yml")
+				if err != nil {
+					t.Errorf("Reading file returned err: %v", err)
+				}
+			case "file":
+				content, err = os.Open("testdata/metadata.yml")
+				if err != nil {
+					t.Errorf("Reading file returned err: %v", err)
+				}
+			case "ioreader":
+				b, err := ioutil.ReadFile("testdata/metadata.yml")
+				if err != nil {
+					t.Errorf("ParseReader returned err: %v", err)
+				}
+
+				content = bytes.NewReader(b)
+				if err != nil {
+					t.Errorf("Reading file returned err: %v", err)
+				}
+			case "path":
+				content = "testdata/metadata.yml"
+			case "string":
+				content = tt.want
+			}
+
+			c := &client{}
+			got, err := c.ParseRaw(content)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseRaw() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ParseRaw() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

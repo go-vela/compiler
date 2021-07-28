@@ -30,6 +30,10 @@ type Engine interface {
 	// an object to a yaml configuration.
 	Parse(interface{}) (*yaml.Build, error)
 
+	// ParseRaw defines a function that converts
+	// an object to a string.
+	ParseRaw(interface{}) (string, error)
+
 	// Validate defines a function that verifies
 	// the yaml configuration is accurate.
 	Validate(*yaml.Build) error

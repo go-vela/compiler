@@ -9,7 +9,10 @@ import "github.com/go-vela/types/yaml"
 // Engine represents the interface for Vela integrating
 // with the different supported template engines.
 type Engine interface {
-	// Render defines a function that combines
+	// RenderBuild defines a function that combines
+	// the template with the build.
+	RenderBuild(template string, step *yaml.Step) (yaml.StepSlice, error)
+	// RenderStep defines a function that combines
 	// the template with the step.
-	Render(template string, step *yaml.Step) (yaml.StepSlice, error)
+	RenderStep(template string, step *yaml.Step) (yaml.StepSlice, error)
 }
