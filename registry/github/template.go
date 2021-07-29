@@ -40,7 +40,7 @@ func (c *client) Template(u *library.User, s *registry.Source) ([]byte, error) {
 	//
 	// nolint: lll // ignore long line length due to variable names
 	data, _, resp, err := cli.Repositories.GetContents(context.Background(), s.Org, s.Repo, s.Name, opts)
-	if err != nil {
+	if err != nil && resp != nil {
 		if resp.StatusCode != http.StatusNotFound {
 			return nil, err
 		}
