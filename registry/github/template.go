@@ -56,5 +56,5 @@ func (c *client) Template(u *library.User, s *registry.Source) ([]byte, error) {
 		return []byte(strData), nil
 	}
 
-	return nil, fmt.Errorf("no valid template found at %s/%s/%s", s.Org, s.Repo, s.Name)
+	return nil, fmt.Errorf("no Vela template found at %s/%s/%s", s.Org, s.Repo, s.Name)
 }
