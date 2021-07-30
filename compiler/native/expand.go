@@ -61,8 +61,8 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 		tmpl, ok := tmpls[step.Template.Name]
 		if !ok {
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template source in pipeline for step %s", step.Name)
-    }
-    
+		}
+
 		// Create some default global environment inject vars
 		// these are used below to overwrite to an empty
 		// map if they should not be injected into a container
