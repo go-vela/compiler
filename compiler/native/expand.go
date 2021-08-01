@@ -60,7 +60,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 		// lookup step template name
 		tmpl, ok := tmpls[step.Template.Name]
 		if !ok {
-			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template source in pipeline for step %s", step.Name)
+			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template source for %s in pipeline for step %s", step.Template.Name, step.Name)
 		}
 
 		// Create some default global environment inject vars
