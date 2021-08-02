@@ -38,6 +38,7 @@ func (c *client) Parse(path string) (*registry.Source, error) {
 	parts := strings.SplitN(u.Path, "/", 3)
 
 	// ensure org, repo and filename parts exist
+	// nolint: gomnd // ignore magic number
 	if len(parts) < 3 {
 		return &registry.Source{}, fmt.Errorf("invalid template source %s", path)
 	}
