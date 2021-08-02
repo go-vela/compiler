@@ -5,6 +5,7 @@
 package github
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/go-vela/compiler/registry"
@@ -35,6 +36,11 @@ func (c *client) Parse(path string) (*registry.Source, error) {
 	// * <org>/<repo>/<path>/<to>/<filename>
 	// nolint: gomnd // ignore magic number
 	parts := strings.SplitN(u.Path, "/", 3)
+
+	// ensure org, repo and filename parts exist
+	if len(parts) < 3 {
+		return &registry.Source{}, fmt.Errorf("invalid template source %s", path)
+	}
 
 	// check for reference provided in filename:
 	// * <org>/<repo>/<filename>@<reference>
