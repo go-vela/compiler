@@ -101,6 +101,9 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			// pull from public github when the host isn't provided or is set to github.com
 			if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
 				bytes, err = c.Github.Template(nil, src)
+				if err != nil {
+					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+				}
 			}
 
 			// pull from private github installation if the host is not empty
