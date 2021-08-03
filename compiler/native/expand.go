@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-vela/compiler/template/native"
 	"github.com/go-vela/compiler/template/starlark"
+	"github.com/spf13/afero"
 
 	"github.com/go-vela/types/raw"
 	"github.com/go-vela/types/yaml"
@@ -78,32 +79,41 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 		}
 
-		// skip processing template if the type isn't github
-		if tmpl.Type != "github" {
+		switch {
+		case c.local:
+			a := &afero.Afero{
+				Fs: afero.NewOsFs(),
+			}
+
+			bytes, err = a.ReadFile(tmpl.Source)
+			if err != nil {
+				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+			}
+
+		case strings.EqualFold(tmpl.Type, "github"):
+			// parse source from template
+			src, err := c.Github.Parse(tmpl.Source)
+			if err != nil {
+				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
+			}
+
+			// pull from public github when the host isn't provided or is set to github.com
+			if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
+				bytes, err = c.Github.Template(nil, src)
+
+			}
+
+			// pull from private github installation if the host is not empty
+			if len(src.Host) > 0 {
+				bytes, err = c.PrivateGithub.Template(c.user, src)
+				if err != nil {
+					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+				}
+			}
+
+		default:
 			logrus.Errorf("Unsupported template type: %v", tmpl.Type)
 			continue
-		}
-
-		// parse source from template
-		src, err := c.Github.Parse(tmpl.Source)
-		if err != nil {
-			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
-		}
-
-		// pull from public github when the host isn't provided or is set to github.com
-		if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
-			bytes, err = c.Github.Template(nil, src)
-			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
-			}
-		}
-
-		// pull from private github installation if the host is not empty
-		if len(src.Host) > 0 {
-			bytes, err = c.PrivateGithub.Template(c.user, src)
-			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
-			}
 		}
 
 		var tmplSteps yaml.StepSlice

@@ -133,4 +133,7 @@ type Engine interface {
 	// WithUser defines a function that sets
 	// the library user type in the Engine.
 	WithUser(*library.User) Engine
+	// WithUser defines a function that sets
+	// the private github client in the Engine.
+	WithPrivateGitHub(string, string) Engine
 }
