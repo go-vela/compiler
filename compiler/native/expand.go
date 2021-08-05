@@ -79,7 +79,6 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 		}
 
-		// nolint:ineffassign // ignoring linter on overwriting the "bytes" var
 		switch {
 		case c.local:
 			a := &afero.Afero{
