@@ -39,8 +39,8 @@ func (c *client) Parse(path string) (*registry.Source, error) {
 
 	// ensure org, repo and filename parts exist
 	// nolint: gomnd // ignore magic number
-	// nolint: lll // ignore long line length due to error message
 	if len(parts) < 3 {
+		// nolint: lll // ignore long line length due to error message
 		return &registry.Source{}, fmt.Errorf("invalid template source %s, must contain org/repo/path_to_template", path)
 	}
 
