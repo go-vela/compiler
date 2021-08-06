@@ -16,7 +16,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/go-vela/sdk-go/vela"
 	"github.com/go-vela/types/library"
 	"github.com/go-vela/types/yaml"
 
@@ -1420,10 +1419,12 @@ func TestNative_Compile_Pipeline_Type(t *testing.T) {
 		},
 	}
 
-	goFooEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("go")}, nil)
+	goPipelineType := "go"
+
+	goFooEnv := environment(nil, m, &library.Repo{PipelineType: &goPipelineType}, nil)
 	goFooEnv["PARAMETER_REGISTRY"] = "foo"
 
-	defaultGoEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("go")}, nil)
+	defaultGoEnv := environment(nil, m, &library.Repo{PipelineType: &goPipelineType}, nil)
 	wantGo := &pipeline.Build{
 		Version: "1",
 		ID:      "__0",
@@ -1462,10 +1463,12 @@ func TestNative_Compile_Pipeline_Type(t *testing.T) {
 		},
 	}
 
-	starlarkFooEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("starlark")}, nil)
+	starPipelineType := "starlark"
+
+	starlarkFooEnv := environment(nil, m, &library.Repo{PipelineType: &starPipelineType}, nil)
 	starlarkFooEnv["PARAMETER_REGISTRY"] = "foo"
 
-	defaultStarlarkEnv := environment(nil, m, &library.Repo{PipelineType: vela.String("starlark")}, nil)
+	defaultStarlarkEnv := environment(nil, m, &library.Repo{PipelineType: &starPipelineType}, nil)
 	wantStarlark := &pipeline.Build{
 		Version: "1",
 		ID:      "__0",
