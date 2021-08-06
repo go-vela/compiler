@@ -22,6 +22,6 @@ require (
 	github.com/spf13/afero v1.3.1
 	github.com/urfave/cli/v2 v2.3.0
 	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
-	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
+	golang.org/x/oauth2 v0.0.0-20210805134026-6f1e6394065a
 	k8s.io/apimachinery v0.22.0
 )
