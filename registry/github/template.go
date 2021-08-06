@@ -41,9 +41,21 @@ func (c *client) Template(u *library.User, s *registry.Source) ([]byte, error) {
 	// nolint: lll // ignore long line length due to variable names
 	data, _, resp, err := cli.Repositories.GetContents(context.Background(), s.Org, s.Repo, s.Name, opts)
 	if err != nil {
-		if resp.StatusCode != http.StatusNotFound {
-			return nil, err
+		if resp != nil && resp.StatusCode != http.StatusNotFound {
+			// return different error message depending on if a branch was provided
+			if len(s.Ref) == 0 {
+				errString := "unexpected error fetching template %s/%s/%s: %v"
+				return nil, fmt.Errorf(errString, s.Org, s.Repo, s.Name, err)
+			}
+			errString := "unexpected error fetching template %s/%s/%s@%s: %v"
+			return nil, fmt.Errorf(errString, s.Org, s.Repo, s.Name, s.Ref, err)
 		}
+
+		// return different error message depending on if a branch was provided
+		if len(s.Ref) == 0 {
+			return nil, fmt.Errorf("no Vela template found at %s/%s/%s", s.Org, s.Repo, s.Name)
+		}
+		return nil, fmt.Errorf("no Vela template found at %s/%s/%s@%s", s.Org, s.Repo, s.Name, s.Ref)
 	}
 
 	// data is not nil if template exists
@@ -56,5 +68,9 @@ func (c *client) Template(u *library.User, s *registry.Source) ([]byte, error) {
 		return []byte(strData), nil
 	}
 
-	return nil, fmt.Errorf("no valid template found at %s/%s/%s", s.Org, s.Repo, s.Name)
+	// return different error message depending on if a branch was provided
+	if len(s.Ref) == 0 {
+		return nil, fmt.Errorf("no Vela template found at %s/%s/%s", s.Org, s.Repo, s.Name)
+	}
+	return nil, fmt.Errorf("no Vela template found at %s/%s/%s@%s", s.Org, s.Repo, s.Name, s.Ref)
 }
