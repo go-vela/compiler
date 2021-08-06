@@ -19,6 +19,7 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/afero v1.3.1
 	github.com/urfave/cli/v2 v2.3.0
 	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
 	golang.org/x/oauth2 v0.0.0-20210805134026-6f1e6394065a
