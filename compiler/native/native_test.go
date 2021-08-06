@@ -239,6 +239,32 @@ func TestNative_WithMetadata(t *testing.T) {
 	}
 }
 
+func TestNative_WithPrivateGitHub(t *testing.T) {
+	// setup types
+	url := "http://foo.example.com"
+	token := "someToken"
+	set := flag.NewFlagSet("test", 0)
+	set.Bool("github-driver", true, "doc")
+	set.String("github-url", url, "doc")
+	set.String("github-token", token, "doc")
+	c := cli.NewContext(nil, set, nil)
+
+	private, _ := github.New(url, token)
+
+	want, _ := New(c)
+	want.PrivateGithub = private
+
+	// run test
+	got, err := New(c)
+	if err != nil {
+		t.Errorf("Unable to create new compiler: %v", err)
+	}
+
+	if !reflect.DeepEqual(got.WithPrivateGitHub(url, token), want) {
+		t.Errorf("WithRepo is %v, want %v", got, want)
+	}
+}
+
 func TestNative_WithRepo(t *testing.T) {
 	// setup types
 	set := flag.NewFlagSet("test", 0)
