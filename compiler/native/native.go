@@ -146,6 +146,17 @@ func (c *client) WithMetadata(m *types.Metadata) compiler.Engine {
 	return c
 }
 
+// WithPrivateGitHub sets the private github client in the Engine.
+func (c *client) WithPrivateGitHub(url, token string) compiler.Engine {
+	if len(url) != 0 && len(token) != 0 {
+		privGithub, _ := setupPrivateGithub(url, token)
+
+		c.PrivateGithub = privGithub
+	}
+
+	return c
+}
+
 // WithRepo sets the library repo type in the Engine.
 func (c *client) WithRepo(r *library.Repo) compiler.Engine {
 	if r != nil {
