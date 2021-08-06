@@ -8,7 +8,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.3
 	github.com/gin-gonic/gin v1.7.3
-	github.com/go-vela/types v0.8.3-0.20210726122150-0eaf6091307b
+	github.com/go-vela/types v0.9.0-rc1
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-github/v37 v37.0.0
 	github.com/google/go-querystring v1.1.0 // indirect
