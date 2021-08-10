@@ -29,6 +29,7 @@ type ModifyRequest struct {
 	Pipeline string `json:"pipeline,omitempty"`
 	Build    int    `json:"build,omitempty"`
 	Repo     string `json:"repo,omitempty"`
+	Org      string `json:"org,omitempty"`
 	User     string `json:"user,omitempty"`
 }
 
@@ -262,6 +263,7 @@ func (c *client) modifyConfig(build *yaml.Build, libraryBuild *library.Build, re
 		Pipeline: string(data),
 		Build:    libraryBuild.GetNumber(),
 		Repo:     repo.GetName(),
+		Org:      repo.GetOrg(),
 		User:     libraryBuild.GetAuthor(),
 	}
 
