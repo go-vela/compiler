@@ -24,6 +24,6 @@ require (
 	github.com/urfave/cli/v2 v2.3.0
 	go.starlark.net v0.0.0-20210602144842-1cdb82c9e17a
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
-	golang.org/x/oauth2 v0.0.0-20210805134026-6f1e6394065a
+	golang.org/x/oauth2 v0.0.0-20210810183815-faf39c7919d5
 	k8s.io/apimachinery v0.22.0
 )
