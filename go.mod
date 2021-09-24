@@ -1,5 +1,7 @@
 module github.com/go-vela/compiler
 
+replace github.com/go-vela/types => github.com/JordanSussman/types v0.1.2-0.20210924200358-25edba135fd2
+
 go 1.16
 
 require (
