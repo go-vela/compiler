@@ -1,7 +1,5 @@
 module github.com/go-vela/compiler
 
-replace github.com/go-vela/types => github.com/JordanSussman/types v0.1.2-0.20210924200358-25edba135fd2
-
 go 1.16
 
 require (
@@ -10,7 +8,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/drone/envsubst v1.0.3
 	github.com/gin-gonic/gin v1.7.4
-	github.com/go-vela/types v0.9.0
+	github.com/go-vela/types v0.9.1-0.20210927152526-522194f7764b
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-github/v39 v39.1.0
 	github.com/google/uuid v1.1.4 // indirect
