@@ -109,24 +109,6 @@ func TestNative_ScriptSteps(t *testing.T) {
 	c := cli.NewContext(nil, set, nil)
 
 	baseEnv := environment(nil, nil, nil, nil)
-
-	p := yaml.StepSlice{
-		&yaml.Step{
-			Commands:    []string{"./gradlew downloadDependencies"},
-			Environment: baseEnv,
-			Image:       "openjdk:latest",
-			Name:        "install",
-			Pull:        "always",
-		},
-		&yaml.Step{
-			Commands:    []string{"./gradlew check"},
-			Environment: baseEnv,
-			Image:       "openjdk:latest",
-			Name:        "test",
-			Pull:        "always",
-		},
-	}
-
 	baseEnv["HOME"] = "/root"
 	baseEnv["SHELL"] = "/bin/sh"
 
@@ -135,37 +117,137 @@ func TestNative_ScriptSteps(t *testing.T) {
 	testEnv := baseEnv
 	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
 
-	want := yaml.StepSlice{
-		&yaml.Step{
-			Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
-			Entrypoint:  []string{"/bin/sh", "-c"},
-			Environment: installEnv,
-			Image:       "openjdk:latest",
-			Name:        "install",
-			Pull:        "always",
-		},
-		&yaml.Step{
-			Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
-			Entrypoint:  []string{"/bin/sh", "-c"},
-			Environment: testEnv,
-			Image:       "openjdk:latest",
-			Name:        "test",
-			Pull:        "always",
-		},
+	type args struct {
+		s yaml.StepSlice
 	}
-
-	// run test
-	compiler, err := New(c)
-	if err != nil {
-		t.Errorf("Creating compiler returned err: %v", err)
+	tests := []struct {
+		name    string
+		args    args
+		want    yaml.StepSlice
+		wantErr bool
+	}{
+		{"no user defined", args{s: yaml.StepSlice{
+			&yaml.Step{
+				Commands:    []string{"./gradlew downloadDependencies"},
+				Environment: baseEnv,
+				Image:       "openjdk:latest",
+				Name:        "install",
+				Pull:        "always",
+			},
+			&yaml.Step{
+				Commands:    []string{"./gradlew check"},
+				Environment: baseEnv,
+				Image:       "openjdk:latest",
+				Name:        "test",
+				Pull:        "always",
+			},
+		}}, yaml.StepSlice{
+			&yaml.Step{
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Entrypoint:  []string{"/bin/sh", "-c"},
+				Environment: installEnv,
+				Image:       "openjdk:latest",
+				Name:        "install",
+				Pull:        "always",
+			},
+			&yaml.Step{
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Entrypoint:  []string{"/bin/sh", "-c"},
+				Environment: testEnv,
+				Image:       "openjdk:latest",
+				Name:        "test",
+				Pull:        "always",
+			},
+		}, false},
+		{"root user defined", args{s: yaml.StepSlice{
+			&yaml.Step{
+				Commands:    []string{"./gradlew downloadDependencies"},
+				Environment: baseEnv,
+				Image:       "openjdk:latest",
+				Name:        "install",
+				User:        "root",
+				Pull:        "always",
+			},
+			&yaml.Step{
+				Commands:    []string{"./gradlew check"},
+				Environment: baseEnv,
+				Image:       "openjdk:latest",
+				Name:        "test",
+				User:        "root",
+				Pull:        "always",
+			},
+		}}, yaml.StepSlice{
+			&yaml.Step{
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Entrypoint:  []string{"/bin/sh", "-c"},
+				Environment: installEnv,
+				Image:       "openjdk:latest",
+				Name:        "install",
+				User:        "root",
+				Pull:        "always",
+			},
+			&yaml.Step{
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Entrypoint:  []string{"/bin/sh", "-c"},
+				Environment: testEnv,
+				Image:       "openjdk:latest",
+				Name:        "test",
+				User:        "root",
+				Pull:        "always",
+			},
+		}, false},
+		{"foo user defined", args{s: yaml.StepSlice{
+			&yaml.Step{
+				Commands:    []string{"./gradlew downloadDependencies"},
+				Environment: baseEnv,
+				Image:       "openjdk:latest",
+				Name:        "install",
+				User:        "foo",
+				Pull:        "always",
+			},
+			&yaml.Step{
+				Commands:    []string{"./gradlew check"},
+				Environment: baseEnv,
+				Image:       "openjdk:latest",
+				Name:        "test",
+				User:        "foo",
+				Pull:        "always",
+			},
+		}}, yaml.StepSlice{
+			&yaml.Step{
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Entrypoint:  []string{"/bin/sh", "-c"},
+				Environment: installEnv,
+				Image:       "openjdk:latest",
+				Name:        "install",
+				User:        "foo",
+				Pull:        "always",
+			},
+			&yaml.Step{
+				Commands:    []string{"echo $VELA_BUILD_SCRIPT | base64 -d | /bin/sh -e"},
+				Entrypoint:  []string{"/bin/sh", "-c"},
+				Environment: testEnv,
+				Image:       "openjdk:latest",
+				Name:        "test",
+				User:        "foo",
+				Pull:        "always",
+			},
+		}, false},
 	}
-
-	got, err := compiler.ScriptSteps(p)
-	if err != nil {
-		t.Errorf("ScriptSteps returned err: %v", err)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("ScriptSteps is %v, want %v", got, want)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			compiler, err := New(c)
+			if err != nil {
+				t.Errorf("Creating compiler returned err: %v", err)
+			}
+			got, err := compiler.ScriptSteps(tt.args.s)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ScriptSteps() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ScriptSteps() got = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
