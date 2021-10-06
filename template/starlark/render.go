@@ -8,13 +8,20 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"sync"
 
 	yaml "github.com/buildkite/yaml"
 	types "github.com/go-vela/types/yaml"
 	"go.starlark.net/starlark"
+	"go.starlark.net/starlarkstruct"
 )
 
 var (
+	once         sync.Once
+	loadedModule starlark.StringDict
+	loadError    error
+
 	// ErrMissingMainFunc defines the error type when the
 	// main function does not exist in the provided template.
 	ErrMissingMainFunc = errors.New("unable to find main function in template")
@@ -34,7 +41,7 @@ var (
 func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
 	config := new(types.Build)
 
-	thread := &starlark.Thread{Name: s.Name}
+	thread := &starlark.Thread{Name: s.Name, Load: load}
 	// arbitrarily limiting the steps of the thread to 5000 to help prevent infinite loops
 	// may need to further investigate spawning a separate POSIX process if user input is problematic
 	// see https://github.com/google/starlark-go/issues/160#issuecomment-466794230 for further details
@@ -210,4 +217,23 @@ func RenderBuild(b string, envs map[string]string) (*types.Build, error) {
 	}
 
 	return config, nil
+}
+
+// Load function for step to load extension modules
+//
+// https://github.com/google/starlark-go/blob/master/doc/spec.md#load-statements
+func load(thread *starlark.Thread, module string) (starlark.StringDict, error) {
+	once.Do(func() {
+		predeclared := starlark.StringDict{
+			"module": starlark.NewBuiltin("module", starlarkstruct.MakeModule),
+		}
+
+		content, loadError := ioutil.ReadFile(module)
+		if loadError == nil {
+			src := string(content)
+			thread := &starlark.Thread{Name: "load-module"}
+			loadedModule, loadError = starlark.ExecFile(thread, module, src, predeclared)
+		}
+	})
+	return loadedModule, loadError
 }

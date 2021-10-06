@@ -27,6 +27,7 @@ func TestStarlark_RenderStep(t *testing.T) {
 	}{
 		{"basic", args{velaFile: "testdata/step/basic/step.yml", starlarkFile: "testdata/step/basic/template.py"}, "testdata/step/basic/want.yml", false},
 		{"with method", args{velaFile: "testdata/step/with_method/step.yml", starlarkFile: "testdata/step/with_method/template.star"}, "testdata/step/with_method/want.yml", false},
+		{"with module", args{velaFile: "testdata/step/with_module/step.yml", starlarkFile: "testdata/step/with_module/template.star"}, "testdata/step/with_module/want.yml", false},
 		{"user vars", args{velaFile: "testdata/step/with_vars/step.yml", starlarkFile: "testdata/step/with_vars/template.star"}, "testdata/step/with_vars/want.yml", false},
 		{"platform vars", args{velaFile: "testdata/step/with_vars_plat/step.yml", starlarkFile: "testdata/step/with_vars_plat/template.star"}, "testdata/step/with_vars_plat/want.yml", false},
 		{"cancel due to complexity", args{velaFile: "testdata/step/cancel/step.yml", starlarkFile: "testdata/step/cancel/template.star"}, "", true},
