@@ -97,14 +97,14 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
 			}
 
-			// pull from public github when the host isn't provided or is set to github.com
-			if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
+			// pull from github without auth when the host isn't provided or is set to github.com
+			if len(src.Host) == 0 || (strings.Contains(src.Host, "github.com") && !c.UsePrivateGithub) {
 				bytes, err = c.Github.Template(nil, src)
 				if err != nil {
 					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 				}
 			} else {
-				// assume private github instance to pull from
+				// use private (authenticated) github instance to pull from
 				bytes, err = c.PrivateGithub.Template(c.user, src)
 				if err != nil {
 					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err

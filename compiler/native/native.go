@@ -29,6 +29,7 @@ type ModificationConfig struct {
 type client struct {
 	Github              registry.Service
 	PrivateGithub       registry.Service
+	UsePrivateGithub    bool
 	ModificationService ModificationConfig
 
 	build    *library.Build
@@ -72,6 +73,7 @@ func New(ctx *cli.Context) (*client, error) {
 		}
 
 		c.PrivateGithub = privGithub
+		c.UsePrivateGithub = true
 	}
 
 	return c, nil
