@@ -66,6 +66,7 @@ func New(ctx *cli.Context) (*client, error) {
 	c.Github = github
 
 	if ctx.Bool("github-driver") {
+		logrus.Tracef("setting up Private GitHub Client for %s", ctx.String("github-url"))
 		// setup private github service
 		privGithub, err := setupPrivateGithub(ctx.String("github-url"), ctx.String("github-token"))
 		if err != nil {
