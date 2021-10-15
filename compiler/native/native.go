@@ -101,6 +101,7 @@ func (c *client) Duplicate() compiler.Engine {
 	// copy the essential fields from the existing client
 	cc.Github = c.Github
 	cc.PrivateGithub = c.PrivateGithub
+	cc.UsePrivateGithub = c.UsePrivateGithub
 	cc.ModificationService = c.ModificationService
 
 	return cc
