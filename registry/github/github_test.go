@@ -26,7 +26,7 @@ func TestGithub_New(t *testing.T) {
 
 	want := &client{
 		Github: gitClient,
-		URL:    s.URL,
+		URL:    s.URL + "/",
 		API:    s.URL + "/api/v3/",
 	}
 
@@ -57,7 +57,7 @@ func TestGithub_NewToken(t *testing.T) {
 
 	want := &client{
 		Github: gitClient,
-		URL:    s.URL,
+		URL:    s.URL + "/",
 		API:    s.URL + "/api/v3/",
 	}
 
