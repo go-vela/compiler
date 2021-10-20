@@ -3,8 +3,9 @@ package native
 import (
 	"bytes"
 	"fmt"
-	"github.com/go-vela/types/raw"
 	"text/template"
+
+	"github.com/go-vela/types/raw"
 
 	types "github.com/go-vela/types/yaml"
 

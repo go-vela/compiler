@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+
 	"github.com/go-vela/types/raw"
 
 	yaml "github.com/buildkite/yaml"
