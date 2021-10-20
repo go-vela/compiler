@@ -42,8 +42,10 @@ func (c *client) ScriptSteps(s yaml.StepSlice) (yaml.StepSlice, error) {
 		// nolint: goconst // ignore making this a constant for now
 		home := "/root"
 		// override the home value if user is defined
+		// TODO:
+		// - add ability to override user home directory
 		if step.User != "" {
-			home = fmt.Sprintf("/%s", step.User)
+			home = fmt.Sprintf("/home/%s", step.User)
 		}
 
 		// generate script from commands
