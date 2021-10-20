@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/go-vela/types/raw"
 
 	yaml "github.com/buildkite/yaml"
 	types "github.com/go-vela/types/yaml"
@@ -31,7 +32,7 @@ var (
 // RenderStep combines the template with the step in the yaml pipeline.
 //
 // nolint: funlen,lll // ignore function length due to comments
-func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, error) {
+func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice, types.ServiceSlice, raw.StringSliceMap, error) {
 	config := new(types.Build)
 
 	thread := &starlark.Thread{Name: s.Name}
@@ -43,31 +44,31 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 	thread.SetMaxExecutionSteps(5000)
 	globals, err := starlark.ExecFile(thread, s.Template.Name, tmpl, nil)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
 	// check the provided template has a main function
 	mainVal, ok := globals["main"]
 	if !ok {
-		return nil, nil, nil, fmt.Errorf("%s: %s", ErrMissingMainFunc, s.Template.Name)
+		return nil, nil, nil, nil, fmt.Errorf("%s: %s", ErrMissingMainFunc, s.Template.Name)
 	}
 
 	// check the provided main is a function
 	main, ok := mainVal.(starlark.Callable)
 	if !ok {
-		return nil, nil, nil, fmt.Errorf("%s: %s", ErrInvalidMainFunc, s.Template.Name)
+		return nil, nil, nil, nil, fmt.Errorf("%s: %s", ErrInvalidMainFunc, s.Template.Name)
 	}
 
 	// load the user provided vars into a starlark type
 	userVars, err := convertTemplateVars(s.Template.Variables)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
 	// load the platform provided vars into a starlark type
 	velaVars, err := convertPlatformVars(s.Environment, s.Name)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
 	// add the user and platform vars to a context to be used
@@ -75,11 +76,11 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 	context := starlark.NewDict(0)
 	err = context.SetKey(starlark.String("vela"), velaVars)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 	err = context.SetKey(starlark.String("vars"), userVars)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
 	args := starlark.Tuple([]starlark.Value{context})
@@ -87,7 +88,7 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 	// execute Starlark program from Go.
 	mainVal, err = starlark.Call(thread, main, args, nil)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, nil, nil, err
 	}
 
 	buf := new(bytes.Buffer)
@@ -100,7 +101,7 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 			buf.WriteString("---\n")
 			err = writeJSON(buf, item)
 			if err != nil {
-				return nil, nil, nil, err
+				return nil, nil, nil, nil, err
 			}
 			buf.WriteString("\n")
 		}
@@ -108,17 +109,17 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 		buf.WriteString("---\n")
 		err = writeJSON(buf, v)
 		if err != nil {
-			return nil, nil, nil, err
+			return nil, nil, nil, nil, err
 		}
 	default:
-		return nil, nil, nil, fmt.Errorf("%s: %s", ErrInvalidPipelineReturn, mainVal.Type())
+		return nil, nil, nil, nil, fmt.Errorf("%s: %s", ErrInvalidPipelineReturn, mainVal.Type())
 	}
 
 	// unmarshal the template to the pipeline
 	err = yaml.Unmarshal(buf.Bytes(), config)
 	if err != nil {
 		// nolint: lll // ignore long line length due to return args
-		return types.StepSlice{}, types.SecretSlice{}, types.ServiceSlice{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
+		return types.StepSlice{}, types.SecretSlice{}, types.ServiceSlice{}, raw.StringSliceMap{}, fmt.Errorf("unable to unmarshal yaml: %v", err)
 	}
 
 	// ensure all templated steps have template prefix
@@ -126,7 +127,7 @@ func RenderStep(tmpl string, s *types.Step) (types.StepSlice, types.SecretSlice,
 		config.Steps[index].Name = fmt.Sprintf("%s_%s", s.Name, newStep.Name)
 	}
 
-	return config.Steps, config.Secrets, config.Services, nil
+	return config.Steps, config.Secrets, config.Services, config.Environment, nil
 }
 
 // RenderBuild renders the templated build.
