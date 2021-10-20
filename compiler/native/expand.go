@@ -99,13 +99,23 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 
 			// pull from github without auth when the host isn't provided or is set to github.com
 			if !c.UsePrivateGithub && (len(src.Host) == 0 || strings.Contains(src.Host, "github.com")) {
-				logrus.Tracef("Using GitHub client to pull template org/repo=%s/%s path=%s from %s", src.Org, src.Repo, src.Name, src.Host)
+				logrus.WithFields(logrus.Fields{
+					"org":  src.Org,
+					"repo": src.Repo,
+					"path": src.Name,
+					"host": src.Host,
+				}).Tracef("Using GitHub client to pull template")
 				bytes, err = c.Github.Template(nil, src)
 				if err != nil {
 					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
 				}
 			} else {
-				logrus.Tracef("Using authenticated GitHub client to pull template org/repo=%s/%s path=%s", src.Org, src.Repo, src.Name)
+				logrus.WithFields(logrus.Fields{
+					"org":  src.Org,
+					"repo": src.Repo,
+					"path": src.Name,
+					"host": src.Host,
+				}).Tracef("Using authenticated GitHub client to pull template")
 				// use private (authenticated) github instance to pull from
 				bytes, err = c.PrivateGithub.Template(c.user, src)
 				if err != nil {
