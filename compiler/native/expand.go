@@ -48,10 +48,13 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 	secrets := s.Secrets
 	services := s.Services
 	environment := s.Environment
+	if len(environment) == 0 {
+		environment = make(raw.StringSliceMap)
+	}
 
 	// iterate through each step
 	for _, step := range s.Steps {
-		// nolint: ineffassign // ignore ineffectual assignment
+		// nolint: ineffassign,staticcheck // ignore ineffectual assignment
 		bytes := []byte{}
 
 		// skip if no template is provided for the step

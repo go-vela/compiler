@@ -133,7 +133,10 @@ func TestNative_ExpandStages(t *testing.T) {
 		},
 	}
 
-	var wantEnvironment raw.StringSliceMap
+	wantEnvironment := raw.StringSliceMap{
+		"star": "test3",
+		"bar":  "test4",
+	}
 
 	// run test
 	compiler, err := New(c)
@@ -141,7 +144,7 @@ func TestNative_ExpandStages(t *testing.T) {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	stages, secrets, services, environment, err := compiler.ExpandStages(&yaml.Build{Stages: stages, Services: yaml.ServiceSlice{}}, tmpls)
+	stages, secrets, services, environment, err := compiler.ExpandStages(&yaml.Build{Stages: stages, Services: yaml.ServiceSlice{}, Environment: raw.StringSliceMap{}}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandStages returned err: %v", err)
 	}
@@ -208,6 +211,11 @@ func TestNative_ExpandSteps(t *testing.T) {
 		},
 	}
 
+	globalEnvironment := raw.StringSliceMap{
+		"foo": "test1",
+		"bar": "test2",
+	}
+
 	wantSteps := yaml.StepSlice{
 		&yaml.Step{
 			Commands: []string{"./gradlew downloadDependencies"},
@@ -266,7 +274,11 @@ func TestNative_ExpandSteps(t *testing.T) {
 		},
 	}
 
-	var wantEnvironment raw.StringSliceMap
+	wantEnvironment := raw.StringSliceMap{
+		"foo":  "test1",
+		"bar":  "test2",
+		"star": "test3",
+	}
 
 	// run test
 	compiler, err := New(c)
@@ -274,7 +286,7 @@ func TestNative_ExpandSteps(t *testing.T) {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	steps, secrets, services, environment, err := compiler.ExpandSteps(&yaml.Build{Steps: steps, Services: yaml.ServiceSlice{}}, tmpls)
+	steps, secrets, services, environment, err := compiler.ExpandSteps(&yaml.Build{Steps: steps, Services: yaml.ServiceSlice{}, Environment: globalEnvironment}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandSteps returned err: %v", err)
 	}
@@ -500,7 +512,7 @@ func TestNative_ExpandStepsMulti(t *testing.T) {
 		},
 	}
 
-	var wantEnvironment raw.StringSliceMap
+	wantEnvironment := raw.StringSliceMap{}
 
 	// run test
 	compiler, err := New(c)
@@ -508,7 +520,7 @@ func TestNative_ExpandStepsMulti(t *testing.T) {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	steps, secrets, services, environment, err := compiler.ExpandSteps(&yaml.Build{Steps: steps, Services: yaml.ServiceSlice{}}, tmpls)
+	steps, secrets, services, environment, err := compiler.ExpandSteps(&yaml.Build{Steps: steps, Services: yaml.ServiceSlice{}, Environment: raw.StringSliceMap{}}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandSteps returned err: %v", err)
 	}
@@ -584,7 +596,10 @@ func TestNative_ExpandStepsStarlark(t *testing.T) {
 
 	wantSecrets := yaml.SecretSlice{}
 	wantServices := yaml.ServiceSlice{}
-	var wantEnvironment raw.StringSliceMap
+	wantEnvironment := raw.StringSliceMap{
+		"star": "test3",
+		"bar":  "test4",
+	}
 
 	// run test
 	compiler, err := New(c)
@@ -592,7 +607,7 @@ func TestNative_ExpandStepsStarlark(t *testing.T) {
 		t.Errorf("Creating new compiler returned err: %v", err)
 	}
 
-	steps, secrets, services, environment, err := compiler.ExpandSteps(&yaml.Build{Steps: steps, Secrets: yaml.SecretSlice{}, Services: yaml.ServiceSlice{}}, tmpls)
+	steps, secrets, services, environment, err := compiler.ExpandSteps(&yaml.Build{Steps: steps, Secrets: yaml.SecretSlice{}, Services: yaml.ServiceSlice{}, Environment: raw.StringSliceMap{}}, tmpls)
 	if err != nil {
 		t.Errorf("ExpandSteps returned err: %v", err)
 	}
