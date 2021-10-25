@@ -10,7 +10,7 @@ require (
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-vela/types v0.10.0
 	github.com/google/go-cmp v0.5.6
-	github.com/google/go-github/v39 v39.1.0
+	github.com/google/go-github/v39 v39.2.0
 	github.com/google/uuid v1.1.4 // indirect
 	github.com/goware/urlx v0.3.1
 	github.com/hashicorp/go-cleanhttp v0.5.2
