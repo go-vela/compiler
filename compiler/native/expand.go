@@ -21,34 +21,40 @@ import (
 // templated step in every stage in a yaml configuration.
 //
 // nolint: lll // ignore long line length due to variable names
-func (c *client) ExpandStages(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StageSlice, yaml.SecretSlice, yaml.ServiceSlice, error) {
+func (c *client) ExpandStages(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StageSlice, yaml.SecretSlice, yaml.ServiceSlice, raw.StringSliceMap, error) {
 	// iterate through all stages
 	for _, stage := range s.Stages {
 		// inject the templates into the steps for the stage
-		steps, secrets, services, err := c.ExpandSteps(&yaml.Build{Steps: stage.Steps, Secrets: s.Secrets, Services: s.Services}, tmpls)
+		steps, secrets, services, environment, err := c.ExpandSteps(&yaml.Build{Steps: stage.Steps, Secrets: s.Secrets, Services: s.Services, Environment: s.Environment}, tmpls)
 		if err != nil {
-			return nil, nil, nil, err
+			return nil, nil, nil, nil, err
 		}
 
 		stage.Steps = steps
 		s.Secrets = secrets
 		s.Services = services
+		s.Environment = environment
 	}
 
-	return s.Stages, s.Secrets, s.Services, nil
+	return s.Stages, s.Secrets, s.Services, s.Environment, nil
 }
 
 // ExpandSteps injects the template for each
 // templated step in a yaml configuration.
 //
-// nolint: lll,funlen // ignore long line length due to variable names
-func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StepSlice, yaml.SecretSlice, yaml.ServiceSlice, error) {
+// nolint: lll,funlen,gocyclo // ignore long line length due to variable names
+func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (yaml.StepSlice, yaml.SecretSlice, yaml.ServiceSlice, raw.StringSliceMap, error) {
 	steps := yaml.StepSlice{}
 	secrets := s.Secrets
 	services := s.Services
+	environment := s.Environment
+	if len(environment) == 0 {
+		environment = make(raw.StringSliceMap)
+	}
 
 	// iterate through each step
 	for _, step := range s.Steps {
+		// nolint: ineffassign,staticcheck // ignore ineffectual assignment
 		bytes := []byte{}
 
 		// skip if no template is provided for the step
@@ -61,7 +67,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 		// lookup step template name
 		tmpl, ok := tmpls[step.Template.Name]
 		if !ok {
-			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("missing template source for template %s in pipeline for step %s", step.Template.Name, step.Name)
+			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, fmt.Errorf("missing template source for template %s in pipeline for step %s", step.Template.Name, step.Name)
 		}
 
 		// Create some default global environment inject vars
@@ -76,7 +82,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 		// inject environment information for template
 		step, err := c.EnvironmentStep(step, envGlobalSteps)
 		if err != nil {
-			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err
 		}
 
 		switch {
@@ -87,14 +93,14 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 
 			bytes, err = a.ReadFile(tmpl.Source)
 			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err
 			}
 
 		case strings.EqualFold(tmpl.Type, "github"):
 			// parse source from template
 			src, err := c.Github.Parse(tmpl.Source)
 			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
+				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
 			}
 
 			// pull from github without auth when the host isn't provided or is set to github.com
@@ -107,7 +113,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 				}).Tracef("Using GitHub client to pull template")
 				bytes, err = c.Github.Template(nil, src)
 				if err != nil {
-					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err
 				}
 			} else {
 				logrus.WithFields(logrus.Fields{
@@ -119,7 +125,7 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 				// use private (authenticated) github instance to pull from
 				bytes, err = c.PrivateGithub.Template(c.user, src)
 				if err != nil {
-					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err
 				}
 			}
 
@@ -131,23 +137,24 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 		var tmplSteps yaml.StepSlice
 		var tmplSecrets yaml.SecretSlice
 		var tmplServices yaml.ServiceSlice
+		var tmplEnvironment raw.StringSliceMap
 
 		// TODO: provide friendlier error messages with file type mismatches
 		switch tmpl.Format {
 		case "go", "golang", "":
 			// render template for steps
-			tmplSteps, tmplSecrets, tmplServices, err = native.RenderStep(string(bytes), step)
+			tmplSteps, tmplSecrets, tmplServices, tmplEnvironment, err = native.RenderStep(string(bytes), step)
 			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err
 			}
 		case "starlark":
 			// render template for steps
-			tmplSteps, tmplSecrets, tmplServices, err = starlark.RenderStep(string(bytes), step)
+			tmplSteps, tmplSecrets, tmplServices, tmplEnvironment, err = starlark.RenderStep(string(bytes), step)
 			if err != nil {
-				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, err
+				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err
 			}
 		default:
-			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, fmt.Errorf("format of %s is unsupported", tmpl.Format)
+			return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, fmt.Errorf("format of %s is unsupported", tmpl.Format)
 		}
 
 		// loop over secrets within template
@@ -182,11 +189,26 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 			}
 		}
 
+		// loop over environment within template
+		for key, value := range tmplEnvironment {
+			found := false
+			for env := range environment {
+				if key == env {
+					found = true
+				}
+			}
+
+			// only append template environment if it does not exist within base configuration
+			if !found {
+				environment[key] = value
+			}
+		}
+
 		// add templated steps
 		steps = append(steps, tmplSteps...)
 	}
 
-	return steps, secrets, services, nil
+	return steps, secrets, services, environment, nil
 }
 
 // helper function that creates a map of templates from a yaml configuration.

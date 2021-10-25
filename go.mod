@@ -10,7 +10,7 @@ require (
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-vela/types v0.10.0
 	github.com/google/go-cmp v0.5.6
-	github.com/google/go-github/v39 v39.1.0
+	github.com/google/go-github/v39 v39.2.0
 	github.com/google/uuid v1.1.4 // indirect
 	github.com/goware/urlx v0.3.1
 	github.com/hashicorp/go-cleanhttp v0.5.2
@@ -21,7 +21,7 @@ require (
 	github.com/spf13/afero v1.6.0
 	github.com/ugorji/go v1.1.11 // indirect
 	github.com/urfave/cli/v2 v2.3.0
-	go.starlark.net v0.0.0-20210901212718-87f333178d59
+	go.starlark.net v0.0.0-20211013185944-b0039bd2cfe3
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
 	k8s.io/apimachinery v0.22.2
 )

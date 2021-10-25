@@ -614,12 +614,18 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 		},
 	}
 
+	setupEnv := environment(nil, m, nil, nil)
+	setupEnv["bar"] = "test4"
+	setupEnv["star"] = "test3"
+
 	installEnv := environment(nil, m, nil, nil)
 	installEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
 	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["bar"] = "test4"
+	installEnv["star"] = "test3"
 
 	testEnv := environment(nil, m, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
@@ -627,6 +633,8 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
 	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["bar"] = "test4"
+	testEnv["star"] = "test3"
 
 	buildEnv := environment(nil, m, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
@@ -634,11 +642,19 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
 	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
+	buildEnv["bar"] = "test4"
+	buildEnv["star"] = "test3"
 
 	dockerEnv := environment(nil, m, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
 	dockerEnv["PARAMETER_REPO"] = "github/octocat"
 	dockerEnv["PARAMETER_TAGS"] = "latest,dev"
+	dockerEnv["bar"] = "test4"
+	dockerEnv["star"] = "test3"
+
+	serviceEnv := environment(nil, m, nil, nil)
+	serviceEnv["bar"] = "test4"
+	serviceEnv["star"] = "test3"
 
 	want := &pipeline.Build{
 		Version: "1",
@@ -655,7 +671,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_init_init",
 						Directory:   "/vela/src/foo//",
-						Environment: environment(nil, m, nil, nil),
+						Environment: setupEnv,
 						Image:       "#init",
 						Name:        "init",
 						Number:      1,
@@ -669,7 +685,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 					&pipeline.Container{
 						ID:          "__0_clone_clone",
 						Directory:   "/vela/src/foo//",
-						Environment: environment(nil, m, nil, nil),
+						Environment: setupEnv,
 						Image:       "target/vela-git:v0.4.0",
 						Name:        "clone",
 						Number:      2,
@@ -773,7 +789,7 @@ func TestNative_Compile_StagesPipelineTemplate(t *testing.T) {
 				Name:        "postgres",
 				Number:      1,
 				Pull:        "not_present",
-				Environment: environment(nil, m, nil, nil),
+				Environment: serviceEnv,
 			},
 		},
 	}
@@ -857,12 +873,18 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 		},
 	}
 
+	setupEnv := environment(nil, m, nil, nil)
+	setupEnv["bar"] = "test4"
+	setupEnv["star"] = "test3"
+
 	installEnv := environment(nil, m, nil, nil)
 	installEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
 	installEnv["GRADLE_USER_HOME"] = ".gradle"
 	installEnv["HOME"] = "/root"
 	installEnv["SHELL"] = "/bin/sh"
 	installEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew downloadDependencies"})
+	installEnv["bar"] = "test4"
+	installEnv["star"] = "test3"
 
 	testEnv := environment(nil, m, nil, nil)
 	testEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
@@ -870,6 +892,8 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 	testEnv["HOME"] = "/root"
 	testEnv["SHELL"] = "/bin/sh"
 	testEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew check"})
+	testEnv["bar"] = "test4"
+	testEnv["star"] = "test3"
 
 	buildEnv := environment(nil, m, nil, nil)
 	buildEnv["GRADLE_OPTS"] = "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false"
@@ -877,11 +901,19 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 	buildEnv["HOME"] = "/root"
 	buildEnv["SHELL"] = "/bin/sh"
 	buildEnv["VELA_BUILD_SCRIPT"] = generateScriptPosix([]string{"./gradlew build"})
+	buildEnv["bar"] = "test4"
+	buildEnv["star"] = "test3"
 
 	dockerEnv := environment(nil, m, nil, nil)
 	dockerEnv["PARAMETER_REGISTRY"] = "index.docker.io"
 	dockerEnv["PARAMETER_REPO"] = "github/octocat"
 	dockerEnv["PARAMETER_TAGS"] = "latest,dev"
+	dockerEnv["bar"] = "test4"
+	dockerEnv["star"] = "test3"
+
+	serviceEnv := environment(nil, m, nil, nil)
+	serviceEnv["bar"] = "test4"
+	serviceEnv["star"] = "test3"
 
 	want := &pipeline.Build{
 		Version: "1",
@@ -895,7 +927,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_init",
 				Directory:   "/vela/src/foo//",
-				Environment: environment(nil, m, nil, nil),
+				Environment: setupEnv,
 				Image:       "#init",
 				Name:        "init",
 				Number:      1,
@@ -904,7 +936,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			&pipeline.Container{
 				ID:          "step___0_clone",
 				Directory:   "/vela/src/foo//",
-				Environment: environment(nil, m, nil, nil),
+				Environment: setupEnv,
 				Image:       "target/vela-git:v0.4.0",
 				Name:        "clone",
 				Number:      2,
@@ -990,7 +1022,7 @@ func TestNative_Compile_StepsPipelineTemplate(t *testing.T) {
 			&pipeline.Container{
 				ID:          "service___0_postgres",
 				Detach:      true,
-				Environment: environment(nil, m, nil, nil),
+				Environment: serviceEnv,
 				Image:       "postgres:12",
 				Name:        "postgres",
 				Number:      1,
