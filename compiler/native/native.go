@@ -29,6 +29,7 @@ type ModificationConfig struct {
 type client struct {
 	Github              registry.Service
 	PrivateGithub       registry.Service
+	UsePrivateGithub    bool
 	ModificationService ModificationConfig
 
 	build    *library.Build
@@ -65,6 +66,7 @@ func New(ctx *cli.Context) (*client, error) {
 	c.Github = github
 
 	if ctx.Bool("github-driver") {
+		logrus.Tracef("setting up Private GitHub Client for %s", ctx.String("github-url"))
 		// setup private github service
 		privGithub, err := setupPrivateGithub(ctx.String("github-url"), ctx.String("github-token"))
 		if err != nil {
@@ -72,6 +74,7 @@ func New(ctx *cli.Context) (*client, error) {
 		}
 
 		c.PrivateGithub = privGithub
+		c.UsePrivateGithub = true
 	}
 
 	return c, nil
@@ -98,6 +101,7 @@ func (c *client) Duplicate() compiler.Engine {
 	// copy the essential fields from the existing client
 	cc.Github = c.Github
 	cc.PrivateGithub = c.PrivateGithub
+	cc.UsePrivateGithub = c.UsePrivateGithub
 	cc.ModificationService = c.ModificationService
 
 	return cc

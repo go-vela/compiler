@@ -103,14 +103,26 @@ func (c *client) ExpandSteps(s *yaml.Build, tmpls map[string]*yaml.Template) (ya
 				return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, fmt.Errorf("invalid template source provided for %s: %v", step.Template.Name, err)
 			}
 
-			// pull from public github when the host isn't provided or is set to github.com
-			if len(src.Host) == 0 || strings.Contains(src.Host, "github.com") {
+			// pull from github without auth when the host isn't provided or is set to github.com
+			if !c.UsePrivateGithub && (len(src.Host) == 0 || strings.Contains(src.Host, "github.com")) {
+				logrus.WithFields(logrus.Fields{
+					"org":  src.Org,
+					"repo": src.Repo,
+					"path": src.Name,
+					"host": src.Host,
+				}).Tracef("Using GitHub client to pull template")
 				bytes, err = c.Github.Template(nil, src)
 				if err != nil {
 					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err
 				}
 			} else {
-				// assume private github instance to pull from
+				logrus.WithFields(logrus.Fields{
+					"org":  src.Org,
+					"repo": src.Repo,
+					"path": src.Name,
+					"host": src.Host,
+				}).Tracef("Using authenticated GitHub client to pull template")
+				// use private (authenticated) github instance to pull from
 				bytes, err = c.PrivateGithub.Template(c.user, src)
 				if err != nil {
 					return yaml.StepSlice{}, yaml.SecretSlice{}, yaml.ServiceSlice{}, raw.StringSliceMap{}, err

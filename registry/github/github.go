@@ -7,6 +7,7 @@ package github
 import (
 	"context"
 	"net/url"
+	"strings"
 
 	"github.com/google/go-github/v39/github"
 	"golang.org/x/oauth2"
@@ -36,8 +37,12 @@ func New(address, token string) (*client, error) {
 
 	// ensure we have the URL and API set
 	if len(address) > 0 {
-		c.URL = address
-		c.API = c.URL + "/api/v3/"
+		if !strings.EqualFold(c.URL, address) {
+			c.URL = strings.Trim(address, "/")
+			if !strings.Contains(c.URL, "https://github.com") {
+				c.API = c.URL + "/api/v3/"
+			}
+		}
 	}
 
 	// create the GitHub client

@@ -50,8 +50,9 @@ func TestNative_New_PrivateGithub(t *testing.T) {
 	public, _ := github.New("", "")
 	private, _ := github.New(url, token)
 	want := &client{
-		Github:        public,
-		PrivateGithub: private,
+		Github:           public,
+		PrivateGithub:    private,
+		UsePrivateGithub: true,
 	}
 
 	// run test
@@ -78,8 +79,9 @@ func TestNative_DuplicateRetainSettings(t *testing.T) {
 	public, _ := github.New("", "")
 	private, _ := github.New(url, token)
 	want := &client{
-		Github:        public,
-		PrivateGithub: private,
+		Github:           public,
+		PrivateGithub:    private,
+		UsePrivateGithub: true,
 	}
 
 	// run test
