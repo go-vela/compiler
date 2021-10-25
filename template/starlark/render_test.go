@@ -51,7 +51,7 @@ func TestStarlark_RenderStep(t *testing.T) {
 				t.Error(err)
 			}
 
-			steps, secrets, services, err := RenderStep(string(tmpl), b.Steps[0])
+			steps, secrets, services, environment, err := RenderStep(string(tmpl), b.Steps[0])
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RenderStep() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -70,6 +70,7 @@ func TestStarlark_RenderStep(t *testing.T) {
 				wantSteps := w.Steps
 				wantSecrets := w.Secrets
 				wantServices := w.Services
+				wantEnvironment := w.Environment
 
 				if diff := cmp.Diff(wantSteps, steps); diff != "" {
 					t.Errorf("RenderStep() mismatch (-want +got):\n%s", diff)
@@ -78,6 +79,9 @@ func TestStarlark_RenderStep(t *testing.T) {
 					t.Errorf("RenderStep() mismatch (-want +got):\n%s", diff)
 				}
 				if diff := cmp.Diff(wantServices, services); diff != "" {
+					t.Errorf("RenderStep() mismatch (-want +got):\n%s", diff)
+				}
+				if diff := cmp.Diff(wantEnvironment, environment); diff != "" {
 					t.Errorf("RenderStep() mismatch (-want +got):\n%s", diff)
 				}
 			}
