@@ -38,9 +38,9 @@ func New(address, token string) (*client, error) {
 	// ensure we have the URL and API set
 	if len(address) > 0 {
 		if !strings.EqualFold(c.URL, address) {
-			c.URL = strings.Trim(address, "/") + "/"
+			c.URL = strings.Trim(address, "/")
 			if !strings.Contains(c.URL, "https://github.com") {
-				c.API = strings.Trim(c.URL, "/") + "/api/v3/"
+				c.API = c.URL + "/api/v3/"
 			}
 		}
 	}
