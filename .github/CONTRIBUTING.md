@@ -1,5 +1,11 @@
 # Contributing
 
+> DISCLAIMER:
+>
+> This contents of this repository have been migrated into [go-vela/server](https://github.com/go-vela/server).
+>
+> This was done as a part of [go-vela/community#395](https://github.com/go-vela/community/issues/395) to deliver [on a proposal](https://github.com/go-vela/community/blob/master/proposals/2021/08-25_repo-structure.md).
+
 We'd love to accept your contributions to this project! There are just a few guidelines you need to follow.
 
 ## Bugs
