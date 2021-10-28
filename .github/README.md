@@ -1,5 +1,11 @@
 # compiler
 
+> DISCLAIMER:
+>
+> The contents of this repository have been migrated into [go-vela/server](https://github.com/go-vela/server).
+>
+> This was done as a part of [go-vela/community#394](https://github.com/go-vela/community/issues/394) to deliver [on a proposal](https://github.com/go-vela/community/blob/master/proposals/2021/08-25_repo-structure.md).
+
 [![license](https://img.shields.io/crates/l/gl.svg)](../LICENSE)
 [![GoDoc](https://godoc.org/github.com/go-vela/compiler?status.svg)](https://godoc.org/github.com/go-vela/compiler)
 [![Go Report Card](https://goreportcard.com/badge/go-vela/compiler)](https://goreportcard.com/report/go-vela/compiler)
